@@ -15,7 +15,6 @@ class HelperFactory
 
     public static function getFinder($class)
     {
-        //$collection = '\\'$class.'Collection';
         $class = preg_replace('/^.*\\\/', "", $class);
         $mapper = '\\lab\\mapper\\'.$class.'Mapper';
         if (class_exists($mapper)) {

@@ -7,7 +7,7 @@ class Method extends DomainObject
     private $name;
     private $users;
 
-    public function __construct($acronym = null, $name = null, $id = null)
+    public function __construct($id = null, $acronym = null, $name = null)
     {
         $this->acronym = $acronym;
         $this->name = $name;

@@ -16,7 +16,7 @@ class MethodMapper extends Mapper
         $this->updateStmt = self::$PDO->prepare(
             "UPDATE method SET acronym = ?, name = ? WHERE id = ?");
         $this->insertStmt = self::$PDO->prepare(
-            "INSERT INTO method(acronym, name) VALUES (?)");
+            "INSERT INTO method(acronym, name) VALUES (?, ?)");
     }
 
     public function getCollection(array $raw)
@@ -46,7 +46,7 @@ class MethodMapper extends Mapper
 
     public function update(DomainObject $object)
     {
-        $values = array($object->getName(), $object->getId());
+        $values = array($object->getAcronym(), $object->getName(), $object->getId());
         $this->updateStmt->execute($values);
     }
 
