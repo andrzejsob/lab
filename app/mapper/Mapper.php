@@ -7,7 +7,7 @@ use lab\domain\DomainObject;
 abstract class Mapper
 {
     protected static $PDO;
-    private $filePath = '../../dsn.xml';
+    private $filePath = '../../lab_dsn.xml';
 
     public function __construct()
     {
@@ -79,7 +79,7 @@ echo "Mapper::find echo : Odczyt wiersza z bazy \n";
     {
         $this->doInsert($obj);
 echo 'Mapper::insert echo : Wstawiam '.$obj->getName()."\n";
-        $this->addToMap($obj);
+//        $this->addToMap($obj);
     }
 
     abstract public function update(DomainObject $object);

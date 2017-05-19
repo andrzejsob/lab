@@ -38,7 +38,7 @@ class MethodMapper extends Mapper
 
     protected function doInsert(DomainObject $object)
     {
-        $values = array($object->getName());
+        $values = array($object->getAcronym(), $object->getName());
         $this->insertStmt->execute($values);
         $id = self::$PDO->lastInsertId();
         $object->setId($id);
