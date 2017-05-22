@@ -9,15 +9,15 @@ class Method extends DomainObject
 
     public function __construct($id = null, $acronym = null, $name = null)
     {
+        parent::__construct($id);
         $this->acronym = $acronym;
         $this->name = $name;
 //      self::getCollection("\\database\\domain\\Space");
-        parent::__construct($id);
     }
 
     public function setAcronym($acronym)
     {
-        $this->name = $acronym;
+        $this->acronym = $acronym;
 //        $this->markDirty();
     }
 

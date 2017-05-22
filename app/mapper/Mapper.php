@@ -50,10 +50,10 @@ abstract class Mapper
 
     public function find($id)
     {
-        $old = $this->getFromMap($id);
-        if (!is_null($old)) {
-            return $old;
-        }
+        //$old = $this->getFromMap($id);
+        //if (!is_null($old)) {
+        //    return $old;
+        //}
 echo "Mapper::find echo : Odczyt wiersza z bazy \n";
         $this->selectStmt->execute(array($id));
         $array = $this->selectStmt->fetch();
@@ -66,19 +66,19 @@ echo "Mapper::find echo : Odczyt wiersza z bazy \n";
 
     public function createObject($array)
     {
-        $old = $this->getFromMap($array['id']);
-        if (!is_null($old)) {
-            return $old;
-        }
+        //$old = $this->getFromMap($array['id']);
+        //if (!is_null($old)) {
+        //    return $old;
+        //}
         $obj = $this->doCreateObject($array);
-        $this->addToMap($obj);
+        //$this->addToMap($obj);
         return $obj;
     }
 
     public function insert(DomainObject $obj)
     {
         $this->doInsert($obj);
-echo 'Mapper::insert echo : Wstawiam '.$obj->getName()."\n";
+//echo 'Mapper::insert echo : Wstawiam '.$obj->getName()."\n";
 //        $this->addToMap($obj);
     }
 

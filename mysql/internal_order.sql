@@ -1,0 +1,16 @@
+use lab;
+
+create table internal_order (
+    id int not null auto_increment primary key,
+    contact_person_id int not null,
+    nr int(3) not null,
+    year year(4) not null,
+    akr boolean not null,
+    order_date date not null,
+    receive_date date not null,
+    nr_of_analyzes int,
+    sum int,
+    found_soruce varchar(128),
+    load_nr varchar(64),
+    foreign key (contact_person_id) references contact_person(id)
+);

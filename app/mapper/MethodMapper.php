@@ -17,6 +17,21 @@ class MethodMapper extends Mapper
             "UPDATE method SET acronym = ?, name = ? WHERE id = ?");
         $this->insertStmt = self::$PDO->prepare(
             "INSERT INTO method(acronym, name) VALUES (?, ?)");
+        $this->findByUserStmt = self::$PDO->prepare(
+            "SELECT id, acronym, name FROM method as m
+            JOIN user_method as um
+            ON m.id = um.method_id
+            WHERE um.user_id = ?"
+        );
+    }
+
+    public function findByUser($user_id)
+    {
+        $this->findByUserStmt->execute(array($user_id));
+        return new MethodCollection(
+            $this->findByUserStmt->fetchAll(\PDO::FETCH_ASSOC),
+            $this
+        );
     }
 
     public function getCollection(array $raw)
@@ -31,7 +46,7 @@ class MethodMapper extends Mapper
 
     protected function doCreateObject(array $method)
     {
-        $obj = new Method($method['id'], $method['name']);
+        $obj = new Method($method['id'], $method['acronym'], $method['name']);
         //$obj->setName($array['name']);
         return $obj;
     }
