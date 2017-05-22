@@ -41,7 +41,7 @@ class Client extends DomainObject
 
     public function setStreet($street)
     {
-        $this->street = street;
+        $this->street = $street;
 //        $this->markDirty();
     }
 
