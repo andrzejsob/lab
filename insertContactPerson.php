@@ -6,13 +6,14 @@ $imie = $argv[2];
 $nazwisko = $argv[3];
 
 $client_mapper = new \lab\mapper\ClientMapper();
-$client = $client_mapper->find($client_id);
-
+//$client = $client_mapper->find($client_id);
+/*
 if (is_null($client)) {
     echo 'Nie znaleziono klienta o id = '.$client_id;exit;
 }
+*/
 //pusty klient
-//$client = new \lab\domain\Client();
+$client = new \lab\domain\Client();
 
 $cperson = new \lab\domain\ContactPerson();
 $cperson->setFirstName($imie);

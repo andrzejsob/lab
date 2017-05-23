@@ -23,6 +23,14 @@ class ContactPersonMapper extends Mapper
                 email2,
                 phone
             ) VALUES (?, ?, ?, ?, ?, ?)');
+        $this->findByClientStmt = self::$PDO->prepare(
+            'SELECT * FROM contact_person WHERE client_id = ?');
+    }
+
+    public function findByClient($id)
+    {
+        $this->findByClientStmt->execute(array($id));
+        return $this->getCollection($this->findByClientStmt->fetchAll());
     }
 
     public function getCollection(array $raw)
@@ -51,11 +59,12 @@ class ContactPersonMapper extends Mapper
 
     protected function doInsert(DomainObject $object)
     {
-        if (is_null($object->getClient()->getId())) {
+        $client = $object->getClient();
+        if (!$client->getId()) {
             throw new \Exception('Brak id klienta');
         }
         $values = array(
-            $object->getClient()->getId(),
+            $client->getId(),
             $object->getFirstName(),
             $object->getLastName(),
             $object->getEmail(),

@@ -23,6 +23,12 @@ class MethodMapper extends Mapper
             ON m.id = um.method_id
             WHERE um.user_id = ?"
         );
+        $this->findByInternalOrderStmt = self::$PDO->prepare(
+            "SELECT id, acronym, name FROM method as m
+            JOIN internal_order_method as iom
+            ON m.id = iom.method_id
+            WHERE iom.internal_order_id = ?"
+        );
     }
 
     public function findByUser($user_id)
@@ -30,6 +36,15 @@ class MethodMapper extends Mapper
         $this->findByUserStmt->execute(array($user_id));
         return new MethodCollection(
             $this->findByUserStmt->fetchAll(\PDO::FETCH_ASSOC),
+            $this
+        );
+    }
+
+    public function findByInternalOrder($order_id)
+    {
+        $this->findByInternalOrderStmt->execute(array($order_id));
+        return new MethodCollection(
+            $this->findByInternalOrderStmt->fetchAll(\PDO::FETCH_ASSOC),
             $this
         );
     }

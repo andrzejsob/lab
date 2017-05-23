@@ -8,7 +8,7 @@ class Client extends DomainObject
     private $zipCode;
     private $city;
     private $nip;
-    private $contact_persons;
+    private $contact_persons = null;
 
     public function __construct(
         $id = null,
@@ -30,6 +30,10 @@ class Client extends DomainObject
 
     public function getContactPersons()
     {
+        if (is_null($this->contact_persons)) {
+            $finder = self::getFinder(ContactPerson::class);
+            $this->contact_persons = $finder->findByClient($this->getId());
+        }
         return $this->contact_persons;
     }
 

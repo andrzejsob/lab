@@ -8,7 +8,7 @@ class ContactPerson extends DomainObject
     private $email;
     private $email2;
     private $phone;
-    private $client;
+    private $client = null;
 
     public function __construct(
         $id = null,

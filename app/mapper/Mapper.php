@@ -7,12 +7,11 @@ use lab\domain\DomainObject;
 abstract class Mapper
 {
     protected static $PDO;
-    private $filePath = '../../lab_dsn.xml';
+    private $filePath = __DIR__ . '/../../../../lab_dsn.xml';
 
     public function __construct()
     {
         if(!isset(self::$PDO)) {
-            //echo __DIR__.DIRECTORY_SEPARATOR.'..';
             $xml = simplexml_load_file($this->filePath);
             //$dsn = \lab\base\ApplicationRegistry::getDSN();
             $dsn = trim($xml->dsn);

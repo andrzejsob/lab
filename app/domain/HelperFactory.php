@@ -17,6 +17,7 @@ class HelperFactory
     {
         $class = preg_replace('/^.*\\\/', "", $class);
         $mapper = '\\lab\\mapper\\'.$class.'Mapper';
+        //echo $mapper;exit;
         if (class_exists($mapper)) {
             return new $mapper();
         }
