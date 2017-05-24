@@ -40,14 +40,14 @@ class InternalOrder extends DomainObject
         $this->nrOfAnalyzes = $nr_of_analyzes;
         $this->sum = $sum;
         $this->foundSource = $found_source;
-        $this->loarNr = $load_nr;
+        $this->loadNr = $load_nr;
     }
 
     public function getContactPerson()
     {
         if (is_null($this->contactPerson)) {
             $finder = self::getFinder(ContactPerson::class);
-            $this->contactPerson = $finder->find($this->contact_person_id);
+            $this->contactPerson = $finder->find($this->contactPersonId);
         }
         return $this->contactPerson;
     }

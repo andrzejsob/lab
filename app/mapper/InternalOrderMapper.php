@@ -97,4 +97,39 @@ class InternalOrderMapper extends Mapper
     {
         return $this->selectStmt;
     }
+
+    public function selectByMethodsStmt($qm)
+    {
+        $selectStmt = self::$PDO->prepare("SELECT
+            id,
+            contact_person_id,
+            nr,
+            year,
+            akr,
+            order_date,
+            receive_date,
+            nr_of_analyzes,
+            sum,
+            found_source,
+            load_nr
+            FROM internal_order as io
+            JOIN internal_order_method as iom
+            ON io.id = iom.internal_order_id
+            WHERE iom.method_id IN (".$qm.")");
+        return $selectStmt;
+    }
+
+    public function selectByMethods(MethodCollection $methods)
+    {
+        foreach ($methods as $method) {
+            $id_array[] = $method->getId();
+            $marks[] = '?';
+        }
+        $qm = implode(', ', $marks);
+        $sth = $this->selectByMethodsStmt($qm);
+        $sth->execute($id_array);
+        $array = $sth->fetchAll(\PDO::FETCH_ASSOC);
+        if (is_null($array)) {return null;}
+        return $this->getCollection($array);
+    }
 }
