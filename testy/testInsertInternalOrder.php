@@ -17,8 +17,7 @@ $cp_mapper = new \lab\mapper\ContactPersonMapper();
 $order->setContactPerson($cp_mapper->find(1));
 
 $m_mapper = new \lab\mapper\MethodMapper();
-$method = $m_mapper->find(6);
-$order->addMethod($method);
+$order->addMethod($m_mapper->find(6));
 echo $order->getContactPerson()->getFirstName()." ";
 echo $order->getContactPerson()->getLastName()."\n";
 foreach ($order->getMethods() as $method) {

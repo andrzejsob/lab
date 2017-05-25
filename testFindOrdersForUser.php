@@ -9,10 +9,9 @@ $id = $argv[1];
 $start = microtime(true);
 $u_mapper = new UserMapper();
 $user = $u_mapper->find($id);
-$methods = $user->getMethods();
 
 $io_mapper = new \lab\mapper\InternalOrderMapper();
-$orders = $io_mapper->selectByMethods($methods);
+$orders = $io_mapper->selectByMethods($user->getMethods());
 
 foreach ($orders as $o) {
 //    $o->getContactPerson();

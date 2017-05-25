@@ -14,8 +14,10 @@ class InternalOrderMapper extends Mapper
             "SELECT * FROM internal_order");
         $this->selectStmt = self::$PDO->prepare(
             "SELECT * FROM internal_order WHERE id = ?");
+        $this->selectPreviousNrStmt = self::$PDO->prepare(
+            "SELECT MAX(nr) FROM internal_order");
         $this->insertStmt = self::$PDO->prepare(
-            'INSERT INTO internal_order (
+            'INSERT INTO internal_order as io (
                 contact_person_id,
                 nr,
                 year,
@@ -26,7 +28,7 @@ class InternalOrderMapper extends Mapper
                 sum,
                 found_source,
                 load_nr ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
-        $this->insertMethodStmt = self::$PDO->prepare(
+        $this->insertOrderMethodStmt = self::$PDO->prepare(
             'INSERT INTO internal_order_method (internal_order_id, method_id)
             VALUES (?, ?)');
     }
@@ -65,6 +67,12 @@ class InternalOrderMapper extends Mapper
         if (!$contactPerson->getId()) {
             throw new Exception('Brak id osoby do kontaktu.');
         }
+
+        $this->selectPreviousNrStmt->execute(array());
+        $nr = $this->selectPreviousNrStmt->fetch(\PDO::FETCH_NUM);
+        print_r($nr);
+        $object->setNr($nr[0] + 1);
+        echo $object->getNr()."\n";exit;
         $values = array(
             $contactPerson->getId(),
             $object->getNr(),
@@ -83,7 +91,7 @@ class InternalOrderMapper extends Mapper
 
         foreach($object->getMethods() as $method) {
             $array = [$object->getId(), $method->getId()];
-            $this->insertMethodStmt->execute($array);
+            $this->insertOrderMethodStmt->execute($array);
         }
     }
 
