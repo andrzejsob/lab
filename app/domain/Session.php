@@ -1,15 +1,14 @@
 <?php
 namespace lab\domain;
 
-class Session
+class Session extends DomainObject
 {
-    private $SessioAsciiId = null;
-    private $userAgentString = null;
-    private $id;
+    private $asciiId = null;
+    private $userAgent = null;
     private $userId;
-    private $sessionTimeout = 600;		//10-minutowy maksymalny czas nieaktywności sesji
-    private $sessionLifespan = 3600;	// 1-godzinny maksymalny czas ważności sesji
-    protected $loggedIin;
+    private $timeout = 600;		//10-minutowy maksymalny czas nieaktywności sesji
+    private $lifespan = 3600;	// 1-godzinny maksymalny czas ważności sesji
+    protected $loggedIn = false;
 
     public function __construct()
     {
@@ -22,21 +21,16 @@ class Session
 			array(&$this, 'sessionGc')
 		);
 
-        $this->SessionAsciiId = $_COOKIE["PHPSESSID"];
-        $this->userAgentString = $_SERVER["HTTP_USER_AGENT"];
+        parent::__construct();
 
-		if ($this->SessionAsciiId) {
-            $array = array(
-                $this->sessionAsciiId,
-                $this->sessionLifespan,
-                $this->userAgentString,
-                $this->sessionTimeout
-            );
+        $this->userAgent = $_SERVER['HTTP_USER_AGENT'];
+		if ($_COOKIE["PHPSESSID"]) {
+            $this->asciiId = $_COOKIE["PHPSESSID"];
+            echo $this->asciiId;
             $finder = self::getFinder();
-			if (!$finder->isUserSessionActive($array)) {
+			if (!$finder->isUserSessionActive($this)) {
 				//Usuwa przeterminowanie sesje
-				$array = array($this->sessionAsciiId, $this->sessionLifespan)
-			    $finder->deleteInactiveUserSession($array);
+			    $finder->deleteInactiveUserSession($this);
 				/*Usuwa nieprzydatne zmienne sesji
 				$result = $this->dbhandle->query("DELETE FROM session_variable
 								  WHERE session_id NOT IN
@@ -46,14 +40,39 @@ class Session
 			}
 		}
 		//Ustawienie czasu życia COOKIE
-		session_set_cookie_params($this->session_lifespan);
+		session_set_cookie_params($this->lifespan);
 		session_start();
+    }
+
+    public function getAsciiId()
+    {
+        return $this->asciiId;
+    }
+
+    public function getUserAgent()
+    {
+        return $this->userAgent;
+    }
+
+    public function getLoggedIn()
+    {
+        return $this->loggedIn;
+    }
+
+    public function getLifespan()
+    {
+        return $this->lifespan;
+    }
+
+    public function getTimeout()
+    {
+        return $this->timeout;
     }
 
     public function Impress()
     {
-        if ($this->native_session_id) {
-            $stmt = "UPDATE user_session SET last_reaction = NOW() WHERE id = ".$this->native_session_id;
+        if ($this->id) {
+            $stmt = "UPDATE session SET last_reaction = NOW() WHERE id = ".$this->native_session_id;
             $result = $this->dbhandle->query($stmt);
         }
     }
@@ -64,33 +83,32 @@ class Session
 
     public function sessionClose ()
     {
-		$this->dbhandle->close();
+	//	$this->dbhandle->close();
 		return true;
 	}
 
     public function sessionRead ($sessionAsciiId) {
-		$this->sessionAsciiId = $sessionAsciiId;
+		$this->asciiId = $sessionAsciiId;
+echo 'Session::sessionRead echo: '.$this->asciiId;
 		$failed = 1;
-        $finder = $this->getFinder();
-        $finder->findBySessionAscii(array($this->sessionAsciiId));
-		if ($result->num_rows) {
-			$row = $result->fetch_assoc();
-			$this->native_session_id = $row["id"];
-			if ($row["logged_in"] == true) {
-				$this->logged_in = true;
-				$this->user_id = $row["user_id"];
-			} else {
-				$this->logged_in = false;
+        $finder = self::getFinder();
+        $array = $finder->findBySessionAscii($this);
+		if ($array) {
+			$this->id = $array['id'];
+			if ($array['logged_in'] == true) {
+				$this->loggedIn = true;
+				$this->userId = $array['user_id'];
 			}
 		} else {
-			$this->logged_in = false;
-			$stmt = "INSERT INTO user_session (session_ascii_id, logged_in, created, user_agent) VALUES ('".$id."', false, NOW(), '".$strUserAgent."')";
-			$result = $this->dbhandle->query($stmt);
-			$result = $this->dbhandle->query("SELECT id from user_session
-											WHERE session_ascii_id = '".$id."'");
-			$row = $result->fetch_assoc();
-			$this->native_session_id = $row["id"];
+            $this->id = $finder->insert($this);
+			//$result = $this->dbhandle->query($stmt);
+			//$result = $this->dbhandle->query("SELECT id from session
+			//								WHERE session_ascii_id = '".$id."'");
+		//	$this->id = $row['id'];
 		}
+        echo '<pre>';
+        print_r($this);
+        echo '</pre>';
 		return "";
 	}
 
@@ -99,7 +117,7 @@ class Session
 	}
 
 	private function sessionDestroy ($id) {
-		$result = $this->dbhandle->query("DELETE FROM user_session
+		$result = $this->dbhandle->query("DELETE FROM session
 										WHERE session_ascii_id = '".$id."'");
 		return true;
 	}

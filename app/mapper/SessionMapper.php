@@ -15,13 +15,13 @@ class SessionMapper extends Mapper
             "SELECT * FROM session WHERE session_ascii_id = ?");
         $this->insertStmt = self::$PDO->prepare(
             "INSERT INTO session (
-                session_asci_id,
-                logged_id,
+                session_ascii_id,
+                logged_in,
                 created,
                 user_agent)
              VALUES (?, false, NOW(), ?)");
         $this->findActiveUserSessionStmt = self::$PDO->prepare(
-            "SELECT id FROM user_session WHERE session_ascii_id = ?
+            "SELECT * FROM session WHERE session_ascii_id = ?
 			AND TIMESTAMPDIFF(SECOND,created,NOW()) < ?
 			AND user_agent = ?
 			AND ( TIMESTAMPDIFF(SECOND,last_reaction,NOW()) <= ?
@@ -33,7 +33,7 @@ class SessionMapper extends Mapper
         );
         $this->updateLastReactionStmt = self::$PDO->prepare(
             "UPDATE session SET last_reaction = NOW()
-            WHERE id = ?";
+            WHERE id = ?"
         );
     }
 
@@ -42,28 +42,36 @@ class SessionMapper extends Mapper
         return "lab\domain\Session";
     }
 
-    public function findBySessionAscii($array)
+    public function findBySessionAscii(\lab\domain\Session $obj)
     {
-        $this->findBySessionAsciiStmt->execute($array);
-        $array = $this->findBySessionAsciiStmt->fetch();
-        if(!is_array($array)) {
-            return false;
+        $this->findBySessionAsciiStmt->execute(array($obj->getAsciiId()));
+        $array = $this->findBySessionAsciiStmt->fetch(\PDO::FETCH_ASSOC);
+        if(is_array($array)) {
+            return $array;
         }
-        return $array;
+        false;
+        //$obj);
     }
 
-    public function isUserSessionActive($array)
+    public function isUserSessionActive(\lab\domain\Session $obj)
     {
+        $array = array(
+            $obj->getAsciiId(),
+            $obj->getLifespan(),
+            $obj->getUserAgent(),
+            $obj->getTimeout()
+        );
         $this->findActiveUserSessionStmt->execute($array);
-        $session = $this->findActiveUserSessionStmt->fetch();
-        if($session['id']) {
+        $array = $this->findActiveUserSessionStmt->fetch();
+        if(is_array($array)) {
             return true;
         }
         return false;
     }
 
-    public function deleteInactiveUserSession($array)
+    public function deleteInactiveUserSession(\lab\domain\Session $obj)
     {
+        $array = array($obj->getAsciiId(), $obj->getLifespan());
         $this->deleteInactiveUserSessionStmt->execute($array);
     }
 
@@ -74,7 +82,11 @@ class SessionMapper extends Mapper
 
     protected function doInsert(DomainObject $object)
     {
-
+        $array = array($object->getAsciiId(), $object->getUserAgent());
+        //print_r()
+        $this->insertStmt->execute($array);
+        print_r($this->insertStmt);
+        return self::$PDO->lastInsertId();
     }
 
     public function update(DomainObject $object)
