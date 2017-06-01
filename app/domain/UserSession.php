@@ -26,7 +26,7 @@ class UserSession {
 		);
 
 		$strUserAgent = $_SERVER["HTTP_USER_AGENT"];
-		if ($_COOKIE["PHPSESSID"]) {
+		if (isset($_COOKIE["PHPSESSID"])) {
 			$this->php_session_id = $_COOKIE["PHPSESSID"];
 			$stmt = "SELECT id FROM user_session WHERE session_ascii_id = '".$this->php_session_id."'
 					AND TIMESTAMPDIFF(SECOND,created,NOW()) < ".$this->session_lifespan."

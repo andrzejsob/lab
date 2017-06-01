@@ -24,9 +24,8 @@ class Session extends DomainObject
         parent::__construct();
 
         $this->userAgent = $_SERVER['HTTP_USER_AGENT'];
-		if ($_COOKIE["PHPSESSID"]) {
+		if (isset($_COOKIE["PHPSESSID"])) {
             $this->asciiId = $_COOKIE["PHPSESSID"];
-            echo $this->asciiId;
             $finder = self::getFinder();
 			if (!$finder->isUserSessionActive($this)) {
 				//Usuwa przeterminowanie sesje
@@ -42,6 +41,14 @@ class Session extends DomainObject
 		//Ustawienie czasu życia COOKIE
 		session_set_cookie_params($this->lifespan);
 		session_start();
+    }
+    public function setLoggedIn($status)
+    {
+        $this->loggedIn = $status;
+    }
+    public function setUserId($userId = null)
+    {
+        $this->userId = $userId;
     }
 
     public function getAsciiId()
@@ -69,13 +76,49 @@ class Session extends DomainObject
         return $this->timeout;
     }
 
-    public function Impress()
+    public function login(\lab\domain\User $user)
     {
-        if ($this->id) {
-            $stmt = "UPDATE session SET last_reaction = NOW() WHERE id = ".$this->native_session_id;
-            $result = $this->dbhandle->query($stmt);
+        $finder = self::getFinder();
+        $finder->login($user, $this);
+    }
+
+    public function logout()
+    {
+        if ($this->getLoggedIn()) {
+            $finder = self::getFinder();
+            $finder->logout($this);
+            session_unset();
+            session_destroy();
+            $this->setId(null);
+            $this->setLoggedIn(false);
+            $this->setUserId(null);
+        }
+        echo '<pre>';
+        print_r($this);
+        echo '</pre>';
+    }
+
+    public function impress()
+    {
+        if ($id = $this->getId()) {
+            $finder = self::getFinder();
+            $finder->updateLastReaction($id);
         }
     }
+
+    public function sessionRead ($sessionAsciiId) {
+		$this->asciiId = $sessionAsciiId;
+echo 'Session::sessionRead echo: '.$this->asciiId;
+        $finder = self::getFinder();
+		if (!$finder->findByAsciiId($this)) {
+            $finder->insert($this);
+		}
+        echo '<pre>';
+        print_r($this);
+        echo '</pre>';
+		return "";
+	}
+
     private function sessionOpen ($save_path, $session_name)
     {
     	return true;
@@ -87,38 +130,13 @@ class Session extends DomainObject
 		return true;
 	}
 
-    public function sessionRead ($sessionAsciiId) {
-		$this->asciiId = $sessionAsciiId;
-echo 'Session::sessionRead echo: '.$this->asciiId;
-		$failed = 1;
-        $finder = self::getFinder();
-        $array = $finder->findBySessionAscii($this);
-		if ($array) {
-			$this->id = $array['id'];
-			if ($array['logged_in'] == true) {
-				$this->loggedIn = true;
-				$this->userId = $array['user_id'];
-			}
-		} else {
-            $this->id = $finder->insert($this);
-			//$result = $this->dbhandle->query($stmt);
-			//$result = $this->dbhandle->query("SELECT id from session
-			//								WHERE session_ascii_id = '".$id."'");
-		//	$this->id = $row['id'];
-		}
-        echo '<pre>';
-        print_r($this);
-        echo '</pre>';
-		return "";
-	}
-
 	public function sessionWrite ($id, $sess_data) {
 		return true;
 	}
 
-	private function sessionDestroy ($id) {
-		$result = $this->dbhandle->query("DELETE FROM session
-										WHERE session_ascii_id = '".$id."'");
+	private function sessionDestroy ($asciiId) {
+		$finder = self::getFinder();
+        $finder->deleteSession($asciiId);
 		return true;
 	}
 

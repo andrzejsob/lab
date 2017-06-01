@@ -15,6 +15,9 @@ class UserMapper extends Mapper
             "SELECT * FROM user WHERE id = ?");
         //$this->updateStmt = self::$PDO->prepare(
         //    "UPDATE me SET acronym = ?, name = ? WHERE id = ?");
+        $this->authenticateStmt = self::$PDO->prepare(
+            "SELECT * FROM user WHERE nick = ? AND password_md5 = ?"
+        );
         $this->insertStmt = self::$PDO->prepare(
             "INSERT INTO user(nick, password_md5, first_name, last_name, email)
              VALUES (?, ?, ?, ?, ?)");
@@ -28,6 +31,16 @@ class UserMapper extends Mapper
     protected function targetClass()
     {
         return "lab\domain\User";
+    }
+    
+    public function authenticate($nick, $password)
+    {
+        $this->authenticateStmt->execute(array($nick, md5($password)));
+        $array = $this->authenticateStmt->fetch();
+        if(!is_array($array)) {
+            return null;
+        }
+        return $this->createObject($array);
     }
 
     protected function doCreateObject(array $user)
