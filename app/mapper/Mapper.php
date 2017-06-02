@@ -7,20 +7,17 @@ use lab\domain\DomainObject;
 abstract class Mapper
 {
     protected static $PDO;
-    private $filePath = __DIR__ . '/../../../../lab_dsn.xml';
 
     public function __construct()
     {
         if(!isset(self::$PDO)) {
-            $xml = simplexml_load_file($this->filePath);
-            //$dsn = \lab\base\ApplicationRegistry::getDSN();
-            $dsn = trim($xml->dsn);
-            //echo $dsn;
-            $user = trim($xml->user);
-            $password = trim($xml->pass);
-            if(is_null($dsn)) {
-                throw new \lab\base\AppException("Brak DSN");
+            $database = \lab\base\ApplicationHelper::getDSN();
+            if(is_null($database)) {
+                throw new \lab\base\AppException("Brak database.");
             }
+            $dsn = $database['dsn'];
+            $user = $database['user'];
+            $password = $database['pass'];
             self::$PDO = new \PDO($dsn, $user, $password);
             self::$PDO->setAttribute(
                 \PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);

@@ -5,6 +5,10 @@ use lab\domain\Session;
 use lab\mapper\SessionMapper;
 use lab\mapper\UserMapper;
 
+\lab\base\ApplicationHelper::instance()->init();
+if(!isset($_SERVER['REQUEST_METHOD'])) {
+    $_SERVER['HTTP_USER_AGENT'] = 'console';
+}
 $session = new Session();
 $session->impress();
 

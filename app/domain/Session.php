@@ -108,7 +108,7 @@ class Session extends DomainObject
 
     public function sessionRead ($sessionAsciiId) {
 		$this->asciiId = $sessionAsciiId;
-echo 'Session::sessionRead echo: '.$this->asciiId;
+//echo 'Session::sessionRead echo:SessionIdentifer -> '.$this->asciiId;
         $finder = self::getFinder();
 		if (!$finder->findByAsciiId($this)) {
             $finder->insert($this);
