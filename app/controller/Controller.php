@@ -16,13 +16,16 @@ class Controller
     {
         $appHelper = \lab\base\ApplicationHelper::instance();
         $appHelper->init();
+        $session = \lab\base\ApplicationHelper::getSession();
+        $session->Impress();
     }
 
     private function handleRequest()
     {
         $request = \lab\base\ApplicationHelper::getRequest();
-        $cmdRsolver = new \lab\command\CommadResolver();
-        $cmd = $cmdRsolver->getCommand($reequest);
-        $cmd = execute($request);
+        $cmdResolver = new \lab\command\CommandResolver();
+        list($class, $action) = $cmdResolver->resolveCommand($request);
+        $cmdClass = new $class();
+        $cmdClass->$action($request);
     }
 }

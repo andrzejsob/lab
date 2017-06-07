@@ -5,6 +5,7 @@ class ApplicationHelper
 {
     private static $instance = null;
     private $request = null;
+    private $session = null;
 	private $map = null;
     private $appcontroller = null;
     private $iniFilePath = __DIR__ . "/../../lab.ini";
@@ -24,8 +25,8 @@ class ApplicationHelper
     {
         $this->ensure(file_exists($this->iniFilePath), 'Brak pliku ini');
         $array = parse_ini_file($this->iniFilePath, true);
-        foreach ($array as $k => $value) {
-            $this->values[$k] = $value;
+        foreach ($array as $key => $value) {
+            $this->values[$key] = $value;
         }
     }
 
@@ -58,6 +59,15 @@ class ApplicationHelper
             $inst->request = new \lab\controller\Request();
         }
         return $inst->request;
+    }
+
+    static function getSession()
+    {
+        $inst = self::instance();
+        if(is_null($inst->session)) {
+            $inst->request = new \lab\domain\Session();
+        }
+        return $inst->session;
     }
 
 	static function setControllerMap($map)
