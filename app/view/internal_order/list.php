@@ -1,4 +1,4 @@
 <?php
-foreach ($order_coll as $order) {
+foreach ($orders as $order) {
     echo $order->getCode()."\n";
 }

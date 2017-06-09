@@ -7,8 +7,8 @@ class PersonCommand extends Command
     {
         $personMapper = new \lab\mapper\ContactPersonMapper();
         $person_coll = $personMapper->findAll();
-        $this->template->set('persons', $person_coll);
-        $this->template->setTemplate('app/view/internal_order/list.php');
-        $this->render();
+        $this->render('app/view/person/list.php', array(
+            'persons' => $person_coll
+        ));
     }
 }

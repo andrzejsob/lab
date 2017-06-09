@@ -65,7 +65,7 @@ class ApplicationHelper
     {
         $inst = self::instance();
         if(is_null($inst->session)) {
-            $inst->request = new \lab\domain\Session();
+            $inst->session = new \lab\domain\Session();
         }
         return $inst->session;
     }
