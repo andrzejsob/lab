@@ -36,8 +36,11 @@ class Template
         extract($this->vars);
         ob_start();
         include $this->file;
-        $content = ob_get_contents();
-        ob_end_clean();
+        $content = ob_get_clean();
         include $this->layout;
+        $string = ob_get_contents();
+        ob_end_clean();
+        echo $string;
+        exit ;
     }
 }

@@ -1,7 +1,7 @@
 <?php
 namespace lab\command;
 
-class Command
+abstract class Command
 {
     protected $variables = array();
     protected $template;
