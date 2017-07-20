@@ -1,14 +1,16 @@
 <?php
 require_once "vendor/autoload.php";
 
-$method = new lab\domain\Method(null, 'XPS', 'Spektroskopia Fotoelektronów');
+use lab\domain\Method;
+
+$method = new Method(null, 'XPS', 'Spektroskopia Fotoelektronów');
 echo $method->getId(),"\n";
 echo $method->getAcronym()."\n";
 echo $method->getName()."\n";
 
 $m = lab\domain\HelperFactory::getCollection(Method::class);
-$m->add(new lab\domain\Method(null, 'UPS', 'Ultraviolet Photoelectron Spectroscopy'));
-$m->add(new lab\domain\Method(null, 'AFM', 'Atomic Force Microscopy'));
+$m->add(new Method(null, 'UPS', 'Ultraviolet Photoelectron Spectroscopy'));
+$m->add(new Method(null, 'AFM', 'Atomic Force Microscopy'));
 
 foreach ($m as $method) {
     $i = 1;
