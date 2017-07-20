@@ -9,7 +9,7 @@ $id = $argv[1];
 $u_mapper = new UserMapper();
 $user = $u_mapper->find($id);
 
-//print_r($user);
+echo $user->getFirstName()." ".$user->getLastName()."\n";
 
 $methods = $user->getMethods();
 foreach($methods as $method) {
