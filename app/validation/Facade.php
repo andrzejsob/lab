@@ -3,12 +3,27 @@ namespace lab\validation;
 
 use lab\controller\CleanRequest;
 use lab\validation\Coordinator;
+use lab\validation\validator\Basic;
+use lab\validation\specification\SingleField;
 
 class Facade
 {
     private $coordinator;
     private $validators = array();
     private $hasValidated = false;
+
+    public function addAlnumValidation($fieldname, $message)
+    {
+        $this->addValidator(
+            new Basic(
+                new SingleField(
+                    $fieldname,
+                    new AlphanumericValue
+                ),
+                $message
+            );
+        );
+    }
 
     public function addValidator($validator)
     {
