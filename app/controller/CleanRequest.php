@@ -1,0 +1,21 @@
+<?php
+namespace lab\controller;
+
+class CleanRequest
+{
+    private $data = array();
+
+    public function get($var)
+    {
+        if (!array_key_exists($var, $this->data)) {
+            return '';
+        }
+    }
+
+    public function set($var, $value)
+    {
+        $clone = clone $this;
+        $clone->data[$var] = $value;
+        return $clone;
+    }
+}
