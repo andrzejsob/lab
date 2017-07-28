@@ -12,7 +12,7 @@ class Basic
         $this->message = $message;
     }
 
-    public function validate($request)
+    public function validate($coordinator)
     {
         if ($this->specification->isSatisfiedBy($coordinator)) {
             $coordinator->setClean($this->specification->getValidatedField());

@@ -27,6 +27,19 @@ class Facade
         );
     }
 
+    public function addNumericValidation($fieldname = '', $message = '')
+    {
+        return $this->addValidator(
+            new Basic(
+                new SingleField(
+                    $fieldname,
+                    new specificator\NumericValue
+                ),
+                $message
+            )
+        );
+    }
+
     public function addValidator($validator)
     {
         return $this->validators[] = $validator;
@@ -64,7 +77,7 @@ class Facade
 
     public function getErrors()
     {
-        if ($this->isValid()) return false;
+        if (!$this->isValid()) return false;
         return $this->coordinator->getErrors();
     }
 }

@@ -23,7 +23,7 @@ class Coordinator
         if (!$name) {
             return false;
         }
-        $this->$clean = $this->clean->set(
+        $this->clean = $this->clean->set(
             $name,
             $this->raw->getForValidation($name)
         );

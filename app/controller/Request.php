@@ -29,6 +29,14 @@ class Request
         return null;
     }
 
+    public function getForValidation($key)
+    {
+        if (isset($this->properties[$key])) {
+            return $this->properties[$key];
+        }
+        return null;
+    }
+
     public function setProperty($key, $val)
     {
         $this->property[$key] = $val;
