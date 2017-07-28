@@ -23,4 +23,9 @@ class SingleField
             $candidate->get($this->fieldname)
         );
     }
+
+    public function forField($fieldname)
+    {
+        $this->fieldname = $fieldname;
+    }
 }

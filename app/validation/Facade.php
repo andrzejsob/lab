@@ -6,28 +6,30 @@ use lab\validation\Coordinator;
 use lab\validation\validator\Basic;
 use lab\validation\specification\SingleField;
 
+use lab\validation\specification as specificator;
+
 class Facade
 {
     private $coordinator;
     private $validators = array();
     private $hasValidated = false;
 
-    public function addAlnumValidation($fieldname, $message)
+    public function addAlnumValidation($fieldname = '', $message = '')
     {
-        $this->addValidator(
+        return $this->addValidator(
             new Basic(
                 new SingleField(
                     $fieldname,
-                    new AlphanumericValue
+                    new specificator\AlphanumericValue
                 ),
                 $message
-            );
+            )
         );
     }
 
     public function addValidator($validator)
     {
-        $this->validators[] = $validator;
+        return $this->validators[] = $validator;
     }
 
     public function validate($request)

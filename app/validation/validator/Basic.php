@@ -22,4 +22,16 @@ class Basic
             return false;
         }
     }
+
+    public function withMessage($message)
+    {
+        $this->message = $message;
+        return $this;
+    }
+
+    public function forField($fielname)
+    {
+        $this->specification->forField($fieldname);
+        return $this;
+    }
 }
