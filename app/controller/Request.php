@@ -31,10 +31,7 @@ class Request
 
     public function getForValidation($key)
     {
-        if (isset($this->properties[$key])) {
-            return $this->properties[$key];
-        }
-        return null;
+        return $this->getProperty($key);
     }
 
     public function setProperty($key, $val)
