@@ -3,14 +3,18 @@ require_once "../vendor/autoload.php";
 
 use lab\validation\Facade;
 use lab\controller\Request;
+use lab\base\ApplicationHelper;
 
 $_SERVER['HTTP_USER_AGENT'] = 'console';
 
-$request = new Request();
+$request = ApplicationHelper::getRequest();
 
 $validation = new Facade();
 $validation->addNumericValidation('liczba', 'Liczba nie jest liczba');
-$validation->addAlnumValidation('tekst', 'To nie jest tekst');
+$validation->addNoEmptyValidation('nazwa', 'Nazwa nie może być pusta');
+$validation->addAlnumValidation('nazwa', 'Nazwa to tylko symbole alfanum.');
 $validation->validate($request);
-//var_dump($validation);
+$isValid = $validation->isValid();
+var_dump($isValid);
+var_dump($request->getProperty('nazwa'));
 print_r($validation->getErrors());
