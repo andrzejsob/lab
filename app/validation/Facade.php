@@ -40,6 +40,19 @@ class Facade
         );
     }
 
+    public function addNoEmptyValidation($fieldname = '', $message = '')
+    {
+        return $this->addValidator(
+            new Basic(
+                new SingleField(
+                    $fieldname,
+                    new specificator\NoEmptyValue
+                ),
+                $message
+            )
+        );
+    }
+
     public function addValidator($validator)
     {
         return $this->validators[] = $validator;
@@ -61,7 +74,8 @@ class Facade
     public function isValid()
     {
         if (!$this->hasValidated) return false;
-        return count($this->coordinator->getErrors() == 0);
+
+        return count($this->coordinator->getErrors()) == 0;
     }
 
     public function createCoordinator($raw, $clean)
@@ -77,7 +91,7 @@ class Facade
 
     public function getErrors()
     {
-        if (!$this->isValid()) return false;
+        if ($this->isValid()) return false;
         return $this->coordinator->getErrors();
     }
 }
