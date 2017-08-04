@@ -53,6 +53,19 @@ class Facade
         );
     }
 
+    public function addZipCodeValidation($fieldname = '', $message = '')
+    {
+        return $this->addValidator(
+            new Basic(
+                new SingleField(
+                    $fieldname,
+                    new specificator\ZipCodeFormat
+                ),
+                $message
+            )
+        );
+    }
+
     public function addValidator($validator)
     {
         return $this->validators[] = $validator;

@@ -59,6 +59,12 @@ abstract class DomainObject
         return HelperFactory::getFinder($type);
     }
 
+    public function save()
+    {
+        $finder = self::getFinder();
+        $finder->insert($this);
+    }
+
     public static function getCollection($type = null)
     {
         if (is_null($type)) {
