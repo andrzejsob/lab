@@ -29,7 +29,7 @@ class Basic
         return $this;
     }
 
-    public function forField($fielname)
+    public function forField($fieldname)
     {
         $this->specification->forField($fieldname);
         return $this;

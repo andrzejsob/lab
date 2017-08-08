@@ -1,13 +1,15 @@
 <?php
 namespace lab\command;
 
+use lab\view\Template;
+
 abstract class Command
 {
     protected $variables = array();
     protected $template;
 
     public function __construct() {
-        $this->template = new \lab\view\Template();
+        $this->template = new Template;
     }
 
     public function assign($var, $value)

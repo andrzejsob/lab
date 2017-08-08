@@ -10,12 +10,13 @@ class CleanRequest
         if (!array_key_exists($var, $this->data)) {
             return '';
         }
+        return $this->data[$var];
     }
 
     public function set($var, $value)
     {
         $clone = clone $this;
-        $clone->data[$var] = $value;
+        $clone->data[$var] = trim($value);
         return $clone;
     }
 }

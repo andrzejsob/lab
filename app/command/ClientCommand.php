@@ -1,9 +1,9 @@
 <?php
 namespace lab\command;
 
-use lab\validation\Facade as ValidationFacade;
 use lab\domain\Client as Client;
 use lab\mapper\ClientMapper;
+use lab\validation\form\Client as ClientValidation;
 
 class ClientCommand extends Command
 {
@@ -12,37 +12,34 @@ class ClientCommand extends Command
     {
         $clientMapper = new ClientMapper;
         $clients = $clientMapper->findAll();
-        $this->assign('clients', $clients);
-
-        $this->render('app/view/client/index.php');
+        $this->render(
+            'app/view/client/index.php',
+            ['clients' => $clients]
+        );
     }
 
     public function newAction($request)
     {
         if (!$request->getProperty('submit')) {
-            $this->assign('errors', false);
             $this->render('app/view/client/new.php');
         }
 
-        //$validation = ClientValidation::addValidators();
-        $validation = new ValidationFacade();
-        $validation->addNoEmptyValidation(
-            'name',
-            'Nazwa nie może być pusta'
-        );
-        $validation->addZipCodeValidation(
-            'zip_code',
-            'Kod pocztowy musi mieć format: 12-345'
-        );
+        $validation = ClientValidation::addValidators();
+        $validation->validate($request);
+        $cleanRequest = $validation->getCleanRequest();
 
-        if (!$validation->validate($request)) {
-            $this->assign('errors', $validation->getErrors());
-            $this->render('app/view/client/new.php');
+        if (!$validation->isValid()) {
+            $this->render(
+                'app/view/client/new.php',
+                ['errors' => $validation->getErrors(), 'clean' => $cleanRequest]
+            );
         }
 
         $client = new Client;
-        $client->setName($request->getProperty('name'));
-        $client->setZipCode($request->getProperty('zip_code'));
+        $client->setName($cleanRequest->get('name'));
+        $client->setStreet($cleanRequest->get('street'));
+        $client->setZipCode($cleanRequest->get('zip_code'));
+        $client->setCity($cleanRequest->get('city'));
         $client->save();
 
         header('Location: ?cmd=client-index');

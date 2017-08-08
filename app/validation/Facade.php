@@ -14,7 +14,22 @@ class Facade
     private $validators = array();
     private $hasValidated = false;
 
-    public function addAlnumValidation($fieldname = '', $message = '')
+    public function addSingleFieldValidation(
+        $specificator,
+        $fieldname = '',
+        $message = ''
+    ) {
+        return $this->addValidator(
+            new Basic(
+                new SingleField(
+                    $fieldname,
+                    new $specificator
+                ),
+                $message
+            )
+        );
+    }
+    /*public function addAlnumValidation($fieldname = '', $message = '')
     {
         return $this->addValidator(
             new Basic(
@@ -25,46 +40,7 @@ class Facade
                 $message
             )
         );
-    }
-
-    public function addNumericValidation($fieldname = '', $message = '')
-    {
-        return $this->addValidator(
-            new Basic(
-                new SingleField(
-                    $fieldname,
-                    new specificator\NumericValue
-                ),
-                $message
-            )
-        );
-    }
-
-    public function addNoEmptyValidation($fieldname = '', $message = '')
-    {
-        return $this->addValidator(
-            new Basic(
-                new SingleField(
-                    $fieldname,
-                    new specificator\NoEmptyValue
-                ),
-                $message
-            )
-        );
-    }
-
-    public function addZipCodeValidation($fieldname = '', $message = '')
-    {
-        return $this->addValidator(
-            new Basic(
-                new SingleField(
-                    $fieldname,
-                    new specificator\ZipCodeFormat
-                ),
-                $message
-            )
-        );
-    }
+    }*/
 
     public function addValidator($validator)
     {
@@ -98,7 +74,7 @@ class Facade
 
     public function getCleanRequest()
     {
-        if (!$this->isValid()) return false;
+        //if (!$this->isValid()) return false;
         return $this->coordinator->getCleanRequest();
     }
 
