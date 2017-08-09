@@ -51,7 +51,11 @@ class ClientMapper extends Mapper
             $object->getCity(),
             $object->getNip()
         );
-        $this->insertStmt->execute($values);
+
+        if (!$this->insertStmt->execute($values)) {
+            throw new \Exception();
+        }
+
         $id = self::$PDO->lastInsertId();
         $object->setId($id);
     }

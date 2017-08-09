@@ -40,7 +40,14 @@ class ClientCommand extends Command
         $client->setStreet($cleanRequest->get('street'));
         $client->setZipCode($cleanRequest->get('zip_code'));
         $client->setCity($cleanRequest->get('city'));
-        $client->save();
+        try {
+            $client->save();
+        } catch (\Exception $e) {
+            if ($e->getCode() == 23000) {
+                $error = array('Klient o podanej nazwie istnieje w bazie');
+                $this->render('app/view/client/new.php', ['errors' => $error]);
+            }
+        }
 
         header('Location: ?cmd=client-index');
     }
