@@ -6,5 +6,6 @@ create table client (
     street varchar(64),
     zip_code varchar(8),
     city varchar(64),
-    nip varchar(13)
+    nip varchar(13),
+    unique (name)
 );
