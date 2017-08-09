@@ -10,19 +10,19 @@ if (isset($errors)) {
 <input type="hidden" name="cmd" value="client-new">
 Nazwa <br>
 <input type="text" name="name"
-<?php if (isset($clean)) echo 'value="'.$clean->get('name').'"';?>>
+<?php echo 'value="'.$clean->get('name').'"';?>>
 <br>
 Ulica<br>
 <input type="text" name="street"
-<?php if (isset($clean)) echo 'value="'.$clean->get('street').'"';?>>
+<?php echo 'value="'.$clean->get('street').'"';?>>
 <br>
 Kod pocztowy<br>
 <input type="text" name="zip_code"
-<?php if (isset($clean)) echo 'value="'.$clean->get('zip_code').'"';?>>
+<?php echo 'value="'.$clean->get('zip_code').'"';?>>
 <br>
 Miejscowość<br>
 <input type="text" name="city"
-<?php if (isset($clean)) echo 'value="'.$clean->get('city').'"';?>>
+<?php echo 'value="'.$clean->get('city').'"';?>>
 <br>
 NIP<br>
 <input type="text" name="nip"><br>

@@ -21,7 +21,14 @@ class ClientCommand extends Command
     public function newAction($request)
     {
         if (!$request->getProperty('submit')) {
-            $this->render('app/view/client/new.php');
+            $array = array(
+                'name' => '',
+                'city' => '',
+                'street' => '',
+                'zip_code' => '',
+                'nip' => ''
+            );
+            $this->render('app/view/client/new.php', $array);
         }
 
         $validation = ClientValidation::addValidators();
@@ -29,10 +36,16 @@ class ClientCommand extends Command
         $cleanRequest = $validation->getCleanRequest();
 
         if (!$validation->isValid()) {
-            $this->render(
-                'app/view/client/new.php',
-                ['errors' => $validation->getErrors(), 'clean' => $cleanRequest]
+            $array = array(
+                'errors' => $validation->getErrors(),
+                'name' => $cleanRequest->get('name'),
+                'city' => $cleanRequest->get('city'),
+                'street' => $cleanRequest->get('street'),
+                'zip_code' => $cleanRequest->get('zip_code'),
+                'nip' => $cleanRequest->get('street')
             );
+            $this->render(
+                'app/view/client/new.php', $array);
         }
 
         $client = new Client;
@@ -40,15 +53,15 @@ class ClientCommand extends Command
         $client->setStreet($cleanRequest->get('street'));
         $client->setZipCode($cleanRequest->get('zip_code'));
         $client->setCity($cleanRequest->get('city'));
+        $client->setNip($cleanRequest->get('nip'));
         try {
             $client->save();
         } catch (\Exception $e) {
             if ($e->getCode() == 23000) {
-                $error = array('Klient o podanej nazwie istnieje w bazie');
-                $this->render('app/view/client/new.php', ['errors' => $error]);
+                $errors = array('Klient o podanej nazwie istnieje w bazie');
+                $this->render('app/view/client/new.php', $errors);
             }
         }
-
         header('Location: ?cmd=client-index');
     }
 
