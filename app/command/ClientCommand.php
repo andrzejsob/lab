@@ -14,7 +14,7 @@ class ClientCommand extends Command
         $clients = $clientMapper->findAll();
         $this->render(
             'app/view/client/index.php',
-            ['clients' => $clients]
+            ['clients' => $client]
         );
     }
 
@@ -31,11 +31,10 @@ class ClientCommand extends Command
             $this->render('app/view/client/new.php', $array);
         }
 
-        $validation = ClientValidation::addValidators();
-        $validation->validate($request);
-        $cleanRequest = $validation->getCleanRequest();
+        $validation = ClientValidation::handleRequest($request);
+        //$cleanRequest = $validation->getCleanRequest();
 
-        if (!$validation->isValid()) {
+        if ($validation->isValid()) {
             $array = array(
                 'errors' => $validation->getErrors(),
                 'name' => $cleanRequest->get('name'),

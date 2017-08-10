@@ -14,6 +14,11 @@ abstract class DomainObject
         }
     }
 
+    public function getProperty($name)
+    {
+        return $this->name;
+    }
+
     public function markNew()
     {
         ObjectWatcher::addNew($this);
