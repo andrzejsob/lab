@@ -7,7 +7,7 @@ create table session (
     user_id int,
     last_reaction timestamp not null default current_timestamp
         on update current_timestamp,
-    created timestamp not null,
-    user_agent varchar(64),
+    created timestamp not null default current_timestamp,
+    user_agent varchar(128),
     foreign key (user_id) references user(id)
 );

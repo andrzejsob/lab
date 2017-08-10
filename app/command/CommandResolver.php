@@ -27,7 +27,6 @@ class CommandResolver
                     $class = implode($class_array);
                 }
                 $class = ucfirst($class);
-                echo $class.$action;
                 $this->checkIfClassAndActionExists($class, $action);
             } else {
                 $this->aciton = 'error404';

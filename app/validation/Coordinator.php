@@ -15,7 +15,8 @@ class Coordinator
 
     public function get($name)
     {
-        return $this->raw->getForValidation($name);
+        $getForValidation = 'get'.ucfirst($name);
+        return $this->raw->$getForValidation();
     }
 
     public function setClean($name = false)
@@ -23,10 +24,13 @@ class Coordinator
         if (!$name) {
             return false;
         }
-        $this->clean = $this->clean->set(
-            $name,
-            $this->raw->getForValidation($name)
-        );
+      //  $this->clean = $this->clean->set(
+      //      $name,
+      //      $this->raw->getForValidation($name)
+    //    );
+        $setMethod = 'set'.ucfirst($name);
+        $getMethod = 'get'.ucfirst($name);
+        $this->clean = $this->clean->$setMethod($this->raw->$getMethod());
     }
 
     public function addError($error)
@@ -39,7 +43,7 @@ class Coordinator
         return $this->errors;
     }
 
-    public function getCleanRequest()
+    public function getClean()
     {
         return $this->clean;
     }

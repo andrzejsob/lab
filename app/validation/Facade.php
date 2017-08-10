@@ -47,11 +47,12 @@ class Facade
         return $this->validators[] = $validator;
     }
 
-    public function validate($request)
+    public function validate($rawDomainObject)
     {
+        $cleanDomainObject = get_class($rawDomainObject);
         $this->coordinator = $this->createCoordinator(
-            $request,
-            new CleanRequest
+            $rawDomainObject,
+            new $cleanDomainObject
         );
         foreach ($this->validators as $validator) {
             $validator->validate($this->coordinator);
@@ -72,10 +73,10 @@ class Facade
         return new Coordinator($raw, $clean);
     }
 
-    public function getCleanRequest()
+    public function getClean()
     {
         //if (!$this->isValid()) return false;
-        return $this->coordinator->getCleanRequest();
+        return $this->coordinator->getClean();
     }
 
     public function getErrors()

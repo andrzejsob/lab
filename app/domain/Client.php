@@ -14,7 +14,7 @@ class Client extends DomainObject
         $id = null,
         $name = null,
         $street = null,
-        $zip_code = null,
+        $zipCode = null,
         $city = null,
         $nip = null
     )
@@ -22,10 +22,18 @@ class Client extends DomainObject
         parent::__construct($id);
         $this->name = $name;
         $this->street = $street;
-        $this->zipCode = $zip_code;
+        $this->zipCode = $zipCode;
         $this->city = $city;
         $this->nip = $nip;
 //      self::getCollection("\\database\\domain\\Space");
+    }
+    public function setProperties($request)
+    {
+        $this->name = $request->getProperty('name');
+        $this->street = $request->getProperty('street');
+        $this->zipCode = $request->getProperty('zipCode');
+        $this->city = $request->getProperty('city');
+        $this->nip = $request->getProperty('nip');
     }
 
     public function getContactPersons()
