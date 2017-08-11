@@ -30,7 +30,7 @@ class Coordinator
     //    );
         $setMethod = 'set'.ucfirst($name);
         $getMethod = 'get'.ucfirst($name);
-        $this->clean = $this->clean->$setMethod($this->raw->$getMethod());
+        $this->clean->$setMethod(trim($this->raw->$getMethod()));
     }
 
     public function addError($error)

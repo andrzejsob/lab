@@ -8,34 +8,54 @@ use lab\domain\DomainObject as DomainObject;
 
 class Client
 {
+    private $clientObject;
+    private $validation;
 
-    public static function handleRequest(
-        Request $request,
-        DomainObject $client
-    ) {
-        if($request->getProperty('submit')) {
-            $client->setProperties($request);
-            $validation = self::addValidators();
-
-            $validation->validate($client);
-            return $validation;
-        }
-
-        return new ValidationFacade();
+    public function __construct(DomainObject $client)
+    {
+        $this->clientObject = $client;
+        $this->validation = new ValidationFacade();
     }
 
-    public static function addValidators()
+    public function handleRequest(Request $request)
     {
-        $validation = new ValidationFacade();
-        $validation->addSingleFieldValidation(
+        if($request->getProperty('submit')) {
+            $this->clientObject->setProperties($request);
+            $this->addValidators();
+            $this->validation->validate($this->clientObject);
+        }
+
+        return $this->validation;
+    }
+
+    public function addValidators()
+    {
+        $this->validation->addSingleFieldValidation(
             new specificator\NoEmptyValue,
             'name',
             'Nazwa nie może być pusta'
         );
-        $validation->addSingleFieldValidation(new specificator\ZipCodeFormat)
+        $this->validation->addSingleFieldValidation(new specificator\ZipCodeFormat)
             ->forField('zipCode')
             ->withMessage('Kod musi mieć format: 12-345');
+    }
 
-        return $validation;
+    public function getData()
+    {
+        if (!$this->validation->hasValidated()) {
+            return array(
+                'errors' => [],
+                'client' => $this->clientObject
+            );
+        }
+
+        if (!$this->validation->isValid()) {
+            return array(
+                'errors' => $this->validation->getErrors(),
+                'client' => $this->validation->getClean()
+            );
+        }
+
+        return $this->validation->getClean();
     }
 }

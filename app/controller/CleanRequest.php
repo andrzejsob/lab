@@ -16,7 +16,7 @@ class CleanRequest
     public function set($var, $value)
     {
         $clone = clone $this;
-        $clone->data[$var] = trim($value);
+        $clone->data[$var] = $value;
         return $clone;
     }
 }
