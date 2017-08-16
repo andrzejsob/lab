@@ -64,6 +64,14 @@ abstract class DomainObject
         return HelperFactory::getFinder($type);
     }
 
+    public function find($id)
+    {
+        $finder = self::getFinder();
+        $object = $finder->find($id);
+
+        return $object;
+    }
+
     public function save()
     {
         $finder = self::getFinder();
