@@ -17,6 +17,8 @@ class MethodMapper extends Mapper
             "UPDATE method SET acronym = ?, name = ? WHERE id = ?");
         $this->insertStmt = self::$PDO->prepare(
             "INSERT INTO method(acronym, name) VALUES (?, ?)");
+        $this->insertUserMethodStmt = self::$PDO->prepare(
+            "INSERT INTO user_method(user_id, method_id) VALUES (?, ?)");
         $this->findByUserStmt = self::$PDO->prepare(
             "SELECT id, acronym, name FROM method as m
             JOIN user_method as um
@@ -29,24 +31,44 @@ class MethodMapper extends Mapper
             ON m.id = iom.method_id
             WHERE iom.internal_order_id = ?"
         );
-    }
-
-    public function findByUser($user_id)
-    {
-        $this->findByUserStmt->execute(array($user_id));
-        return new MethodCollection(
-            $this->findByUserStmt->fetchAll(\PDO::FETCH_ASSOC),
-            $this
+        $this->deleteUserMethodsStmt = self::$PDO->prepare(
+            "DELETE FROM user_method WHERE user_id = ?"
         );
     }
 
-    public function findByInternalOrder($order_id)
+    public function findByUser($userId)
     {
-        $this->findByInternalOrderStmt->execute(array($order_id));
+        $this->findByUserStmt->execute(array($userId));
+        return $this->getCollection(
+            $this->findByUserStmt->fetchAll(\PDO::FETCH_ASSOC)
+        );
+    }
+
+    public function findByInternalOrder($orderId)
+    {
+        $this->findByInternalOrderStmt->execute(array($orderId));
         return new MethodCollection(
             $this->findByInternalOrderStmt->fetchAll(\PDO::FETCH_ASSOC),
             $this
         );
+    }
+
+    public function updateUserMethods($userId, $methodsIdArray)
+    {
+        self::$PDO->beginTransaction();
+        $this->deleteUserMethodsStmt->execute(array($userId));
+        if ($methodsIdArray) {
+            foreach($methodsIdArray as $key => $methodId) {
+                $stmt = $this->insertUserMethodStmt->execute(array(
+                    $userId,
+                    $methodId
+                ));
+            }
+        }
+        self::$PDO->commit();
+        /*
+        $userObject->setMethods($this->findByUser($userId));
+        */
     }
 
     public function getCollection(array $raw)
