@@ -2,6 +2,8 @@
 namespace lab\command;
 
 use lab\mapper\MethodMapper;
+use lab\mapper\UserMapper;
+use lab\domain\User;
 use lab\validation\form\Client as ClientForm;
 
 class AdminCommand extends Command
@@ -11,15 +13,25 @@ class AdminCommand extends Command
     {
         $uMapper = new UserMapper();
         $users = $uMapper->findAll();
+
         $this->render(
             'app/view/admin/index.php',
             ['users' => $users]
         );
     }
 
+    public function panelAction($request)
+    {
+        $userMapper = new UserMapper();
+        $users = $userMapper->findAll();
+        //print_r($users);exit;
+        $this->assign('users', $users);
+        $this->render('app/view/admin/panel.php');
+    }
+
     public function userAction($request)
     {
-        //$user = new User();
+        $user = new User();
         //$user = $user->find($request->getProperty('id'));
         $userId = $request->getProperty('id');
         $mm = new MethodMapper();
@@ -41,6 +53,7 @@ class AdminCommand extends Command
         }
 
         $this->assign('methods', $allMethods);
+        $this->assign('user', $user);
         $this->assign('userMethods', $userMethodsArray);
         $this->render('app/view/admin/user.php');
         //header('Location: ?cmd=admin-user&id='.$userId);
