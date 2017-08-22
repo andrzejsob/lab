@@ -19,8 +19,11 @@ class UserMapper extends Mapper
             "SELECT * FROM user WHERE nick = ? AND password_md5 = ?"
         );
         $this->insertStmt = self::$PDO->prepare(
-            "INSERT INTO user(nick, password_md5, first_name, last_name, email)
-             VALUES (?, ?, ?, ?, ?)");
+            "INSERT INTO user(nick, firstName, lastName, email)
+             VALUES (?, ?, ?, ?)");
+        $this->updateStmt = self::$PDO->prepare(
+            "UPDATE user SET nick = ?, firstName = ?, lastName = ?, email = ?
+             WHERE id = ?");
     }
 
     public function getCollection(array $raw)
@@ -32,7 +35,7 @@ class UserMapper extends Mapper
     {
         return "lab\domain\User";
     }
-    
+
     public function authenticate($nick, $password)
     {
         $this->authenticateStmt->execute(array($nick, md5($password)));
@@ -48,9 +51,9 @@ class UserMapper extends Mapper
         $obj = new User(
             $user['id'],
             $user['nick'],
-            $user['password_md5'],
-            $user['first_name'],
-            $user['last_name'],
+            $user['passwordMd5'],
+            $user['firstName'],
+            $user['lastName'],
             $user['email']
         );
         $method_mapper = new MethodMapper();
@@ -64,7 +67,6 @@ class UserMapper extends Mapper
     {
         $values = array(
             $object->getNick(),
-            $object->getPasswordMd5(),
             $object->getFirstName(),
             $object->getLastName(),
             $object->getEmail()
@@ -77,8 +79,10 @@ class UserMapper extends Mapper
     public function update(DomainObject $object)
     {
         $values = array(
-            $object->getAcronym(),
-            $object->getName(),
+            $object->getNick(),
+            $object->getFirstName(),
+            $object->getLastName(),
+            $object->getEmail(),
             $object->getId()
         );
         $this->updateStmt->execute($values);

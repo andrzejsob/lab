@@ -13,17 +13,17 @@ class User extends DomainObject
     public function __construct(
         $id = null,
         $nick = null,
-        $password_md5 = null,
-        $first_name = null,
-        $last_name = null,
+        $passwordMd5 = null,
+        $firstName = null,
+        $lastName = null,
         $email = null
     )
     {
         parent::__construct($id);
         $this->nick = $nick;
-        $this->passwordMd5 = $password_md5;
-        $this->firstName = $first_name;
-        $this->lastName = $last_name;
+        $this->passwordMd5 = $passwordMd5;
+        $this->firstName = $firstName;
+        $this->lastName = $lastName;
         $this->email = $email;
 //      self::getCollection("\\database\\domain\\Space");
 
@@ -56,6 +56,10 @@ class User extends DomainObject
     {
         $this->passwordMd5 = md5($pass);
 //        $this->markDirty();
+    }
+
+    public function setEmail($email) {
+        $this->email = $email;
     }
 
     public function setMethods($method_coll)

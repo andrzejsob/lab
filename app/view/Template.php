@@ -41,6 +41,6 @@ class Template
         $string = ob_get_contents();
         ob_end_clean();
         echo $string;
-        return 1;
+        exit ;
     }
 }

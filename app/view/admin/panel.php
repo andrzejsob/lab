@@ -42,7 +42,7 @@
         <th>email</th>
         <th>Usuń</th>
     </tr>
-    <form>
+    <form method="post">
     <?php foreach ($users as $user) {?>
     <tr>
         <td><?php echo $user->getNick();?></td>
@@ -56,7 +56,7 @@
     </tr>
     <?php } ?>
     <tr class="button_row">
-        <td colspan="5" style="text-align: right"><input type="button" name="deleteUser" value="Usuń"></td>
+        <td colspan="5" style="text-align: right"><input type="submit" name="deleteUser" value="Usuń"></td>
     </tr>
     </form>
     <form>

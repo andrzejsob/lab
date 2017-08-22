@@ -5,6 +5,7 @@ use lab\mapper\MethodMapper;
 use lab\mapper\UserMapper;
 use lab\domain\User;
 use lab\validation\form\Client as ClientForm;
+use lab\validation\form\User as UserForm;
 
 class AdminCommand extends Command
 {
@@ -32,30 +33,42 @@ class AdminCommand extends Command
     public function userAction($request)
     {
         $user = new User();
-        //$user = $user->find($request->getProperty('id'));
-        $userId = $request->getProperty('id');
         $mm = new MethodMapper();
-        //aktualizacja metod uzytkownika w bazie danych
-        if ($request->getProperty('submit')) {
-            $mm->updateUserMethods(
-                $userId,
-                $request->getProperty('method')
-            );
-        }
         //pobranie wszystkich method
         $allMethods = $mm->findAll();
-        //pobranie metod użytkownika
-        $userMethods = $mm->findByUser($userId);
-        //transformacja method uzytkownika z kolekcji obiektów na macierz
+        //zapisanie macierzy metod użytkownika
         $userMethodsArray = [];
-        foreach ($userMethods as $method) {
-            $userMethodsArray[$method->getAcronym()] = $method->getId();
+        if($request->getProperty('id')) {
+            $user = User::find($request->getProperty('id'));
+            //pobranie metod użytkownika
+            $userMethods = $mm->findByUser($user->getId());
+            //transformacja method uzytkownika z kolekcji obiektów na macierz
+            foreach ($userMethods as $method) {
+                $userMethodsArray[$method->getAcronym()] = $method->getId();
+            }
+        }
+
+        $userForm = new UserForm($user);
+        //print_r($userForm->getData());
+        $validation = $userForm->handleRequest($request);
+
+        if ($validation->isValid()) {
+            //pobranie obiektu użytkownika
+            $user = $userForm->getData();
+            //zapisanie danych użytkownika do bazy
+            $user->save();
+            //zapisanie metod użytkownika do bazy
+            $mm->updateUserMethods(
+                $user->getId(),
+                $request->getProperty('method')
+            );
+            header('Location: ?cmd=admin-panel');
         }
 
         $this->assign('methods', $allMethods);
-        $this->assign('user', $user);
         $this->assign('userMethods', $userMethodsArray);
-        $this->render('app/view/admin/user.php');
+        print_r($userForm->getData());
+        $this->render('app/view/admin/user.php', $userForm->getData());
         //header('Location: ?cmd=admin-user&id='.$userId);
     }
 }

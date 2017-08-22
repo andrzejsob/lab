@@ -64,7 +64,7 @@ abstract class DomainObject
         return HelperFactory::getFinder($type);
     }
 
-    public function find($id)
+    public static function find($id)
     {
         $finder = self::getFinder();
         $object = $finder->find($id);
@@ -75,7 +75,11 @@ abstract class DomainObject
     public function save()
     {
         $finder = self::getFinder();
-        $finder->insert($this);
+        if (is_null($this->getId())) {
+            $finder->insert($this);
+        } else {
+            $finder->update($this);
+        }
     }
 
     public static function getCollection($type = null)
