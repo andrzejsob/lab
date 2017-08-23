@@ -9,6 +9,10 @@ use lab\validation\form\User as UserForm;
 
 class AdminCommand extends Command
 {
+    public function __construct() {
+        parent::__construct();
+        $this->template->setLayout('app/view/admin/layout.php');
+    }
 
     public function indexAction()
     {
@@ -36,12 +40,12 @@ class AdminCommand extends Command
         $mm = new MethodMapper();
         //pobranie wszystkich method
         $allMethods = $mm->findAll();
-        //zapisanie macierzy metod użytkownika
+        //macierz metod użytkownika
         $userMethodsArray = [];
-        if($request->getProperty('id')) {
-            $user = User::find($request->getProperty('id'));
+        if($id = $request->getProperty('id')) {
+            $user = User::find($id);
             //pobranie metod użytkownika
-            $userMethods = $mm->findByUser($user->getId());
+            $userMethods = $user->getMethods();
             //transformacja method uzytkownika z kolekcji obiektów na macierz
             foreach ($userMethods as $method) {
                 $userMethodsArray[$method->getAcronym()] = $method->getId();
@@ -49,7 +53,6 @@ class AdminCommand extends Command
         }
 
         $userForm = new UserForm($user);
-        //print_r($userForm->getData());
         $validation = $userForm->handleRequest($request);
 
         if ($validation->isValid()) {
@@ -67,8 +70,6 @@ class AdminCommand extends Command
 
         $this->assign('methods', $allMethods);
         $this->assign('userMethods', $userMethodsArray);
-        print_r($userForm->getData());
         $this->render('app/view/admin/user.php', $userForm->getData());
-        //header('Location: ?cmd=admin-user&id='.$userId);
     }
 }

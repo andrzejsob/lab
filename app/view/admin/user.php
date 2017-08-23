@@ -1,3 +1,6 @@
+<script>
+
+</script>
 <h4>Dane użytkownika</h4>
 <?php
 //if (isset($errors)) {
@@ -7,18 +10,24 @@
 //}
 ?>
 <form method="post">
-Login:
-<input type="text" name="nick" value="<?php echo $entity->getNick();?>">
-<br>
-Imię:
-<input type="text" name="firstName" value="<?php echo $entity->getFirstName();?>">
-<br>
-Nazwisko:
-<input type="text" name="lastName" value="<?php echo $entity->getLastName();?>">
-<br>
-Email:
-<input type="text" name="email" value="<?php echo $entity->getEmail();?>">
-<br>
+<table>
+    <tr>
+        <td>Login</td>
+        <td><input type="text" name="nick" value="<?php echo $entity->getNick();?>"></td>
+    </tr>
+    <tr>
+        <td>Imię</td>
+        <td><input type="text" name="firstName" value="<?php echo $entity->getFirstName();?>"></td>
+    </tr>
+    <tr>
+        <td>Nazwisko</td>
+        <td><input type="text" name="lastName" value="<?php echo $entity->getLastName();?>"></td>
+    </tr>
+    <tr>
+        <td>Email</td>
+        <td><input type="text" name="email" value="<?php echo $entity->getEmail();?>"></td>
+    </tr>
+</table>
 <h4>Konta</h4>
 ...
 

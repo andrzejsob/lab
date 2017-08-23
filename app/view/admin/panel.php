@@ -24,15 +24,10 @@
     color: white;
 }
 </style>
-<div style="float: left; border: 1px solid green;">
-    <ul style="list-style-type: none; margin: 0; padding: 0">
-        <li>
-            <a href="?cmd=admin-panel">Użytkownicy</a>
-        </li>
-        <li>Konta i uprawnienia</li>
-        <li>Metody badawcze</li>
-    </ul>
-</div>
+<script>
+
+</script>
+
 <h4>Lista użytkowników</h4>
 <table id="users">
     <tr>
@@ -45,10 +40,18 @@
     <form method="post">
     <?php foreach ($users as $user) {?>
     <tr>
-        <td><?php echo $user->getNick();?></td>
-        <td><?php echo $user->getFirstName();?></td>
-        <td><?php echo $user->getLastName();?></td>
-        <td><?php echo $user->getEmail();?></td>
+        <td onclick="location.href='?cmd=admin-user&id=<?php echo $user->getId()?>'";>
+            <?php echo $user->getNick();?>
+        </td>
+        <td onclick="location.href='?cmd=admin-user&id=<?php echo $user->getId()?>'";>
+            <?php echo $user->getFirstName();?>
+        </td>
+        <td onclick="location.href='?cmd=admin-user&id=<?php echo $user->getId()?>'";>
+            <?php echo $user->getLastName();?>
+        </td>
+        <td onclick="location.href='?cmd=admin-user&id=<?php echo $user->getId()?>'";>
+            <?php echo $user->getEmail();?>
+        </td>
         <td>
             <input type="checkbox" name="userId[]"
             value="<?php echo $user->getId();?>">
