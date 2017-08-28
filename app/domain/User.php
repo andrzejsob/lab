@@ -8,7 +8,8 @@ class User extends DomainObject
     private $lastName;
     private $passwordMd5;
     private $email;
-    private $methods;
+    private $methods = null;
+    private $roles = null;
 
     public function __construct(
         $id = null,
@@ -31,7 +32,22 @@ class User extends DomainObject
 
     public function getMethods()
     {
+        if (is_null($this->methods) && !is_null($this->getId())) {
+            $mm = User::getFinder('Method');
+            $mColl = $mm->findByUser($this->getId());
+            $this->methods = $mColl;
+        }
         return $this->methods;
+    }
+
+    public function getRoles()
+    {
+        if (is_null($this->roles) && !is_null($this->getId())) {
+            $rm = User::getFinder('Role');
+            $rColl = $rm->findByUser($this->getId());
+            $this->roles = $rColl;
+        }
+        return $this->roles;
     }
 
     public function setNick($nick)
@@ -62,9 +78,14 @@ class User extends DomainObject
         $this->email = $email;
     }
 
-    public function setMethods($method_coll)
+    public function setMethods($methodColl)
     {
-        $this->methods = $method_coll;
+        $this->methods = $methodColl;
+    }
+
+    public function setRoles($roleColl)
+    {
+        $this->roles = $roleColl;
     }
 
     public function getNick()

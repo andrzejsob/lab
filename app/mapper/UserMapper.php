@@ -56,10 +56,6 @@ class UserMapper extends Mapper
             $user['lastName'],
             $user['email']
         );
-        $method_mapper = new MethodMapper();
-        $method_coll = $method_mapper->findByUser($user['id']);
-        $obj->setMethods($method_coll);
-        //$obj->setName($array['name']);
         return $obj;
     }
 

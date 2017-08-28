@@ -72,4 +72,6 @@ class AdminCommand extends Command
         $this->assign('userMethods', $userMethodsArray);
         $this->render('app/view/admin/user.php', $userForm->getData());
     }
+
+    
 }
