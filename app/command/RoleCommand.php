@@ -25,11 +25,19 @@ class RoleCommand extends Command
         );
     }
 
-    public function newAction($request)
+    public function formAction($request)
     {
         $role = new Role();
         $pMapper = new PermissionMapper();
-        $allPermissions = $pMapper->findAll();
+        $allPerm = $pMapper->findAll();
+        $rolePermArray = [];
+        if ($id = $request->getProperty('id')) {
+            $role = $role->find($id);
+            $rPerm = $role->getPermissions();
+            foreach ($rPerm as $perm) {
+                $rolePermArray[$perm->getName()] = $perm->getId();
+            }
+        }
 
         $roleForm = new RoleForm($role);
         $validation = $roleForm->handleRequest($request);
@@ -44,7 +52,8 @@ class RoleCommand extends Command
             );
             header('Location: ?cmd=role-index');
         }
-        $this->assign('permissions', $allPermissions);
+        $this->assign('permissions', $allPerm);
+        $this->assign('rolePermArray', $rolePermArray);
         return $this->render(
             'app/view/role/new.php',
             $roleForm->getData()

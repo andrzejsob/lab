@@ -4,7 +4,7 @@
 </head>
     <body>
         <h1>Laboratorium Analityczne</h1>
-        <div style="float: left; border: 1px solid green;">
+        <div style="position: relative; float: left; border: 1px solid green;">
             <ul style="list-style-type: none; margin: 0; padding: 0">
                 <li>
                     <a href="?cmd=admin-panel">Użytkownicy</a>
@@ -13,6 +13,8 @@
                 <li>Metody badawcze</li>
             </ul>
         </div>
-    <?php echo $content;?>
+        <div style="position: absolute; left: 150px; border: 1px solid red;">
+            <?php echo $content;?>
+        </div>
     </body>
 </html>
