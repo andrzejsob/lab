@@ -59,4 +59,12 @@ class RoleCommand extends Command
             $roleForm->getData()
         );
     }
+
+    public function deleteAction($request)
+    {
+        $rMapper = new RoleMapper();
+        $rMapper->delete($request->getProperty('id'));
+
+        header('Location: ?cmd=role-index');
+    }
 }

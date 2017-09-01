@@ -26,7 +26,7 @@ class PermissionMapper extends Mapper
             WHERE rp.roleId = ?"
         );
         $this->deleteRolePermissionsStmt = self::$PDO->prepare(
-            "DELETE FROM role_perm WHERE permId = ?"
+            "DELETE FROM role_perm WHERE roleId = ?"
         );
     }
 

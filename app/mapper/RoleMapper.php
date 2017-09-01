@@ -28,6 +28,9 @@ class RoleMapper extends Mapper
         $this->deleteUserRolesStmt = self::$PDO->prepare(
             "DELETE FROM user_role WHERE userId = ?"
         );
+        $this->deleteStmt = self::$PDO->prepare(
+            "DELETE FROM role WHERE id = ?"
+        );
     }
 
     public function findByUser($userId)
@@ -80,6 +83,10 @@ class RoleMapper extends Mapper
     {
         $values = array($object->getName(), $object->getId());
         $this->updateStmt->execute($values);
+    }
+
+    public function delete($id) {
+        $this->deleteStmt->execute(array($id));
     }
 
     public function selectStmt()
