@@ -2,6 +2,7 @@
 #users {
     font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
     border-collapse: collapse;
+    max-width: 200px;
 }
 
 #users td, #users th {

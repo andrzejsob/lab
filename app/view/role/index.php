@@ -1,5 +1,9 @@
+<style>
+
+</style>
+<?php if (isset($error_message)) {echo '<p>'.$error_message.'</p>';}?>
 <h4>Typy kont użytkowników</h4>
-<a href="?cmd=role-form">Nowy</a>
+<a class="add" href="?cmd=role-form">Nowy typ konta</a>
 <table>
     <tr>
         <th>Nazwa</th>

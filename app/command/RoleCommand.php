@@ -33,6 +33,10 @@ class RoleCommand extends Command
         $rolePermArray = [];
         if ($id = $request->getProperty('id')) {
             $role = $role->find($id);
+            if (is_null($role)) {
+                $this->assign('error_message', 'Brak konta o podanym id.');
+                return $this->render('app/view/role/index.php');
+            }
             $rPerm = $role->getPermissions();
             foreach ($rPerm as $perm) {
                 $rolePermArray[$perm->getName()] = $perm->getId();

@@ -119,6 +119,18 @@ class Session extends DomainObject
 		return "";
 	}
 
+    public function setVariable($name, $value)
+    {
+        $finder->insertVariable($this->asciiId, $name, $value);
+    }
+
+    public function getVariable($name)
+    {
+        $value = $finder->findVariable($name);
+
+        return $array
+    }
+
     private function sessionOpen ($save_path, $session_name)
     {
     	return true;
