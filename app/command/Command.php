@@ -2,6 +2,7 @@
 namespace lab\command;
 
 use lab\view\Template;
+use lab\base\ApplicationHelper;
 
 abstract class Command
 {
@@ -10,6 +11,8 @@ abstract class Command
 
     public function __construct() {
         $this->template = new Template;
+        $array = ApplicationHelper::getSessionMessage('message');
+        $this->template->assignArray($array);
     }
 
     public function assign($var, $value)

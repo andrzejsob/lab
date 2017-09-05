@@ -47,6 +47,35 @@ class SessionMapper extends Mapper
         $this->logoutUserStmt = self::$PDO->prepare(
             "UPDATE session SET logged_in = false, user_id = null WHERE id = ?"
         );
+        $this->insertVariableStmt = self::$PDO->prepare(
+            "INSERT INTO session_variable (sessionId, name, value)
+            VALUES (?, ?, ?)"
+        );
+        $this->findVariableStmt = self::$PDO->prepare(
+            "SELECT name, value FROM session_variable WHERE
+            sessionId = ? AND name = ?"
+        );
+        $this->deleteVariableStmt = self::$PDO->prepare(
+            "DELETE from session_variable WHERE
+            sessionId = ? AND name = ?"
+        );
+    }
+
+    public function insertVariable($id, $name, $value)
+    {
+        //var_dump(array($id, $name, $value));exit;
+        $this->insertVariableStmt->execute(array($id, $name, $value));
+    }
+
+    public function findVariable($id, $name)
+    {
+        $this->findVariableStmt->execute(array($id, $name));
+        $resultArray = $this->findVariableStmt->fetch(\PDO::FETCH_ASSOC);
+        if(is_array($resultArray)) {
+            $this->deleteVariableStmt->execute(array($id, $name));
+            return $resultArray;
+        }
+        return false;
     }
 
     protected function targetClass()

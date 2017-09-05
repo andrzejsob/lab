@@ -6,6 +6,10 @@ use lab\mapper\PermissionMapper;
 use lab\domain\Role;
 use lab\validation\form\Client as ClientForm;
 use lab\validation\form\Role as RoleForm;
+use lab\base\Redirect;
+use lab\base\Success;
+use lab\base\Error;
+
 
 class RoleCommand extends Command
 {
@@ -34,8 +38,10 @@ class RoleCommand extends Command
         if ($id = $request->getProperty('id')) {
             $role = $role->find($id);
             if (is_null($role)) {
-                $this->assign('error_message', 'Brak konta o podanym id.');
-                return $this->render('app/view/role/index.php');
+                new Redirect(
+                    '?cmd=role-index',
+                    new Error('Brak konta o podanym id.')
+                );
             }
             $rPerm = $role->getPermissions();
             foreach ($rPerm as $perm) {
@@ -54,7 +60,10 @@ class RoleCommand extends Command
                 $role->getId(),
                 $request->getProperty('permission')
             );
-            header('Location: ?cmd=role-index');
+            new Redirect(
+                '?cmd=role-index',
+                new Success('Dane zostały zapisane')
+            );
         }
         $this->assign('permissions', $allPerm);
         $this->assign('rolePermArray', $rolePermArray);

@@ -1,6 +1,9 @@
 <?php
 namespace lab\controller;
 
+use lab\base\ApplicationHelper as ApplicationHelper;
+use lab\command\CommandResolver;
+
 class Controller
 {
     private function __construct() {}
@@ -14,16 +17,16 @@ class Controller
 
     private function init()
     {
-        $appHelper = \lab\base\ApplicationHelper::instance();
+        $appHelper = ApplicationHelper::instance();
         $appHelper->init();
-        $session = \lab\base\ApplicationHelper::getSession();
+        $session = ApplicationHelper::getSession();
         $session->Impress();
     }
 
     private function handleRequest()
     {
-        $request = \lab\base\ApplicationHelper::getRequest();
-        $cmdResolver = new \lab\command\CommandResolver();
+        $request = ApplicationHelper::getRequest();
+        $cmdResolver = new CommandResolver();
         list($class, $action) = $cmdResolver->resolveCommand($request);
         $cmdClass = new $class();
         $cmdClass->$action($request);

@@ -70,6 +70,20 @@ class ApplicationHelper
         return $inst->session;
     }
 
+    static function getSessionMessage()
+    {
+        $session = self::getSession();
+        $array = $session->getVariable('message');
+        if($array) {
+            list($message_type, $message) = explode('_', $array['value']);
+            return array(
+                'messageType' => $message_type,
+                'message' => $message
+            );
+        }
+        return array();
+    }
+
 	static function setControllerMap($map)
 	{
 		$inst = self::instance();
