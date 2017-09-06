@@ -1,4 +1,3 @@
-<h4>Nowy typ konta</h4>
 <?php foreach ($errors as $error) {?>
 <?php echo $error;?><br>
 <?php } ?>

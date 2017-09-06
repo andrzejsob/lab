@@ -82,7 +82,13 @@ class RoleMapper extends Mapper
     public function update(DomainObject $object)
     {
         $values = array($object->getName(), $object->getId());
-        $this->updateStmt->execute($values);
+        try {
+            $result = $this->updateStmt->execute($values);
+        } catch (\Exception $e) {
+            if ($e->errorInfo[1] == 1062) {
+                throw new \Exception('Podana nazwa jest już zajęta!');
+            }
+        }
     }
 
     public function delete($id) {

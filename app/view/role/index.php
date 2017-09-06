@@ -32,6 +32,8 @@ table {
     border-collapse: collapse;
 }
 table th, td {
+    margin: 0;
+    padding: 0;
     border: 1px solid black;
 }
 </style>
@@ -52,10 +54,10 @@ table th, td {
     <tr>
         <td><?php echo $role->getName();?></td>
         <td>
-            <a href="?cmd=role-delete&id=<?php echo $role->getId();?>">
+            <a class="delete" href="?cmd=role-delete&id=<?php echo $role->getId();?>">
                 Usuń
             </a>
-            <a href="?cmd=role-form&id=<?php echo $role->getId();?>">
+            <a class="edit" href="?cmd=role-form&id=<?php echo $role->getId();?>">
                 Edytuj
             </a>
         </td>

@@ -77,9 +77,30 @@
     color: white;
     text-align: center;
     text-decoration: none;
+    margin: 0 0 15px 0;
+}
+
+.delete, .edit {
+    display: inline-block;
+    padding: 6px;
+    color: white;
+    text-align: center;
+    text-decoration: none;
+}
+.delete:hover {
+    background-color: #ff5050;
+}
+.delete {
+    background-color: red;
+}
+.edit:hover {
+    background-color: #0099ff;
+}
+.edit {
+    background-color: blue;
 }
 .add:hover {
-    background-color: lightgreen;
+    background-color: #00cc00;
 }
 
 </style>

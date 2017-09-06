@@ -54,16 +54,19 @@ class RoleCommand extends Command
 
         if ($validation->isValid()) {
             $role = $roleForm->getData();
-            $role->save();
-            //zapisanie metod użytkownika do bazy
-            $pMapper->updateRolePermissions(
-                $role->getId(),
-                $request->getProperty('permission')
-            );
-            new Redirect(
-                '?cmd=role-index',
-                new Success('Dane zostały zapisane')
-            );
+            $messageClass = new Success('Dane zostały zapisane');
+            try {
+                $role->save();
+                //zapisanie metod użytkownika do bazy
+                $pMapper->updateRolePermissions(
+                    $role->getId(),
+                    $request->getProperty('permission')
+                );
+            } catch (\Exception $e) {
+                $messageClass = new Error('Dane nie zostały zapisane. '.
+                $e->getMessage());
+            }
+            new Redirect('?cmd=role-index', $messageClass);
         }
         $this->assign('permissions', $allPerm);
         $this->assign('rolePermArray', $rolePermArray);

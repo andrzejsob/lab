@@ -21,6 +21,7 @@ abstract class Mapper
             self::$PDO = new \PDO($dsn, $user, $password);
             self::$PDO->setAttribute(
                 \PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+            //self::$PDO->setAttribute(\PDO::ATTR_EMULATE_PREPARES,false);
         }
     }
 
