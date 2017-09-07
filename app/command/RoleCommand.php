@@ -10,7 +10,6 @@ use lab\base\Redirect;
 use lab\base\Success;
 use lab\base\Error;
 
-
 class RoleCommand extends Command
 {
     public function __construct() {

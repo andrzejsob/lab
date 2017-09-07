@@ -1,6 +1,3 @@
-<script>
-
-</script>
 <h4>Dane użytkownika</h4>
 <?php
 //if (isset($errors)) {
@@ -28,9 +25,13 @@
         <td><input type="text" name="email" value="<?php echo $entity->getEmail();?>"></td>
     </tr>
 </table>
-<h4>Konta</h4>
-...
 
+<h4>Typ konta</h4>
+<?php foreach ($roles as $role) { ?>
+<input type="checkbox" name="role[]" value="<?php echo $role->getId()?>"
+<?php if (isset($userRoles[$role->getName()])) echo 'checked="checked"'?>>
+<?php echo $role->getName()?><br>
+<?php } ?>
 <h4>Metody badawcze</h4>
 <?php foreach ($methods as $method) { ?>
 <input type="checkbox" name="method[]" value="<?php echo $method->getId()?>"

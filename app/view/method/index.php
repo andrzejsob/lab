@@ -4,21 +4,21 @@
   <?php echo $message;?>
 </div>
 <?php } ?>
-<h4>Typy kont użytkowników</h4>
-<a class="add" href="?cmd=role-form">Nowy typ konta</a>
+<h4>Metody badawcze</h4>
+<a class="add" href="?cmd=method-form">Nowa metoda</a>
 <table class="list_table">
     <tr>
-        <th>Nazwa</th>
+        <th>Akronim</th>
         <th>Opcje</th>
     </tr>
-    <?php foreach ($roles as $role) {?>
+    <?php foreach ($methods as $method) {?>
     <tr>
-        <td><?php echo $role->getName();?></td>
+        <td><?php echo $method->getAcronym();?></td>
         <td>
-            <a class="delete" href="?cmd=role-delete&id=<?php echo $role->getId();?>">
+            <a class="delete" href="?cmd=method-delete&id=<?php echo $method->getId();?>">
                 Usuń
             </a>
-            <a class="edit" href="?cmd=role-form&id=<?php echo $role->getId();?>">
+            <a class="edit" href="?cmd=method-form&id=<?php echo $method->getId();?>">
                 Edytuj
             </a>
         </td>

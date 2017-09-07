@@ -102,7 +102,43 @@
 .add:hover {
     background-color: #00cc00;
 }
+.alert {
+    padding: 15px;
+    background-color: #f44336;
+    color: white;
+    border-radius: 10px;
+    font-weight: bold;
+}
 
+.alert.success {
+    background-color: #4CAF50;
+    border: 3px solid green;
+}
+.alert.info {background-color: #2196F3;}
+.alert.warning {background-color: #ff9800;}
+
+.closebtn {
+    margin-left: 15px;
+    color: white;
+    font-weight: bold;
+    float: right;
+    font-size: 26px;
+    line-height: 20px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.closebtn:hover {
+    color: black;
+}
+.list_table {
+    border-collapse: collapse;
+}
+.list_table th, td {
+    margin: 0;
+    padding: 0;
+    border: 1px solid black;
+}
 </style>
 </head>
 <body>
@@ -113,7 +149,7 @@
 <div class="col-3 menu">
     <ul>
         <li>
-            <a href="?cmd=admin-panel">Użytkownicy</a>
+            <a href="?cmd=user-index">Użytkownicy</a>
         </li>
         <li>
             <a href="?cmd=role-index">Konta i uprawnienia</a>
