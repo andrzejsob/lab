@@ -90,16 +90,33 @@ class MethodMapper extends Mapper
 
     protected function doInsert(DomainObject $object)
     {
-        $values = array($object->getAcronym(), $object->getName());
-        $this->insertStmt->execute($values);
-        $id = self::$PDO->lastInsertId();
-        $object->setId($id);
+        try {
+            $values = array($object->getAcronym(), $object->getName());
+            $this->insertStmt->execute($values);
+            $id = self::$PDO->lastInsertId();
+            $object->setId($id);
+        } catch (\Exception $e) {
+            $this->lookForError1062($e);
+        }
+    }
+
+    private function lookForError1062(\Exception $e) {
+        if ($e->errorInfo[1] == 1062) {
+            throw new \Exception('Metoda o podanym akronimie już istnieje!');
+        }
     }
 
     public function update(DomainObject $object)
     {
-        $values = array($object->getAcronym(), $object->getName(), $object->getId());
-        $this->updateStmt->execute($values);
+        try {
+            $this->updateStmt->execute(array(
+                $object->getAcronym(),
+                $object->getName(),
+                $object->getId()
+            ));
+        } catch (\Exception $e) {
+            $this->lookForError1062($e);
+        }
     }
 
     public function selectStmt()

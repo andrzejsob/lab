@@ -4,7 +4,7 @@
 <form method="post">
 Nazwa:<br>
 <input type="text" name="name" value="<?php echo $entity->getName();?>">
-<h4>Uprawnienia do konta</h4>
+<h4>Dostęp do paneli</h4>
 <?php foreach ($permissions as $perm) {?>
 <input type="checkbox" name="permission[]"
     value="<?php echo $perm->getId();?>"

@@ -9,11 +9,17 @@
 <table class="list_table">
     <tr>
         <th>Nazwa</th>
-        <th>Opcje</th>
+        <th>Dostęp do paneli</th>
     </tr>
     <?php foreach ($roles as $role) {?>
     <tr>
-        <td><?php echo $role->getName();?></td>
+        <td class="feature"><?php echo $role->getName();?></td>
+        <td class="feature">
+            <ul style="list-style-type: none; margin: 0; padding: 0;">
+            <?php foreach ($permissions = $role->getPermissions() as $permission) {?>
+            <li><?php echo $permission->getName();}?></li>
+            </ul>
+        </td>
         <td>
             <a class="delete" href="?cmd=role-delete&id=<?php echo $role->getId();?>">
                 Usuń

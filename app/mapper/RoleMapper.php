@@ -74,14 +74,23 @@ class RoleMapper extends Mapper
 
     protected function doInsert(DomainObject $object)
     {
-        $this->insertStmt->execute(array($object->getName()));
-        $id = self::$PDO->lastInsertId();
-        $object->setId($id);
+        try {
+            $this->insertStmt->execute(array($object->getName()));
+            $id = self::$PDO->lastInsertId();
+            $object->setId($id);
+        } catch (\Exception $e) {
+            if ($e->errorInfo[1] == 1062) {
+                throw new \Exception('Podana nazwa jest już zajęta!');
+            }
+        }
     }
 
     public function update(DomainObject $object)
     {
-        $values = array($object->getName(), $object->getId());
+        $values = array(
+            $object->getName(),
+            $object->getId()
+        );
         try {
             $result = $this->updateStmt->execute($values);
         } catch (\Exception $e) {

@@ -9,11 +9,12 @@
 <table class="list_table">
     <tr>
         <th>Akronim</th>
-        <th>Opcje</th>
+        <th>Opis</th>
     </tr>
     <?php foreach ($methods as $method) {?>
     <tr>
-        <td><?php echo $method->getAcronym();?></td>
+        <td class="feature"><?php echo $method->getAcronym();?></td>
+        <td class="feature"><?php echo $method->getName();?></td>
         <td>
             <a class="delete" href="?cmd=method-delete&id=<?php echo $method->getId();?>">
                 Usuń

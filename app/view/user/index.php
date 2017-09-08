@@ -12,14 +12,13 @@
         <th>Imię</th>
         <th>Nazwisko</th>
         <th>Email</th>
-        <th>Usuń</th>
     </tr>
     <?php foreach ($users as $user) {?>
     <tr>
-        <td><?php echo $user->getNick();?></td>
-        <td><?php echo $user->getFirstName();?></td>
-        <td><?php echo $user->getLastName();?></td>
-        <td><?php echo $user->getEmail();?></td>
+        <td class="feature"><?php echo $user->getNick();?></td>
+        <td class="feature"><?php echo $user->getFirstName();?></td>
+        <td class="feature"><?php echo $user->getLastName();?></td>
+        <td class="feature"><?php echo $user->getEmail();?></td>
         <td>
             <a class="delete" href="?cmd=user-delete&id=<?php echo $user->getId();?>">
                 Usuń

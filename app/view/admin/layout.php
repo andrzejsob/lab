@@ -78,20 +78,24 @@
     text-align: center;
     text-decoration: none;
     margin: 0 0 15px 0;
+    border-radius: 6px;
 }
 
 .delete, .edit {
     display: inline-block;
-    padding: 6px;
+    padding: 5px;
+    margin: 0;
     color: white;
     text-align: center;
     text-decoration: none;
+    border-radius: 6px;
 }
 .delete:hover {
     background-color: #ff5050;
 }
 .delete {
     background-color: red;
+    margin-left: 4px;
 }
 .edit:hover {
     background-color: #0099ff;
@@ -134,9 +138,9 @@
 .list_table {
     border-collapse: collapse;
 }
-.list_table th, td {
+.list_table th, .feature {
     margin: 0;
-    padding: 0;
+    padding: 0 5px;
     border: 1px solid black;
 }
 </style>
