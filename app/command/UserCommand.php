@@ -49,16 +49,10 @@ class UserCommand extends Command
                     new Error('Brak użytkownika o podanym id.')
                 );
             }
-            //pobranie metod użytkownika
-            $userMethods = $user->getMethods();
-            $userRoles = $user->getRoles();
-            //transformacja method uzytkownika z kolekcji obiektów na macierz
-            foreach ($userMethods as $method) {
-                $userMethodsArray[$method->getAcronym()] = $method->getId();
-            }
-            foreach ($userRoles as $role) {
-                $userRolesArray[$role->getName()] = $role->getId();
-            }
+            //pobranie metod użytkownika do macierzy
+            $userMethodsArray = $user->getMethods()->getArray('acronym');
+            //pobrane metod użytkownika do macirzy
+            $userRolesArray = $user->getRoles()->getArray('name');
         }
 
         $userForm = new UserForm($user);

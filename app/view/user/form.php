@@ -29,13 +29,13 @@
 <h4>Typ konta</h4>
 <?php foreach ($roles as $role) { ?>
 <input type="checkbox" name="role[]" value="<?php echo $role->getId()?>"
-<?php if (isset($userRoles[$role->getName()])) echo 'checked="checked"'?>>
+<?php if (in_array($role->getName(), $userRoles)) echo 'checked="checked"'?>>
 <?php echo $role->getName()?><br>
 <?php } ?>
 <h4>Metody badawcze</h4>
 <?php foreach ($methods as $method) { ?>
 <input type="checkbox" name="method[]" value="<?php echo $method->getId()?>"
-<?php if (isset($userMethods[$method->getAcronym()])) echo 'checked="checked"'?>>
+<?php if (in_array($method->getAcronym(), $userMethods)) echo 'checked="checked"'?>>
 <?php echo $method->getAcronym()?><br>
 <?php } ?>
 <input type="submit" name="save" value="Zapisz">

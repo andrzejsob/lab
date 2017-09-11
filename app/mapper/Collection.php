@@ -19,6 +19,18 @@ abstract class Collection implements \Iterator
         }
     }
 
+    public function getArray($key = null)
+    {
+        if ($key) {
+            $array = array();
+            foreach ($this->raw as $rawKey => $array2){
+                $array[] = $array2[$key];
+            }
+            return $array;
+        }
+        return $this->raw;
+    }
+
     public function add(\lab\domain\DomainObject $object)
     {
         $class = $this->targetClass();

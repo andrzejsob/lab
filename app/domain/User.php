@@ -50,6 +50,17 @@ class User extends DomainObject
         return $this->roles;
     }
 
+    public function getPermissionsArray()
+    {
+        $array = array();
+        foreach ($this->getRoles as $role) {
+            foreach ($role->getPermissions as $perm) {
+                $array[] = $perm->getName();
+            }
+        }
+        return array_unique($array);
+    }
+
     public function setNick($nick)
     {
         $this->nick = $nick;
