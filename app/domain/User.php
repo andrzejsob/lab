@@ -53,8 +53,8 @@ class User extends DomainObject
     public function getPermissionsArray()
     {
         $array = array();
-        foreach ($this->getRoles as $role) {
-            foreach ($role->getPermissions as $perm) {
+        foreach ($this->getRoles() as $role) {
+            foreach ($role->getPermissions() as $perm) {
                 $array[] = $perm->getName();
             }
         }

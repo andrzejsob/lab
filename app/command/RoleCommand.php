@@ -3,6 +3,7 @@ namespace lab\command;
 
 use lab\mapper\RoleMapper;
 use lab\mapper\PermissionMapper;
+use lab\domain\DomainObject;
 use lab\domain\Role;
 use lab\validation\form\Client as ClientForm;
 use lab\validation\form\Role as RoleForm;
@@ -19,8 +20,8 @@ class RoleCommand extends Command
 
     public function indexAction($request)
     {
-        $rMapper = new RoleMapper();
-        $roles = $rMapper->findAll();
+        //$rMapper = new RoleMapper();
+        $roles = Role::getFinder()->findAll();
 
         return $this->render(
             'app/view/role/index.php',
@@ -31,8 +32,7 @@ class RoleCommand extends Command
     public function formAction($request)
     {
         $role = new Role();
-        $pMapper = new PermissionMapper();
-        $allPerm = $pMapper->findAll();
+        $allPerm = DomainObject::getFinder('Permission')->findAll();
         $rolePermArray = [];
         if ($id = $request->getProperty('id')) {
             $role = $role->find($id);
@@ -57,7 +57,7 @@ class RoleCommand extends Command
             try {
                 $role->save();
                 //zapisanie metod użytkownika do bazy
-                $pMapper->updateRolePermissions(
+                DomainObject::getFinder('Permission')->updateRolePermissions(
                     $role->getId(),
                     $request->getProperty('permission')
                 );
@@ -77,8 +77,7 @@ class RoleCommand extends Command
 
     public function deleteAction($request)
     {
-        $rMapper = new RoleMapper();
-        $rMapper->delete($request->getProperty('id'));
+        Role::getFinder()->delete($request->getProperty('id'));
 
         header('Location: ?cmd=role-index');
     }

@@ -1,7 +1,7 @@
 <?php
 namespace lab\controller;
 
-use lab\base\ApplicationHelper as ApplicationHelper;
+use lab\base\ApplicationHelper;
 use lab\command\CommandResolver;
 
 class Controller

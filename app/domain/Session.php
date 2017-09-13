@@ -6,7 +6,7 @@ class Session extends DomainObject
     private $asciiId = null;
     private $userAgent = null;
     private $userId;
-    private $timeout = 600;		//10-minutowy maksymalny czas nieaktywności sesji
+    private $timeout = 3600;		//10-minutowy maksymalny czas nieaktywności sesji
     private $lifespan = 3600;	// 1-godzinny maksymalny czas ważności sesji
     protected $loggedIn = false;
 
@@ -78,15 +78,13 @@ class Session extends DomainObject
 
     public function login(\lab\domain\User $user)
     {
-        $finder = self::getFinder();
-        $finder->login($user, $this);
+        $this->finder()->login($user, $this);
     }
 
     public function logout()
     {
         if ($this->getLoggedIn()) {
-            $finder = self::getFinder();
-            $finder->logout($this);
+            $this->finder()->logout($this);
             session_unset();
             session_destroy();
             $this->setId(null);
@@ -101,8 +99,7 @@ class Session extends DomainObject
     public function impress()
     {
         if ($id = $this->getId()) {
-            $finder = self::getFinder();
-            $finder->updateLastReaction($id);
+            $this->finder()->updateLastReaction($id);
         }
     }
 
@@ -114,6 +111,7 @@ class Session extends DomainObject
             $finder->insert($this);
 		}
         echo '<pre>';
+        echo 'Session::sessionRead'."\n";
         print_r($this);
         echo '</pre>';
 		return "";
