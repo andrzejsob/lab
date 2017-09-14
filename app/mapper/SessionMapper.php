@@ -45,7 +45,8 @@ class SessionMapper extends Mapper
             "UPDATE session SET logged_in = true, user_id = ? WHERE id = ?"
         );
         $this->logoutUserStmt = self::$PDO->prepare(
-            "UPDATE session SET logged_in = false, user_id = null WHERE id = ?"
+            "UPDATE session SET logged_in = false, user_id = null
+            WHERE session_ascii_id = ?"
         );
         $this->insertVariableStmt = self::$PDO->prepare(
             "INSERT INTO session_variable (sessionId, name, value)
@@ -90,7 +91,8 @@ class SessionMapper extends Mapper
         if(is_array($array)) {
             $obj->setId($array['id']);
             $obj->setloggedIn($array['logged_in']);
-            $obj->setUserId($array['user_id']);
+            $user = DomainObject::getFinder('User')->find($array['user_id']);
+            $obj->setUser($user);
             return true;
         }
         return false;
@@ -138,6 +140,7 @@ class SessionMapper extends Mapper
     {
         $this->updateLastReactionStmt->execute(array($id));
     }
+
     public function update(DomainObject $object)
     {
 
@@ -147,7 +150,7 @@ class SessionMapper extends Mapper
         $array = array($user->getId(), $session->getId());
         $this->loginUserStmt->execute($array);
         $session->setLoggedIn(true);
-        $session->setUserId($user->getId());
+        $session->setUser($user);
     }
 
     public function logout($session)

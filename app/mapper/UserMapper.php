@@ -16,7 +16,7 @@ class UserMapper extends Mapper
         //$this->updateStmt = self::$PDO->prepare(
         //    "UPDATE me SET acronym = ?, name = ? WHERE id = ?");
         $this->authenticateStmt = self::$PDO->prepare(
-            "SELECT * FROM user WHERE nick = ? AND password_md5 = ?"
+            "SELECT * FROM user WHERE nick = ? AND passwordMd5 = ?"
         );
         $this->insertStmt = self::$PDO->prepare(
             "INSERT INTO user(nick, firstName, lastName, email)

@@ -51,7 +51,6 @@ abstract class Mapper
         //if (!is_null($old)) {
         //    return $old;
         //}
-echo "Mapper::find echo : Odczyt wiersza z bazy \n";
         $this->selectStmt->execute(array($id));
         $array = $this->selectStmt->fetch();
         $this->selectStmt()->closeCursor();

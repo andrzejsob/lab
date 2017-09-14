@@ -7,6 +7,7 @@ class User extends DomainObject
     private $firstName;
     private $lastName;
     private $passwordMd5;
+    private $password;
     private $email;
     private $methods = null;
     private $roles = null;
@@ -28,6 +29,16 @@ class User extends DomainObject
         $this->email = $email;
 //      self::getCollection("\\database\\domain\\Space");
 
+    }
+
+    public function authenticate()
+    {
+        //zwraca obkiekt User lub null w przypadku niepowodzenia
+        $object = $this->finder()->authenticate(
+            $this->nick,
+            $this->password
+        );
+        return $object;
     }
 
     public function getMethods()
@@ -55,16 +66,26 @@ class User extends DomainObject
         $array = array();
         foreach ($this->getRoles() as $role) {
             foreach ($role->getPermissions() as $perm) {
-                $array[] = $perm->getName();
+                $array[$perm->getName()] = $perm->getDescription();
             }
         }
-        return array_unique($array);
+        return $array;
     }
 
     public function setNick($nick)
     {
         $this->nick = $nick;
 //        $this->markDirty();
+    }
+
+    public function setPassword($password)
+    {
+        $this->password = $password;
+    }
+
+    public function getPassword()
+    {
+        return $this->password;
     }
 
     public function setFirstName($name)

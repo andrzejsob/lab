@@ -143,24 +143,38 @@
     padding: 0 5px;
     border: 1px solid black;
 }
+<?php if(!isset($permArray[$cmd.'-delete'])) {?>
+    .delete {
+        display: none;
+    }
+<?php }?>
+<?php if(!isset($permArray[$cmd.'-form'])) {?>
+    .edit, .add {
+        display: none;
+    }
+<?php }?>
 </style>
 </head>
 <body>
-<div class="header">
+<div class="header" style="position: relative">
     <h1>Laboratorium Analityczne</h1>
+    <h4 style="position: absolute; right: 15px; bottom: -8px">
+    <?php if ($session->getLoggedIn()) {
+        echo $session->getUser()->getFirstName().' '.
+            $session->getUser()->getLastName().
+        ' <a href="?cmd=login-logout">( Wyloguj )</a>';
+    }
+    ?>
+    </h4>
 </div>
 <div class="row">
 <div class="col-3 menu">
     <ul>
-        <li>
-            <a href="?cmd=user-index">Użytkownicy</a>
-        </li>
-        <li>
-            <a href="?cmd=role-index">Konta i uprawnienia</a>
-        </li>
-        <li>
-            <a href="?cmd=method-index">Metody badawcze</a>
-        </li>
+        <?php foreach ($menuItems as $cmd => $text) {
+        echo '<li>';
+        echo '<a href="?cmd='.$cmd.'">'.$text.'</a>';
+        echo '</li>';
+        }?>
         </ul>
 </div>
 <div class="col-9">

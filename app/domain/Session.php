@@ -5,7 +5,7 @@ class Session extends DomainObject
 {
     private $asciiId = null;
     private $userAgent = null;
-    private $userId;
+    private $user = null;
     private $timeout = 3600;		//10-minutowy maksymalny czas nieaktywności sesji
     private $lifespan = 3600;	// 1-godzinny maksymalny czas ważności sesji
     protected $loggedIn = false;
@@ -26,10 +26,9 @@ class Session extends DomainObject
         $this->userAgent = $_SERVER['HTTP_USER_AGENT'];
 		if (isset($_COOKIE["PHPSESSID"])) {
             $this->asciiId = $_COOKIE["PHPSESSID"];
-            $finder = self::getFinder();
-			if (!$finder->isUserSessionActive($this)) {
+			if (!$this->finder()->isUserSessionActive($this)) {
 				//Usuwa przeterminowanie sesje
-			    $finder->deleteInactiveUserSession($this);
+			    $this->finder()->deleteInactiveUserSession($this);
 				/*Usuwa nieprzydatne zmienne sesji
 				$result = $this->dbhandle->query("DELETE FROM session_variable
 								  WHERE session_id NOT IN
@@ -46,9 +45,14 @@ class Session extends DomainObject
     {
         $this->loggedIn = $status;
     }
-    public function setUserId($userId = null)
+    public function setUser($user)
     {
-        $this->userId = $userId;
+        $this->user = $user;
+    }
+
+    public function getUser()
+    {
+        return $this->user;
     }
 
     public function getAsciiId()
@@ -89,11 +93,8 @@ class Session extends DomainObject
             session_destroy();
             $this->setId(null);
             $this->setLoggedIn(false);
-            $this->setUserId(null);
+            $this->setUser(null);
         }
-        echo '<pre>';
-        print_r($this);
-        echo '</pre>';
     }
 
     public function impress()
@@ -106,27 +107,20 @@ class Session extends DomainObject
     public function sessionRead ($sessionAsciiId) {
 		$this->asciiId = $sessionAsciiId;
 //echo 'Session::sessionRead echo:SessionIdentifer -> '.$this->asciiId;
-        $finder = self::getFinder();
-		if (!$finder->findByAsciiId($this)) {
-            $finder->insert($this);
+		if (!$this->finder()->findByAsciiId($this)) {
+            $this->finder()->insert($this);
 		}
-        echo '<pre>';
-        echo 'Session::sessionRead'."\n";
-        print_r($this);
-        echo '</pre>';
 		return "";
 	}
 
     public function setVariable($name, $value)
     {
-        $finder = self::getFinder();
-        $finder->insertVariable($this->getId(), $name, $value);
+        $this->finder()->insertVariable($this->getId(), $name, $value);
     }
 
     public function getVariable($name)
     {
-        $finder = self::getFinder();
-        $array = $finder->findVariable($this->getId(), $name);
+        $array = $this->finder()->findVariable($this->getId(), $name);
         return $array;
     }
 
@@ -146,8 +140,7 @@ class Session extends DomainObject
 	}
 
 	private function sessionDestroy ($asciiId) {
-		$finder = self::getFinder();
-        $finder->deleteSession($asciiId);
+		$this->finder()->deleteSession($asciiId);
 		return true;
 	}
 

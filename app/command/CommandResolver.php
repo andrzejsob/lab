@@ -12,12 +12,16 @@ class CommandResolver
     public function resolveCommand(\lab\controller\Request $request)
     {
         $cmd = $request->getProperty('cmd');
+        $session = \lab\base\ApplicationHelper::getSession();
+        if (!$session->getLoggedIn() && $cmd != 'login') {
+            header('Location: ?cmd=login');
+        }
+
         if (!is_null($cmd)) {
             $this->setCommandFullName($cmd);
             if ($this->commandIsCorrect()) {
-                //$user = ApplicationHelper::getSession()->getUser();
-                if (!is_null($user) &&
-                    !isset($user->getPermissionsArray[$cmd])) {
+                if ($this->command != '\\lab\\command\\LoginCommand' &&
+                    !isset($session->getUser()->getPermissionsArray()[$cmd])) {
                     return array($this->defaultCommand, 'permissionErrorAction');
                 }
                 return array($this->command, $this->action);
@@ -50,39 +54,4 @@ class CommandResolver
         }
         return false;
     }
-
-    /*
-    private function processClassAndAction($request)
-    {
-        $cmd = $request->getProperty('cmd');
-        if (!is_null($cmd)) {
-            if (strpos($cmd, '-')) {
-                list($class, $action) = explode('-', $cmd);
-                if(strpos($class, '_')) {
-                    $class_array = explode('_', $class);
-                    $class_array[1] = ucfirst($class_array[1]);
-                    $class = implode($class_array);
-                }
-                $class = ucfirst($class);
-                $this->checkIfClassAndActionExists($class, $action);
-            } else {
-                $this->action = 'error404';
-            }
-        }
-    }
-
-    private function checkIfClassAndActionExists($class, $action)
-    {
-        $classPath = '\\lab\\command\\'.$class.'Command';
-        $actionName = $action.'Action';
-        if(class_exists($classPath) &&
-            is_subclass_of($classPath, '\\lab\\command\\Command') &&
-            method_exists($classPath, $actionName)) {
-                $this->class = $class;
-                $this->action = $action;
-            } else {
-                $this->action = 'error404';
-            }
-    }
-    */
 }
