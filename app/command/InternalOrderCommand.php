@@ -3,7 +3,7 @@ namespace lab\command;
 
 use \lab\mapper\InternalOrderMapper;
 
-class InternalOrderCommand extends Command
+class OrderCommand extends Command
 {
     public function listAction($request)
     {

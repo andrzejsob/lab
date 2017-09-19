@@ -159,12 +159,10 @@
 <div class="header" style="position: relative">
     <h1>Laboratorium Analityczne</h1>
     <h4 style="position: absolute; right: 15px; bottom: -8px">
-    <?php if ($session->getLoggedIn()) {
-        echo $session->getUser()->getFirstName().' '.
-            $session->getUser()->getLastName().
+    <?php if ($user) {
+        echo $user->getFirstName().' '.$user->getLastName().
         ' <a href="?cmd=login-logout">( Wyloguj )</a>';
-    }
-    ?>
+    } ?>
     </h4>
 </div>
 <div class="row">
