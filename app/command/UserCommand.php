@@ -78,7 +78,7 @@ class UserCommand extends Command
                 $messageClass = new Error('Dane nie zostały zapisane. '.
                 $e->getMessage());
             }
-            new Redirect('?cmd=user-index', $messageClass);
+            new Redirect('?cmd=user', $messageClass);
         }
 
         $this->assign('methods', $allMethods);

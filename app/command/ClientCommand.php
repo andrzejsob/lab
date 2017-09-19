@@ -7,11 +7,14 @@ use lab\validation\form\Client as ClientForm;
 
 class ClientCommand extends Command
 {
+    public function __construct() {
+        parent::__construct();
+        $this->template->setLayout('app/view/admin/layout.php');
+    }
 
     public function indexAction()
     {
-        $clientMapper = new ClientMapper;
-        $clients = $clientMapper->findAll();
+        $clients = Client::getFinder()->findAll();
         $this->render(
             'app/view/client/index.php',
             ['clients' => $clients]
@@ -32,7 +35,7 @@ class ClientCommand extends Command
             echo '</pre>';exit;
             header('Location: ?cmd=client-index');
         }
-        
+
         $this->render('app/view/client/new.php', $clientForm->getData());
     }
 }

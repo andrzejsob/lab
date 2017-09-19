@@ -50,7 +50,7 @@ class MethodCommand extends Command
                 $messageClass = new Error('Dane nie zostały zapisane. '.
                 $e->getMessage());
             }
-            new Redirect('?cmd=method-index', $messageClass);
+            new Redirect('?cmd=method', $messageClass);
         }
         return $this->render(
             'app/view/method/form.php',

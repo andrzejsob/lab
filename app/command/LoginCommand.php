@@ -24,7 +24,7 @@ class LoginCommand extends Command
             if ($authUser) {
                 //zapisanie użytkownika do sesji
                 \lab\base\ApplicationHelper::getSession()->login($authUser);
-                new Redirect('?cmd=user', new Success('Logowanie sie powiodło'));
+                new Redirect('?cmd=client', new Success('Logowanie sie powiodło'));
             }
             return $this->render(
                 'app/view/login/form.php',

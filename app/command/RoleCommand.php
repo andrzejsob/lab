@@ -65,7 +65,7 @@ class RoleCommand extends Command
                 $messageClass = new Error('Dane nie zostały zapisane. '.
                 $e->getMessage());
             }
-            new Redirect('?cmd=role-index', $messageClass);
+            new Redirect('?cmd=role', $messageClass);
         }
         $this->assign('permissions', $allPerm);
         $this->assign('rolePermArray', $rolePermArray);
