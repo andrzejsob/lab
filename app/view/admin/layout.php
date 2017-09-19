@@ -83,9 +83,10 @@
 
 .delete, .edit {
     display: inline-block;
-    padding: 5px;
+    padding: 3px;
     margin: 0;
     color: white;
+    font-size: 12px;
     text-align: center;
     text-decoration: none;
     border-radius: 6px;
@@ -159,8 +160,8 @@
 <div class="header" style="position: relative">
     <h1>Laboratorium Analityczne</h1>
     <h4 style="position: absolute; right: 15px; bottom: -8px">
-    <?php if ($user) {
-        echo $user->getFirstName().' '.$user->getLastName().
+    <?php if ($userH) {
+        echo $userH->getFirstName().' '.$userH->getLastName().
         ' <a href="?cmd=login-logout">( Wyloguj )</a>';
     } ?>
     </h4>

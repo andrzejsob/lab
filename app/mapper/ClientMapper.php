@@ -15,8 +15,11 @@ class ClientMapper extends Mapper
         $this->selectStmt = self::$PDO->prepare(
             "SELECT * FROM client WHERE id = ?");
         $this->insertStmt = self::$PDO->prepare(
-            'INSERT INTO client (name, street, zip_code, city, nip)
+            'INSERT INTO client (name, street, zipCode, city, nip)
              VALUES (?, ?, ?, ?, ?)');
+        $this->updateStmt = self::$PDO->prepare(
+            'UPDATE client SET name = ?, street = ?, zip_code = ?,
+            city = ?, nip =? WHERE id = ?');
     }
 
     public function getCollection(array $raw)
@@ -62,8 +65,14 @@ class ClientMapper extends Mapper
 
     public function update(DomainObject $object)
     {
-        $values = array();
-        $this->updateStmt->execute($values);
+        $this->updateStmt->execute([
+            $object->getName(),
+            $object->getStreet(),
+            $object->getZipCode(),
+            $object->getCity(),
+            $object->getNip(),
+            $object->getId(),
+        ]);
     }
 
     public function selectStmt()

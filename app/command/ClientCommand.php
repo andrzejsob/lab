@@ -2,7 +2,9 @@
 namespace lab\command;
 
 use lab\domain\Client as Client;
-use lab\mapper\ClientMapper;
+use lab\controller\Request;
+use lab\base\Redirect;
+use lab\base\Success;
 use lab\validation\form\Client as ClientForm;
 
 class ClientCommand extends Command
@@ -21,21 +23,55 @@ class ClientCommand extends Command
         );
     }
 
-    public function newAction($request)
+    /**
+     * @param  Request $request
+     */
+    public function formAction(Request $request)
     {
         $client = new Client();
+
+        if ($id = $request->getProperty('id')) {
+            $client = $client->find($id);
+            if (is_null($client)) {
+                new Redirect(
+                    '?cmd=client',
+                    new Error('Brak klienta o podanym id.')
+                );
+            }
+        }
 
         $clientForm = new ClientForm($client);
         $validation = $clientForm->handleRequest($request);
 
         if ($validation->isValid()) {
             $client = $clientForm->getData();
-            echo '<pre>';
-            print_r($client);
-            echo '</pre>';exit;
-            header('Location: ?cmd=client-index');
+            $client->save();
+            new Redirect(
+                '?cmd=client',
+                new Success('Dane klienta zostały zapisane')
+            );
         }
 
-        $this->render('app/view/client/new.php', $clientForm->getData());
+        $this->render('app/view/client/form.php', $clientForm->getData());
+    }
+
+    /**
+     * @param  Request
+     */
+    public function showAction(Request $request)
+    {
+        $client = new Client();
+        if ($id = $request->getProperty('id')) {
+            $client = $client->find($id);
+            if (is_null($client)) {
+                new Redirect(
+                    '?cmd=client',
+                    new Error('Brak klienta o podanym id.')
+                );
+            }
+        }
+        $contactsColl = $client->getContactPersons();
+        $this->assign('contacts', $contactsColl);
+        $this->render('app/view/client/show.php');
     }
 }

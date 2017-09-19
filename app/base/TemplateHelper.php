@@ -38,7 +38,7 @@ class TemplateHelper
         }
         $this->template->assign('menuItems', $menuItemsArray);
         $this->template->assign('permArray', $permArray);
-        $this->template->assign('user', $user);
+        $this->template->assign('userH', $user);
         $this->template->assign('cmd', ApplicationHelper::getRequest()->getProperty('cmd'));
     }
 }

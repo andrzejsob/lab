@@ -13,7 +13,7 @@
         <td><input type="text" name="nick" value="<?php echo $entity->getNick();?>"></td>
     </tr>
     <tr>
-        <td>Opis</td>
+        <td>Hasło</td>
         <td><input type="password" name="password"></td>
     </tr>
 </table>
