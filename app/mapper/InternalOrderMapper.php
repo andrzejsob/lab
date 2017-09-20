@@ -31,6 +31,18 @@ class InternalOrderMapper extends Mapper
         $this->insertOrderMethodStmt = self::$PDO->prepare(
             'INSERT INTO internal_order_method (internal_order_id, method_id)
             VALUES (?, ?)');
+        $this->selectByClientIdStmt = self::$PDO->prepare(
+            'SELECT o.id, o.contactPersonId, o.nr, o.year, o.akr, o.orderDate,
+            o.receiveDate, o.nrOfAnalyzes, o.sum, o.foundSource, o.loadNr
+            FROM internal_order as o
+            JOIN contact_person AS cp ON cp.id = o.contactPersonId
+            JOIN client AS c ON c.id = cp.client_id
+            JOIN internal_order_method AS om ON om.internal_order_id = o.id
+            JOIN method AS m ON m.id = om.method_id
+            JOIN user_method AS um ON um.method_id = m.id
+            JOIN user AS u ON u.id = um.user_id
+            WHERE c.id = ?
+        ');
     }
 
     public function getCollection(array $raw)
@@ -47,16 +59,16 @@ class InternalOrderMapper extends Mapper
     {
         $obj = new InternalOrder(
             $array['id'],
-            $array['contact_person_id'],
+            $array['contactPersonId'],
             $array['nr'],
             $array['year'],
             $array['akr'],
-            $array['order_date'],
-            $array['receive_date'],
-            $array['nr_of_analyzes'],
+            $array['orderDate'],
+            $array['receiveDate'],
+            $array['nrOfAnalyzes'],
             $array['sum'],
-            $array['found_source'],
-            $array['load_nr']
+            $array['foundSource'],
+            $array['loadNr']
         );
         return $obj;
     }
@@ -104,6 +116,13 @@ class InternalOrderMapper extends Mapper
     public function selectStmt()
     {
         return $this->selectStmt;
+    }
+
+    public function selectByClientId($id)
+    {
+        $this->selectByClientIdStmt->execute(array($id));
+        $array = $this->selectByClientIdStmt->fetchAll(\PDO::FETCH_ASSOC);
+        return $this->getCollection($array);
     }
 
     public function selectByMethodsStmt($qm)

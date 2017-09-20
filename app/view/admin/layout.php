@@ -144,6 +144,9 @@
     padding: 0 5px;
     border: 1px solid black;
 }
+.feature {
+    cursor: pointer;
+}
 <?php if(!isset($permArray[$cmd.'-delete'])) {?>
     .delete {
         display: none;

@@ -16,8 +16,12 @@ document.getElementsByClassName("feature").onclick = "location.href='?cmd=test'"
     </tr>
     <?php foreach ($clients as $client) {?>
     <tr>
-        <td class="feature" onclick = "location.href='dupa'"><?php echo $client->getName();?></td>
-        <td class="feature"><?php echo $client->getCity();?></td>
+        <td class="feature"
+        onclick = "location.href='?cmd=client-show&id=<?php echo $client->getId()?>'">
+            <?php echo $client->getName();?></td>
+        <td class="feature"
+        onclick = "location.href='?cmd=client-show&id=<?php echo $client->getId()?>'">
+            <?php echo $client->getCity();?></td>
         <td>
             <a class="delete" href="?cmd=client-delete&id=<?php echo $client->getId();?>">
                 Usuń

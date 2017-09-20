@@ -5,6 +5,7 @@ use lab\domain\Client as Client;
 use lab\controller\Request;
 use lab\base\Redirect;
 use lab\base\Success;
+use lab\base\Error;
 use lab\validation\form\Client as ClientForm;
 
 class ClientCommand extends Command
@@ -61,17 +62,24 @@ class ClientCommand extends Command
     public function showAction(Request $request)
     {
         $client = new Client();
-        if ($id = $request->getProperty('id')) {
-            $client = $client->find($id);
-            if (is_null($client)) {
-                new Redirect(
-                    '?cmd=client',
-                    new Error('Brak klienta o podanym id.')
-                );
-            }
+        $id = $request->getProperty('id');
+        $client = $client->find($id);
+        if (is_null($client)) {
+            new Redirect(
+                '?cmd=client',
+                new Error('Brak klienta o podanym id.')
+            );
         }
-        $contactsColl = $client->getContactPersons();
-        $this->assign('contacts', $contactsColl);
+
+        $contractsColl = Client::getFinder('InternalOrder')
+            ->selectByClientId($client->getId());
+        if(!$contractsColl->valid()) {
+            new Redirect(
+                '?cmd=client',
+                new Error('Brak zleceń klienta.')
+            );
+        }
+        $this->assign('contracts', $contractsColl);
         $this->render('app/view/client/show.php');
     }
 }

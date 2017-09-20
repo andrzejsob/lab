@@ -1,5 +1,6 @@
 <?php
-foreach ($contacts as $contact) {
-        echo $contact->getFirstName();
+foreach ($contracts as $contract) {
+        echo $contract->getSum().' zł <br>';
+        echo $contract->getFoundSource();
 }
 ?>
