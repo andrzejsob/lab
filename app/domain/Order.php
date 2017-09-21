@@ -1,7 +1,7 @@
 <?php
 namespace lab\domain;
 
-class InternalOrder extends DomainObject
+class Order extends DomainObject
 {
     private $contactPersonId;
     private $nr;

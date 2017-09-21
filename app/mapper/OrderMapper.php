@@ -2,10 +2,10 @@
 namespace lab\mapper;
 
 use \lab\domain\DomainObject;
-use \lab\domain\InternalOrder;
-use \lab\mapper\InternalOrderCollection;
+use \lab\domain\Order;
+use \lab\mapper\OrderCollection;
 
-class InternalOrderMapper extends Mapper
+class OrderMapper extends Mapper
 {
     public function __construct()
     {
@@ -47,7 +47,7 @@ class InternalOrderMapper extends Mapper
 
     public function getCollection(array $raw)
     {
-        return new InternalOrderCollection($raw, $this);
+        return new OrderCollection($raw, $this);
     }
 
     protected function targetClass()
@@ -57,7 +57,7 @@ class InternalOrderMapper extends Mapper
 
     protected function doCreateObject(array $array)
     {
-        $obj = new InternalOrder(
+        $obj = new Order(
             $array['id'],
             $array['contactPersonId'],
             $array['nr'],
