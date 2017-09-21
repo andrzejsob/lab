@@ -21,7 +21,7 @@ abstract class Collection implements \Iterator
 
     public function getArray($key = null)
     {
-        if ($key) {
+        if (!is_null($key)) {
             $array = array();
             foreach ($this->raw as $rawKey => $array2){
                 $array[] = $array2[$key];

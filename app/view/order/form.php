@@ -3,7 +3,13 @@ function load(value) {
     var xmlhttp = new XMLHttpRequest();
        xmlhttp.onreadystatechange = function() {
            if (this.readyState == 4 && this.status == 200) {
-               document.getElementById("txtHint").innerHTML = this.responseText;
+             var obj = JSON.parse(this.responseText);
+             var text = '';
+             for (x in obj) {
+               text += '<option value="' + obj[x].id + '">' + obj[x].first_name +
+               ' ' + obj[x].last_name + '</option>';
+             }
+               document.getElementById("clientSelect").innerHTML = text;
            }
        };
        xmlhttp.open("GET", "test.php?q=" + value, true);
@@ -23,10 +29,11 @@ function load(value) {
     <?php } ?>
 </select>
 <h4>Kontakt</h4>
-<select name="contactId">
+<select id="clientSelect" name="contactId">
     <?php foreach($contacts as $contact) {?>
     <option value="<?php echo $contact->getId();?>">
         <?php echo $contact->getFirstName().' '.$contact->getLastName();?>
     </option>
     <?php } ?>
 </select>
+<p id='hint'></p>

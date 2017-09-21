@@ -30,7 +30,7 @@ class ContactPersonMapper extends Mapper
     public function findByClient($id)
     {
         $this->findByClientStmt->execute(array($id));
-        return $this->getCollection($this->findByClientStmt->fetchAll());
+        return $this->getCollection($this->findByClientStmt->fetchAll(\PDO::FETCH_ASSOC));
     }
 
     public function getCollection(array $raw)
