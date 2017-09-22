@@ -16,24 +16,63 @@ function load(value) {
        xmlhttp.send();
 }
 </script>
-<p id="txtHint"></p>
 <h4>Klient</h4>
 <select name="clientId" onchange="load(this.value)">
     <option style="display:none" disabled selected value>
         -- Wybierz klienta --
     </option>
-    <?php foreach($clients as $client) {?>
+    <?php foreach($clients as $client) { echo 'test';?>
     <option value="<?php echo $client->getId();?>" >
         <?php echo $client->getName();?>
     </option>
     <?php } ?>
 </select>
-<h4>Kontakt</h4>
+<form method="post">
+<h4>Osoba do kontaktu</h4>
 <select id="clientSelect" name="contactId">
-    <?php foreach($contacts as $contact) {?>
-    <option value="<?php echo $contact->getId();?>">
-        <?php echo $contact->getFirstName().' '.$contact->getLastName();?>
+    <option disabled selected value>
+        -- Nie wybrano klienta --
     </option>
-    <?php } ?>
 </select>
-<p id='hint'></p>
+<h5>Dane zlecenia</h5>
+<table>
+    <tr>
+        <td>Data na zleceniu</td>
+        <td><input type="text" name="orderDate" <?php echo 'value="'.
+        $entity->getOrderDate().'"';?>>
+    </tr>
+    <tr>
+        <td>Data wpływu zlecenia</td>
+        <td><input type="text" name="receiveDate" <?php echo 'value="'.
+        $entity->getReceiveDate().'"';?>>
+    </tr>
+    <tr>
+        <td>Liczba analiz</td>
+        <td><input type="text" name="nrOfAnalyzes" <?php echo 'value="'.
+        $entity->getNrOfAnalyzes().'"';?>>
+    </tr>
+    <tr>
+        <td>Kwota</td>
+        <td><input type="text" name="sum" <?php echo 'value="'.
+        $entity->getSum().'"';?>>
+    </tr>
+    <tr>
+        <td>Źródło finansowania</td>
+        <td><input type="text" name="foundSource" <?php echo 'value="'.
+        $entity->getFoundSource().'"';?>>
+    </tr>
+    <tr>
+        <td>Nr obciążenia</td>
+        <td><input type="text" name="loadNr" <?php echo 'value="'.
+        $entity->getLoadNr().'"';?>>
+    </tr>
+</table>
+<h5>Metody badawcze</h5>
+<?php foreach ($methods as $method) {?>
+<input type="checkbox" name="method[]"
+    value="<?php echo $method->getId();?>"
+>
+<?php echo $method->getAcronym().'<br>';
+}?><br>
+<input type="submit" name="save" value="Zapisz">
+</form>

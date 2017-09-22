@@ -19,9 +19,13 @@ class OrderCommand extends Command
 
     public function formAction($request)
     {
-        $clients = Order::getFinder('Client')->findAll();
+        $order = new Order;
 
+        $clients = Order::getFinder('Client')->findAll();
+        $methods = Order::getFinder('Method')->findAll();
         $this->assign('clients', $clients);
+        $this->assign('methods', $methods);
+        $this->assign('entity', $order);
         return $this->render('app/view/order/form.php');
     }
 }

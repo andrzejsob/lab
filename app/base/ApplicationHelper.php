@@ -8,7 +8,7 @@ class ApplicationHelper
     private $session = null;
 	private $map = null;
     private $appcontroller = null;
-    private $iniFilePath = __DIR__ . "/../../lab.ini";
+    private $iniFilePath = __DIR__ . "/../../../lab.ini";
     private $values = array();
 
     private function __construct() {}

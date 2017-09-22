@@ -17,9 +17,7 @@ document.getElementsByClassName("feature").onclick = "location.href='?cmd=test'"
     <tr>
         <td class="feature"
         onclick = "location.href='?cmd=client-show&id=<?php echo $order->getId()?>'">
-            <?php echo 'Z-LA-'.$order->getNr().'/'.$order->getYear();
-                if ($order->getAkr()) echo '/'.$order->getAkr();
-            ?>
+            <?php echo $order->getCode()?>
         </td>
         <td>
             <a class="delete" href="?cmd=order-delete&id=<?php echo $order->getId();?>">
