@@ -2,6 +2,7 @@
 namespace lab\command;
 
 use lab\domain\Order;
+use lab\validation\form\Order as OrderForm;
 
 class OrderCommand extends Command
 {
@@ -23,9 +24,16 @@ class OrderCommand extends Command
 
         $clients = Order::getFinder('Client')->findAll();
         $methods = Order::getFinder('Method')->findAll();
+
+        $orderForm = new OrderForm($order);
+        $validation = $orderForm->handleRequest($request);
+
+        if($validation->isValid()) {
+
+        }
+
         $this->assign('clients', $clients);
         $this->assign('methods', $methods);
-        $this->assign('entity', $order);
-        return $this->render('app/view/order/form.php');
+        return $this->render('app/view/order/form.php', $orderForm->getData());
     }
 }

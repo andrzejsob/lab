@@ -16,6 +16,9 @@ function load(value) {
        xmlhttp.send();
 }
 </script>
+<?php foreach ($errors as $key => $value) {
+    echo '<p style="color: red">'.$value.'</p>';
+} ?>
 <h4>Klient</h4>
 <select name="clientId" onchange="load(this.value)">
     <option style="display:none" disabled selected value>
