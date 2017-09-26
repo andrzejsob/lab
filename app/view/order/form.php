@@ -20,22 +20,40 @@ function load(value) {
     echo '<p style="color: red">'.$value.'</p>';
 } ?>
 <h4>Klient</h4>
+<form method="post">
 <select name="clientId" onchange="load(this.value)">
     <option style="display:none" disabled selected value>
         -- Wybierz klienta --
     </option>
-    <?php foreach($clients as $client) { echo 'test';?>
-    <option value="<?php echo $client->getId();?>" >
+    <?php foreach($clients as $client) {?>
+    <option value="<?php echo $client->getId();?>"
+    <?php if ($client->getId() == $selectedClient->getId()) {
+            echo 'selected';
+    }?>
+    >
         <?php echo $client->getName();?>
     </option>
     <?php } ?>
 </select>
-<form method="post">
+
 <h4>Osoba do kontaktu</h4>
 <select id="clientSelect" name="contactId">
+    <?php
+        $id = -1;
+        if ($id = $entity->getContactPerson()->getId()) {
+        $contacts = $entity->getContactPerson()->getClient()->getContactPersons();
+        foreach ($contacts as $contact) {
+            echo '<option value="'.$contact->getId().'"';
+            if ($id == $contact->getId()) {echo 'selected';}
+            echo '>';
+            echo  $contact->getFirstName().' '.$contact->getLastName();
+            echo '</option>';
+        }
+    } else {?>
     <option disabled selected value>
         -- Nie wybrano klienta --
     </option>
+    <?php }?>
 </select>
 <h5>Dane zlecenia</h5>
 <table>

@@ -1,10 +1,10 @@
 <?php
 namespace lab\validation\specification;
 
-class NotNullObject
+class ValidObject
 {
     public function isSatisfiedBy($candidate)
     {
-        return !is_null($candidate);
+        return !is_null($candidate->getId());
     }
 }

@@ -2,14 +2,15 @@
 namespace lab\validation\form;
 
 use lab\validation\specification as specificator;
+use lab\domain\ContactPerson;
 
 class Order extends Entity
 {
     protected function setProperties($request) {
         $this->entityObject->setId($request->getProperty('id'));
-        $contactPerson = \lab\domain\Order::getFinder('ContactPerson')
-            ->find($request->getProperty('contactId'));
-        if (!is_null($contactPerson)) {
+        $contactId = $request->getProperty('contactId');
+        if (!is_null($contactId)) {
+            $contactPerson = ContactPerson::find($contactId);
             $this->entityObject->setContactPerson($contactPerson);
         }
         $this->entityObject->setNr($request->getProperty('nr'));
@@ -26,7 +27,7 @@ class Order extends Entity
     public function addValidators()
     {
         $this->validation->addSingleFieldValidation(
-            new specificator\NotNullObject,
+            new specificator\ValidObject,
             'contactPerson',
             'Nie wybrano osoby do kontaktu'
         );
@@ -39,6 +40,6 @@ class Order extends Entity
             ->forField('receiveDate')
             ->withMessage(
                 'Data wpłynięcia zlecenia do laboratorium nie może być pusta'
-            );
+        );
     }
 }

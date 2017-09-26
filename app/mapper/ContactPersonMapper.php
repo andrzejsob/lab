@@ -54,6 +54,8 @@ class ContactPersonMapper extends Mapper
             $array['email2'],
             $array['phone']
         );
+        $client = Client::find($array['client_id']);
+        $obj->setClient($client);
         return $obj;
     }
 

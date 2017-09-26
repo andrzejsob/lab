@@ -2,6 +2,8 @@
 namespace lab\command;
 
 use lab\domain\Order;
+use lab\domain\ContactPerson;
+use lab\domain\Client;
 use lab\validation\form\Order as OrderForm;
 
 class OrderCommand extends Command
@@ -20,7 +22,10 @@ class OrderCommand extends Command
 
     public function formAction($request)
     {
-        $order = new Order;
+        var_dump($request->getProperty('clientId'));
+        $order = new Order();
+        $order->setContactPerson(new ContactPerson());
+        $order->getContactPerson()->setClient(new Client());
 
         $clients = Order::getFinder('Client')->findAll();
         $methods = Order::getFinder('Method')->findAll();
@@ -29,9 +34,12 @@ class OrderCommand extends Command
         $validation = $orderForm->handleRequest($request);
 
         if($validation->isValid()) {
-
+            echo 'Formularz poprawny';exit;
         }
-
+        $this->assign('selectedClient', $order->getContactPeron()->getClient());
+        $clientContactPersons =
+        $this->assign('selectedClientContacts', )
+        $this->assign('seletedContacts',)
         $this->assign('clients', $clients);
         $this->assign('methods', $methods);
         return $this->render('app/view/order/form.php', $orderForm->getData());

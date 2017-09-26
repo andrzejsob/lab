@@ -1,6 +1,8 @@
 <?php
 namespace lab\domain;
 
+use lab\domain\Client;
+
 class ContactPerson extends DomainObject
 {
     private $firstName;
@@ -33,7 +35,7 @@ class ContactPerson extends DomainObject
         return $this->client;
     }
 
-    public function setClient(DomainObject $obj)
+    public function setClient(Client $obj)
     {
         $this->client = $obj;
     }
