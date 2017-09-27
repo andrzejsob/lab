@@ -4,6 +4,8 @@ namespace lab\command;
 use lab\domain\Order;
 use lab\domain\ContactPerson;
 use lab\domain\Client;
+use lab\domain\Method;
+use lab\mapper\MethodCollection;
 use lab\validation\form\Order as OrderForm;
 
 class OrderCommand extends Command
@@ -22,26 +24,30 @@ class OrderCommand extends Command
 
     public function formAction($request)
     {
-        var_dump($request->getProperty('clientId'));
         $order = new Order();
         $order->setContactPerson(new ContactPerson());
         $order->getContactPerson()->setClient(new Client());
+        $order->setMethods(new MethodCollection());
 
-        $clients = Order::getFinder('Client')->findAll();
-        $methods = Order::getFinder('Method')->findAll();
+        if ($id = $request->getProperty('id')) {
+            $order = $order->find($id);
+            if (is_null($order)) {
+                new Redirect(
+                    '?cmd=order',
+                    new Error('Brak zlecenia o podanym id.')
+                );
+            }
+        }
 
         $orderForm = new OrderForm($order);
         $validation = $orderForm->handleRequest($request);
 
         if($validation->isValid()) {
-            echo 'Formularz poprawny';exit;
+            echo '<pre>';
+            print_r($order);
+            echo '</pre>';exit;
         }
-        $this->assign('selectedClient', $order->getContactPeron()->getClient());
-        $clientContactPersons =
-        $this->assign('selectedClientContacts', )
-        $this->assign('seletedContacts',)
-        $this->assign('clients', $clients);
-        $this->assign('methods', $methods);
+
         return $this->render('app/view/order/form.php', $orderForm->getData());
     }
 }

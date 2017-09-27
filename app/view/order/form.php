@@ -9,7 +9,7 @@ function load(value) {
                text += '<option value="' + obj[x].id + '">' + obj[x].first_name +
                ' ' + obj[x].last_name + '</option>';
              }
-               document.getElementById("clientSelect").innerHTML = text;
+               document.getElementById("contactSelect").innerHTML = text;
            }
        };
        xmlhttp.open("GET", "test.php?q=" + value, true);
@@ -28,27 +28,24 @@ function load(value) {
     <?php foreach($clients as $client) {?>
     <option value="<?php echo $client->getId();?>"
     <?php if ($client->getId() == $selectedClient->getId()) {
-            echo 'selected';
-    }?>
-    >
-        <?php echo $client->getName();?>
+          echo 'selected';
+    }?>>
+    <?php echo $client->getName();?>
     </option>
     <?php } ?>
 </select>
 
 <h4>Osoba do kontaktu</h4>
-<select id="clientSelect" name="contactId">
-    <?php
-        $id = -1;
-        if ($id = $entity->getContactPerson()->getId()) {
-        $contacts = $entity->getContactPerson()->getClient()->getContactPersons();
-        foreach ($contacts as $contact) {
-            echo '<option value="'.$contact->getId().'"';
-            if ($id == $contact->getId()) {echo 'selected';}
-            echo '>';
-            echo  $contact->getFirstName().' '.$contact->getLastName();
-            echo '</option>';
-        }
+<select id="contactSelect" name="contactId">
+    <?php if ($selectedContact->getId()) {
+        foreach ($selectedClientContacts as $contact) {?>
+          <option value="<?php echo $contact->getId();?>"
+          <?php if ($selectedContact->getId() == $contact->getId()) {?>
+                selected
+          <?php } ?>>
+          <?php echo $contact->getFirstName().' '.$contact->getLastName()?>
+          </option>
+  <?php }
     } else {?>
     <option disabled selected value>
         -- Nie wybrano klienta --
@@ -61,6 +58,7 @@ function load(value) {
         <td>Data na zleceniu</td>
         <td><input type="text" name="orderDate" <?php echo 'value="'.
         $entity->getOrderDate().'"';?>>
+        </td>
     </tr>
     <tr>
         <td>Data wpływu zlecenia</td>
@@ -87,11 +85,22 @@ function load(value) {
         <td><input type="text" name="loadNr" <?php echo 'value="'.
         $entity->getLoadNr().'"';?>>
     </tr>
+    <tr>
+        <td>AKR</td>
+        <td><input type="checkbox" name="akr" value=1
+        <?php if ($entity->getAkr()) {?>
+            checked
+        <?php } ?>>
+        </td>
+    </tr>
 </table>
 <h5>Metody badawcze</h5>
 <?php foreach ($methods as $method) {?>
-<input type="checkbox" name="method[]"
-    value="<?php echo $method->getId();?>"
+<input type="checkbox" name="methods[]"
+    value="<?php echo $method->getId()?>"
+    <?php if (in_array($method->getId(), $checkedMethodsIdArray)) {?>
+    checked
+    <?php }?>
 >
 <?php echo $method->getAcronym().'<br>';
 }?><br>

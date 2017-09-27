@@ -85,7 +85,7 @@ class Order extends DomainObject
         $this->contactPerson = $person;
     }
 
-    public function setMethods(\lab\domain\MethodCollection $methods)
+    public function setMethods(\lab\mapper\MethodCollection $methods)
     {
         $this->methods = $methods;
     }

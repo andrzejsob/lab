@@ -10,6 +10,7 @@ abstract class Entity
 {
     protected $entityObject;
     protected $validation;
+    protected $vars = array();
 
     public function __construct(DomainObject $object)
     {
@@ -18,7 +19,7 @@ abstract class Entity
     }
 
     abstract protected function addValidators();
-
+    abstract protected function setVars(Request $request);
     abstract protected function setProperties($request);
 
     public function handleRequest(Request $request)
@@ -29,7 +30,7 @@ abstract class Entity
             $this->addValidators();
             $this->validation->validate($this->entityObject);
         }
-
+        $this->setVars($request);
         return $this->validation;
     }
 
@@ -37,19 +38,26 @@ abstract class Entity
     {
         //dane nie zostały sprawdzone
         if (!$this->validation->hasValidated()) {
-            return array(
+            $this->vars['errors'] = array();
+            $this->vars['entity'] = $this->entityObject;
+            return $this->vars;
+            /*return array(
                 'errors' => [],
                 'entity' => $this->entityObject
-            );
+            );*/
         }
         //dane zostały sprawdzone i są niepoprawne
         if (!$this->validation->isValid()) {
-            return array(
+            $this->vars['errors'] = $this->validation->getErrors();
+            $this->vars['entity'] = $this->validation->getClean();
+            return $this->vars;
+            /*return array(
                 'errors' => $this->validation->getErrors(),
                 'entity' => $this->validation->getClean()
-            );
+            );*/
         }
         //dane zostały sprawdzone i są poprawne
         return $this->validation->getClean();
+        //return $this->validation->getClean();
     }
 }

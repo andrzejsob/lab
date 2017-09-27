@@ -19,7 +19,6 @@ class LoginCommand extends Command
         $loginForm = new LoginForm($user);
         $validation = $loginForm->handleRequest($request);
         if ($validation->isValid()) {
-            $user = $loginForm->getData();
             $authUser = $user->authenticate();
             if ($authUser) {
                 //zapisanie użytkownika do sesji
@@ -28,7 +27,7 @@ class LoginCommand extends Command
             }
             return $this->render(
                 'app/view/login/form.php',
-                array('errors' => ['Błedny login lub hasło'],
+                array('errors' => array('Błedny login lub hasło'),
                       'entity' => new User())
             );
         }

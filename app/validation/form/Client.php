@@ -2,6 +2,7 @@
 namespace lab\validation\form;
 
 use lab\validation\specification as specificator;
+use lab\controller\Request;
 
 class Client extends Entity
 {
@@ -24,5 +25,10 @@ class Client extends Entity
         $this->validation->addSingleFieldValidation(new specificator\ZipCodeFormat)
             ->forField('zipCode')
             ->withMessage('Kod musi mieć format: 12-345');
+    }
+
+    public function setVars(Request $request)
+    {
+
     }
 }
