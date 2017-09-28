@@ -28,12 +28,15 @@ class OrderMapper extends Mapper
                 sum,
                 found_source,
                 load_nr ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
+        $this->deleteOrderMethodStmt = self::$PDO->prepare(
+            'DELETE FROM internal_order_method WHERE internal_order_id = ?'
+        );
         $this->insertOrderMethodStmt = self::$PDO->prepare(
             'INSERT INTO internal_order_method (internal_order_id, method_id)
-            VALUES (?, ?)');
+            VALUES (?, ?)'
+        );
         $this->selectByClientIdStmt = self::$PDO->prepare(
-            'SELECT o.id, o.contactPersonId, o.nr, o.year, o.akr, o.orderDate,
-            o.receiveDate, o.nrOfAnalyzes, o.sum, o.foundSource, o.loadNr
+            'SELECT o.*
             FROM internal_order as o
             JOIN contact_person AS cp ON cp.id = o.contactPersonId
             JOIN client AS c ON c.id = cp.client_id
@@ -43,6 +46,19 @@ class OrderMapper extends Mapper
             JOIN user AS u ON u.id = um.user_id
             WHERE c.id = ?
         ');
+        $this->updateStmt = self::$PDO->prepare(
+            'UPDATE internal_order SET
+            contact_person_id = ?,
+            nr = ?,
+            akr = ?,
+            order_date = ?,
+            receive_date = ?,
+            nr_of_analyzes = ?,
+            sum = ?,
+            found_source = ?,
+            load_nr = ?
+            WHERE id = ?'
+        );
     }
 
     public function getCollection(array $raw)
@@ -59,16 +75,16 @@ class OrderMapper extends Mapper
     {
         $obj = new Order(
             $array['id'],
-            $array['contactPersonId'],
+            $array['contact_person_id'],
             $array['nr'],
             $array['year'],
             $array['akr'],
-            $array['orderDate'],
-            $array['receiveDate'],
-            $array['nrOfAnalyzes'],
+            $array['order_date'],
+            $array['receive_date'],
+            $array['nr_of_analyzes'],
             $array['sum'],
-            $array['foundSource'],
-            $array['loadNr']
+            $array['found_source'],
+            $array['load_nr']
         );
         return $obj;
     }
@@ -88,7 +104,7 @@ class OrderMapper extends Mapper
         $values = array(
             $contactPerson->getId(),
             $object->getNr(),
-            $object->getYear(),
+            date('Y'),
             $object->getAkr(),
             $object->getOrderDate(),
             $object->getReceiveDate(),
@@ -107,10 +123,33 @@ class OrderMapper extends Mapper
         }
     }
 
-    public function update(DomainObject $object)
+    public function update(DomainObject $order)
     {
-        $values = array();
-        $this->updateStmt->execute($values);
+        $values = array(
+            $order->getContactPerson()->getId(),
+            $order->getNr(),
+            $order->getAkr(),
+            $order->getOrderDate(),
+            $order->getReceiveDate(),
+            $order->getNrOfAnalyzes(),
+            $order->getSum(),
+            $order->getFoundSOurce(),
+            $order->getLoadNr(),
+            $order->getId()
+        );
+
+        self::$PDO->beginTransaction();
+            $this->updateStmt->execute($values);
+            $this->deleteOrderMethodStmt->execute(array($order->getId()));
+
+            foreach($order->getMethods() as $method) {
+                $this->insertOrderMethodStmt->execute(array(
+                    $order->getId(),
+                    $method->getId()
+                ));
+            }
+
+        self::$PDO->commit();
     }
 
     public function selectStmt()

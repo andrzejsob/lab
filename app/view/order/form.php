@@ -55,6 +55,12 @@ function load(value) {
 <h5>Dane zlecenia</h5>
 <table>
     <tr>
+        <td>Nr</td>
+        <td><input type="text" name="nr" <?php echo 'value="'.
+        $entity->getNr().'"';?> readonly>
+        </td>
+    </tr>
+    <tr>
         <td>Data na zleceniu</td>
         <td><input type="text" name="orderDate" <?php echo 'value="'.
         $entity->getOrderDate().'"';?>>

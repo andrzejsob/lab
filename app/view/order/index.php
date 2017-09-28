@@ -8,7 +8,7 @@ document.getElementsByClassName("feature").onclick = "location.href='?cmd=test'"
 </div>
 <?php } ?>
 <h4>Lista zleceń</h4>
-<a class="add" href="?cmd=order-form">Nowe zlecenie</a>
+<a class="add" href="?cmd=order-new">Nowe zlecenie</a>
 <table class="list_table">
     <tr>
         <th>Kod</th>
@@ -23,7 +23,7 @@ document.getElementsByClassName("feature").onclick = "location.href='?cmd=test'"
             <a class="delete" href="?cmd=order-delete&id=<?php echo $order->getId();?>">
                 Usuń
             </a>
-            <a class="edit" href="?cmd=order-form&id=<?php echo $order->getId();?>">
+            <a class="edit" href="?cmd=order-edit&id=<?php echo $order->getId();?>">
                 Edytuj
             </a>
         </td>

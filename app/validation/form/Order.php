@@ -11,20 +11,23 @@ use lab\mapper\MethodCollection;
 class Order extends Entity
 {
     protected function setProperties($request) {
-        $this->entityObject->setId($request->getProperty('id'));
-        $contactId = $request->getProperty('contactId');
-        if (!is_null($contactId)) {
+        $contactPerson = new ContactPerson();
+        $contactPerson->setClient(new Client());
+        $methodColl = new MethodCollection();
+
+        if ($contactId = $request->getProperty('contactId')) {
             $contactPerson = ContactPerson::find($contactId);
-            $this->entityObject->setContactPerson($contactPerson);
         }
-        if (count($methodIds = $request->getProperty('methods'))) {
-            $methodColl = $this->entityObject->getMethods();
+
+        if ($methodIds = $request->getProperty('methods')) {
             foreach ($methodIds as $methodId) {
                 $methodColl->add(Method::find($methodId));
             }
         }
+
+        $this->entityObject->setContactPerson($contactPerson);
+        $this->entityObject->setMethods($methodColl);
         $this->entityObject->setNr($request->getProperty('nr'));
-        $this->entityObject->setYear($request->getProperty('year'));
         $this->entityObject->setAKR($request->getProperty('akr'));
         $this->entityObject->setOrderDate($request->getProperty('orderDate'));
         $this->entityObject->setReceiveDate($request->getProperty('receiveDate'));

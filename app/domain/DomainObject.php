@@ -82,6 +82,11 @@ abstract class DomainObject
         }
     }
 
+    public function update()
+    {
+        self::getFinder()->update($this);
+    }
+
     public static function getCollection($type = null)
     {
         if (is_null($type)) {

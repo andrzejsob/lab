@@ -6,6 +6,9 @@ use lab\domain\ContactPerson;
 use lab\domain\Client;
 use lab\domain\Method;
 use lab\mapper\MethodCollection;
+use lab\base\Success;
+use lab\base\Error;
+use lab\base\Redirect;
 use lab\validation\form\Order as OrderForm;
 
 class OrderCommand extends Command
@@ -22,30 +25,54 @@ class OrderCommand extends Command
         return $this->render('app/view/order/index.php');
     }
 
-    public function formAction($request)
+    public function newAction($request)
     {
         $order = new Order();
         $order->setContactPerson(new ContactPerson());
         $order->getContactPerson()->setClient(new Client());
         $order->setMethods(new MethodCollection());
 
-        if ($id = $request->getProperty('id')) {
-            $order = $order->find($id);
-            if (is_null($order)) {
-                new Redirect(
-                    '?cmd=order',
-                    new Error('Brak zlecenia o podanym id.')
-                );
-            }
-        }
-
         $orderForm = new OrderForm($order);
         $validation = $orderForm->handleRequest($request);
 
         if($validation->isValid()) {
-            echo '<pre>';
-            print_r($order);
-            echo '</pre>';exit;
+            $messageClass;
+            try {
+                $order->insert();
+                $messageClass = new Success(
+                    'Zarejestrowano zlecenie: '.
+                    $order->getCode()
+                );
+            } catch (\Exception $e) {
+                $messageClass = new Error('Dane nie zostały zapisane. '.
+                $e->getMessage());
+            }
+            new Redirect('?cmd=order', $messageClass);
+        }
+
+        return $this->render('app/view/order/form.php', $orderForm->getData());
+    }
+
+    public function editAction($request)
+    {
+        $order = Order::find($request->getProperty('id'));
+        if (is_null($order)) {
+            new Redirect('?cmd=order', new Error('Brak zlecenia o podanym id.'));
+        }
+        $orderForm = new OrderForm($order);
+        $validation = $orderForm->handleRequest($request);
+
+        if ($validation->isValid()) {
+            $messageClass;
+            try {
+                $order->update();
+                $messageClass = new Success(
+                    'Zlecenie nr: '.$order->getCode().' zostało zapisane');
+            } catch (\Exception $e) {
+                $messageClass = new Error('Dane nie zostały zapisane. '.
+                $e->getMessage());
+            }
+            new Redirect('?cmd=order', $messageClass);
         }
 
         return $this->render('app/view/order/form.php', $orderForm->getData());
