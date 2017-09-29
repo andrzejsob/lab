@@ -65,14 +65,14 @@ class Order extends Entity
     public function setVars(Request $request)
     {
         $selectedClient = $this->entityObject->getContactPerson()->getClient();
-        $methodIds = $request->getProperty('methods');
-        if (is_null($methodIds)) {
-            $methodIds = array();
+        
+        $methodIds = array();
+        if (!is_null($request->getProperty('methods'))) {
+            $methodIds = $request->getProperty('methods');
+        } else {
+            $methodIds = $this->entityObject->getMethods()->getArray('id');
         }
 
-        if (count($ids = $this->entityObject->getMethods()->getArray('id'))) {
-            $methodIds = $ids;
-        }
         $this->vars = array(
             'checkedMethodsIdArray' => $methodIds,
             'clients' => Client::getFinder()->findAll(),

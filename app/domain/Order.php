@@ -3,7 +3,6 @@ namespace lab\domain;
 
 class Order extends DomainObject
 {
-    private $contactPersonId;
     private $nr;
     private $year;
     private $akr;
@@ -18,7 +17,6 @@ class Order extends DomainObject
 
     public function __construct(
         $id = null,
-        $contact_person_id = null,
         $nr = null,
         $year = null,
         $akr = null,
@@ -31,7 +29,6 @@ class Order extends DomainObject
     )
     {
         parent::__construct($id);
-        $this->contactPersonId = $contact_person_id;
         $this->nr = $nr;
         $this->year = $year;
         $this->akr = $akr;

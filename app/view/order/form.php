@@ -55,7 +55,7 @@ function load(value) {
 <h5>Dane zlecenia</h5>
 <table>
     <tr>
-        <td>Nr</td>
+        <td>Nr (wypełniany automatycznie)</td>
         <td><input type="text" name="nr" <?php echo 'value="'.
         $entity->getNr().'"';?> readonly>
         </td>

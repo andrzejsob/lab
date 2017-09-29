@@ -28,6 +28,17 @@ class OrderMapper extends Mapper
                 sum,
                 found_source,
                 load_nr ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
+                contact_person_id,
+                nr,
+                year,
+                akr,
+                order_date,
+                receive_date,
+                nr_of_analyzes,
+                sum,
+                found_source,
+                load_nr ) SELECT ?, MAX(nr)+1, ?, ?, ?, ?, ?, ?, ?, ?
+                from internal_order');
         $this->deleteOrderMethodStmt = self::$PDO->prepare(
             'DELETE FROM internal_order_method WHERE internal_order_id = ?'
         );
@@ -75,7 +86,6 @@ class OrderMapper extends Mapper
     {
         $obj = new Order(
             $array['id'],
-            $array['contact_person_id'],
             $array['nr'],
             $array['year'],
             $array['akr'],
