@@ -14,10 +14,10 @@ class OrderMapper extends Mapper
             "SELECT * FROM internal_order");
         $this->selectStmt = self::$PDO->prepare(
             "SELECT * FROM internal_order WHERE id = ?");
-        $this->selectPreviousNrStmt = self::$PDO->prepare(
+        $this->selectNrStmt = self::$PDO->prepare(
             "SELECT MAX(nr) FROM internal_order");
         $this->insertStmt = self::$PDO->prepare(
-            'INSERT INTO internal_order as io (
+            'INSERT INTO internal_order (
                 contact_person_id,
                 nr,
                 year,
@@ -27,18 +27,8 @@ class OrderMapper extends Mapper
                 nr_of_analyzes,
                 sum,
                 found_source,
-                load_nr ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
-                contact_person_id,
-                nr,
-                year,
-                akr,
-                order_date,
-                receive_date,
-                nr_of_analyzes,
-                sum,
-                found_source,
-                load_nr ) SELECT ?, MAX(nr)+1, ?, ?, ?, ?, ?, ?, ?, ?
-                from internal_order');
+                load_nr )
+              SELECT ?, MAX(nr)+1, ?, ?, ?, ?, ?, ?, ?, ? FROM internal_order');
         $this->deleteOrderMethodStmt = self::$PDO->prepare(
             'DELETE FROM internal_order_method WHERE internal_order_id = ?'
         );
@@ -84,7 +74,7 @@ class OrderMapper extends Mapper
 
     protected function doCreateObject(array $array)
     {
-        $obj = new Order(
+        $order = new Order(
             $array['id'],
             $array['nr'],
             $array['year'],
@@ -96,7 +86,10 @@ class OrderMapper extends Mapper
             $array['found_source'],
             $array['load_nr']
         );
-        return $obj;
+        $contactFinder = Order::getFinder('ContactPerson');
+        $contactPerson = $contactFinder->find($array['contact_person_id']);
+        $order->setContactPerson($contactPerson);
+        return $order;
     }
 
     protected function doInsert(DomainObject $object)
@@ -106,26 +99,23 @@ class OrderMapper extends Mapper
             throw new Exception('Brak id osoby do kontaktu.');
         }
 
-        $this->selectPreviousNrStmt->execute(array());
-        $nr = $this->selectPreviousNrStmt->fetch(\PDO::FETCH_NUM);
-        print_r($nr);
-        $object->setNr($nr[0] + 1);
-        echo $object->getNr()."\n";exit;
+        $object->setYear(date('Y'));
         $values = array(
             $contactPerson->getId(),
-            $object->getNr(),
-            date('Y'),
+            $object->getYear(),
             $object->getAkr(),
             $object->getOrderDate(),
             $object->getReceiveDate(),
             $object->getNrOfAnalyzes(),
             $object->getSum(),
-            $object->getFoundSOurce(),
+            $object->getFoundSource(),
             $object->getLoadNr()
         );
         $this->insertStmt->execute($values);
-        $id = self::$PDO->lastInsertId();
-        $object->setId($id);
+        $object->setId(self::$PDO->lastInsertId());
+        $stmt = $this->selectNrStmt->execute(array());
+        $nr = $this->selectNrStmt->fetch(\PDO::FETCH_NUM);
+        $object->setNr($nr[0]);
 
         foreach($object->getMethods() as $method) {
             $array = [$object->getId(), $method->getId()];

@@ -42,10 +42,6 @@ class Order extends DomainObject
 
     public function getContactPerson()
     {
-        if (is_null($this->contactPerson)) {
-            $finder = self::getFinder(ContactPerson::class);
-            $this->contactPerson = $finder->find($this->contactPersonId);
-        }
         return $this->contactPerson;
     }
 

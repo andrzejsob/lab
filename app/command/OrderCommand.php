@@ -38,7 +38,7 @@ class OrderCommand extends Command
         if($validation->isValid()) {
             $messageClass;
             try {
-                $order->insert();
+                $order->save();
                 $messageClass = new Success(
                     'Zarejestrowano zlecenie: '.
                     $order->getCode()
