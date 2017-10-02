@@ -1,9 +1,11 @@
 <?php
 namespace lab\mapper;
 
-use \lab\domain\DomainObject;
-use \lab\domain\Order;
-use \lab\mapper\OrderCollection;
+use lab\domain\DomainObject;
+use lab\domain\Order;
+use lab\domain\ContactPerson;
+use lab\mapper\OrderCollection;
+use lab\base\ApplicationHelper;
 
 class OrderMapper extends Mapper
 {
@@ -50,7 +52,6 @@ class OrderMapper extends Mapper
         $this->updateStmt = self::$PDO->prepare(
             'UPDATE internal_order SET
             contact_person_id = ?,
-            nr = ?,
             akr = ?,
             order_date = ?,
             receive_date = ?,
@@ -60,6 +61,51 @@ class OrderMapper extends Mapper
             load_nr = ?
             WHERE id = ?'
         );
+    }
+
+    private function selectUserOrdersByStmt(DomainObject $object = null)
+    {
+        $userId = ApplicationHelper::getSession()->getUser()->getId();
+        $classNameArray = explode('\\', get_class($object));
+        $className = array_pop($classNameArray);
+        echo $className;
+        $condition;
+
+        switch ($className) {
+            case 'Client':
+                $condition = ' AND c.id = ?';
+                break;
+            case 'ContactPerson':
+                $condition = ' AND cp.id = ?';
+                break;
+            default:
+                $condition = '';
+                break;
+        }
+
+        return self::$PDO->prepare(
+            'SELECT DISTINCT o.*
+            FROM internal_order as o
+            JOIN contact_person AS cp ON cp.id = o.contact_person_id
+            JOIN client AS c ON c.id = cp.client_id
+            JOIN internal_order_method AS om ON om.internal_order_id = o.id
+            JOIN method AS m ON m.id = om.method_id
+            JOIN user_method AS um ON um.method_id = m.id
+            JOIN user AS u ON u.id = um.user_id
+            WHERE u.id = '.$userId.''.$condition
+        );
+    }
+
+    public function findUserOrdersBy(DomainObject $object = null)
+    {
+        $array = array();
+        if (!is_null($object)) {
+            $array = array($object->getId());
+        }
+        $stmt = $this->selectUserOrdersByStmt($object);
+        $stmt->execute($array);
+        $rawArray = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        return $this->getCollection($rawArray);
     }
 
     public function getCollection(array $raw)
@@ -86,48 +132,45 @@ class OrderMapper extends Mapper
             $array['found_source'],
             $array['load_nr']
         );
-        $contactFinder = Order::getFinder('ContactPerson');
-        $contactPerson = $contactFinder->find($array['contact_person_id']);
+        $contactPerson = ContactPerson::find($array['contact_person_id']);
         $order->setContactPerson($contactPerson);
         return $order;
     }
 
-    protected function doInsert(DomainObject $object)
+    protected function doInsert(DomainObject $order)
     {
-        $contactPerson = $object->getContactPerson();
-        if (!$contactPerson->getId()) {
+        $contactPersonId = $order->getContactPerson()->getId();
+
+        if (!$contactPersonId) {
             throw new Exception('Brak id osoby do kontaktu.');
         }
 
-        $object->setYear(date('Y'));
+        $order->setYear(date('Y'));
         $values = array(
-            $contactPerson->getId(),
-            $object->getYear(),
-            $object->getAkr(),
-            $object->getOrderDate(),
-            $object->getReceiveDate(),
-            $object->getNrOfAnalyzes(),
-            $object->getSum(),
-            $object->getFoundSource(),
-            $object->getLoadNr()
+            $contactPersonId,
+            $order->getYear(),
+            $order->getAkr(),
+            $order->getOrderDate(),
+            $order->getReceiveDate(),
+            $order->getNrOfAnalyzes(),
+            $order->getSum(),
+            $order->getFoundSource(),
+            $order->getLoadNr()
         );
+        self::$PDO->beginTransaction();
         $this->insertStmt->execute($values);
-        $object->setId(self::$PDO->lastInsertId());
+        $order->setId(self::$PDO->lastInsertId());
         $stmt = $this->selectNrStmt->execute(array());
         $nr = $this->selectNrStmt->fetch(\PDO::FETCH_NUM);
-        $object->setNr($nr[0]);
-
-        foreach($object->getMethods() as $method) {
-            $array = [$object->getId(), $method->getId()];
-            $this->insertOrderMethodStmt->execute($array);
-        }
+        $order->setNr($nr[0]);
+        $this->insertOrderMethods($order);
+        self::$PDO->commit();
     }
 
     public function update(DomainObject $order)
     {
         $values = array(
             $order->getContactPerson()->getId(),
-            $order->getNr(),
             $order->getAkr(),
             $order->getOrderDate(),
             $order->getReceiveDate(),
@@ -139,17 +182,18 @@ class OrderMapper extends Mapper
         );
 
         self::$PDO->beginTransaction();
-            $this->updateStmt->execute($values);
-            $this->deleteOrderMethodStmt->execute(array($order->getId()));
-
-            foreach($order->getMethods() as $method) {
-                $this->insertOrderMethodStmt->execute(array(
-                    $order->getId(),
-                    $method->getId()
-                ));
-            }
-
+        $this->updateStmt->execute($values);
+        $this->deleteOrderMethodStmt->execute(array($order->getId()));
+        $this->insertOrderMethods($order);
         self::$PDO->commit();
+    }
+
+    private function insertOrderMethods($order)
+    {
+        foreach($order->getMethods() as $method) {
+            $array = array($order->getId(), $method->getId());
+            $this->insertOrderMethodStmt->execute($array);
+        }
     }
 
     public function selectStmt()

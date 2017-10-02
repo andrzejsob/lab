@@ -20,7 +20,8 @@ class OrderCommand extends Command
 
     public function indexAction($request)
     {
-        $io_coll = Order::getFinder()->findAll();
+        $client = new Client();
+        $io_coll = Order::getFinder()->findUserOrdersBy();
         $this->template->assign('orders', $io_coll);
         return $this->render('app/view/order/index.php');
     }
@@ -65,7 +66,7 @@ class OrderCommand extends Command
         if ($validation->isValid()) {
             $messageClass;
             try {
-                $order->update();
+                $order->save();
                 $messageClass = new Success(
                     'Zlecenie nr: '.$order->getCode().' zostało zapisane');
             } catch (\Exception $e) {

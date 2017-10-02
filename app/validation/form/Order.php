@@ -65,7 +65,7 @@ class Order extends Entity
     public function setVars(Request $request)
     {
         $selectedClient = $this->entityObject->getContactPerson()->getClient();
-        
+
         $methodIds = array();
         if (!is_null($request->getProperty('methods'))) {
             $methodIds = $request->getProperty('methods');
