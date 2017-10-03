@@ -12,12 +12,19 @@ document.getElementsByClassName("feature").onclick = "location.href='?cmd=test'"
 <table class="list_table">
     <tr>
         <th>Kod</th>
+        <th>Kontakt</th>
     </tr>
     <?php foreach ($orders as $order) {?>
     <tr>
         <td class="feature"
-        onclick = "location.href='?cmd=client-show&id=<?php echo $order->getId()?>'">
+        onclick = "location.href='?cmd=order-show&id=<?php echo $order->getId()?>'">
             <?php echo $order->getCode()?>
+        </td>
+        <td class="feature"
+        onclick = "location.href='?cmd=contact-show&id=
+        <?php echo $order->getContactPerson()->getId()?>'">
+            <?php echo $order->getContactPerson()->getFirstName().' '.
+            $order->getContactPerson()->getLastName()?>
         </td>
         <td>
             <a class="delete" href="?cmd=order-delete&id=<?php echo $order->getId();?>">

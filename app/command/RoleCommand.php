@@ -20,12 +20,11 @@ class RoleCommand extends Command
 
     public function indexAction($request)
     {
-        //$rMapper = new RoleMapper();
         $roles = Role::getFinder()->findAll();
 
         return $this->render(
             'app/view/role/index.php',
-            ['roles' => $roles]
+            array('roles' => $roles)
         );
     }
 

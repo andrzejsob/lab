@@ -6,6 +6,7 @@ use lab\domain\ContactPerson;
 use lab\domain\Client;
 use lab\domain\Method;
 use lab\mapper\MethodCollection;
+use lab\base\ApplicationHelper;
 use lab\base\Success;
 use lab\base\Error;
 use lab\base\Redirect;
@@ -20,8 +21,8 @@ class OrderCommand extends Command
 
     public function indexAction($request)
     {
-        $client = new Client();
-        $io_coll = Order::getFinder()->findUserOrdersBy();
+        $userId = ApplicationHelper::getSession()->getUser()->getId();
+        $io_coll = Order::getFinder()->findOrdersForUser($userId);
         $this->template->assign('orders', $io_coll);
         return $this->render('app/view/order/index.php');
     }

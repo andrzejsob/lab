@@ -2,10 +2,10 @@
 namespace lab\base;
 
 class Redirect{
-    public function __construct($path, Message $class = null)
+    public function __construct($path, Message $type = null)
     {
-        if(!is_null($class)) {
-            $class->setMessage();
+        if(!is_null($type)) {
+            $type->setMessage();
         }
         $this->doRedirect($path);
     }

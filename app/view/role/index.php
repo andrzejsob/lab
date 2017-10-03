@@ -17,7 +17,7 @@
         <td class="feature">
             <ul style="list-style-type: none; margin: 0; padding: 0;">
             <?php foreach ($permissions = $role->getPermissions() as $permission) {?>
-            <li><?php echo $permission->getName();}?></li>
+            <li><?php echo $permission->getDescription();}?></li>
             </ul>
         </td>
         <td>

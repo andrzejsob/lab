@@ -61,50 +61,19 @@ class OrderMapper extends Mapper
             load_nr = ?
             WHERE id = ?'
         );
-    }
-
-    private function selectUserOrdersByStmt(DomainObject $object = null)
-    {
-        $userId = ApplicationHelper::getSession()->getUser()->getId();
-        $classNameArray = explode('\\', get_class($object));
-        $className = array_pop($classNameArray);
-        echo $className;
-        $condition;
-
-        switch ($className) {
-            case 'Client':
-                $condition = ' AND c.id = ?';
-                break;
-            case 'ContactPerson':
-                $condition = ' AND cp.id = ?';
-                break;
-            default:
-                $condition = '';
-                break;
-        }
-
-        return self::$PDO->prepare(
+        $this->selectOrdersForUserStmt = self::$PDO->prepare(
             'SELECT DISTINCT o.*
             FROM internal_order as o
-            JOIN contact_person AS cp ON cp.id = o.contact_person_id
-            JOIN client AS c ON c.id = cp.client_id
             JOIN internal_order_method AS om ON om.internal_order_id = o.id
-            JOIN method AS m ON m.id = om.method_id
-            JOIN user_method AS um ON um.method_id = m.id
-            JOIN user AS u ON u.id = um.user_id
-            WHERE u.id = '.$userId.''.$condition
+            JOIN user_method AS um ON um.method_id = om.method_id
+            WHERE um.user_id = ? ORDER BY o.nr'
         );
     }
 
-    public function findUserOrdersBy(DomainObject $object = null)
+    public function findOrdersForUser($userId)
     {
-        $array = array();
-        if (!is_null($object)) {
-            $array = array($object->getId());
-        }
-        $stmt = $this->selectUserOrdersByStmt($object);
-        $stmt->execute($array);
-        $rawArray = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        $this->selectOrdersForUserStmt->execute(array($userId));
+        $rawArray = $this->selectOrdersForUserStmt->fetchAll(\PDO::FETCH_ASSOC);
         return $this->getCollection($rawArray);
     }
 
