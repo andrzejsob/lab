@@ -45,13 +45,6 @@ class Order extends DomainObject
         return $this->contactPerson;
     }
 
-    public function getContactId() {
-        if (is_null($this->contactPerson)) {
-            return null;
-        }
-        $this->contactPerson->getId();
-    }
-
     public function getMethods()
     {
         if (is_null($this->methods)) {

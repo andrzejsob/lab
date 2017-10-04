@@ -22,8 +22,8 @@ class PermissionMapper extends Mapper
         $this->findByRoleStmt = self::$PDO->prepare(
             "SELECT id, name, description FROM permission as p
             JOIN role_perm as rp
-            ON p.id = rp.permId
-            WHERE rp.roleId = ?"
+            ON p.id = rp.perm_id
+            WHERE rp.role_id = ?"
         );
         $this->deleteRolePermissionsStmt = self::$PDO->prepare(
             "DELETE FROM role_perm WHERE roleId = ?"

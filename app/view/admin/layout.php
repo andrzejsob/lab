@@ -152,8 +152,13 @@
         display: none;
     }
 <?php }?>
-<?php if(!isset($permArray[$cmd.'-form'])) {?>
-    .edit, .add {
+<?php if(!isset($permArray[$cmd.'-edit'])) {?>
+    .edit {
+        display: none;
+    }
+<?php }
+    if(!isset($permArray[$cmd.'-new'])) {?>
+    .add {
         display: none;
     }
 <?php }?>

@@ -18,15 +18,15 @@ class RoleMapper extends Mapper
         $this->insertStmt = self::$PDO->prepare(
             "INSERT INTO role(name) VALUES (?)");
         $this->insertUserRoleStmt = self::$PDO->prepare(
-            "INSERT INTO user_role(userId, roleId) VALUES (?, ?)");
+            "INSERT INTO user_role(user_id, role_id) VALUES (?, ?)");
         $this->findByUserStmt = self::$PDO->prepare(
             "SELECT id, name FROM role as r
             JOIN user_role as ur
-            ON r.id = ur.roleId
-            WHERE ur.userId = ?"
+            ON r.id = ur.role_id
+            WHERE ur.user_id = ?"
         );
         $this->deleteUserRolesStmt = self::$PDO->prepare(
-            "DELETE FROM user_role WHERE userId = ?"
+            "DELETE FROM user_role WHERE user_id = ?"
         );
         $this->deleteStmt = self::$PDO->prepare(
             "DELETE FROM role WHERE id = ?"
