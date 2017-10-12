@@ -9,15 +9,18 @@ class CommandResolver
     private static $defaultCmd;
     private $command;
     private $action;
+    private $commandFullName;
+    private $actionFullName;
+    private $session;
     private $defaultCommand = '\\lab\\command\\DefaultCommand';
     private $errorAction = 'error404Action';
 
     public function resolveCommand(\lab\controller\Request $request)
     {
         $cmd = $request->getProperty('cmd');
-        $session = \lab\base\ApplicationHelper::getSession();
-        
-        if (!$session->getLoggedIn()) {
+        $this->session = \lab\base\ApplicationHelper::getSession();
+
+        if (!$this->session->getLoggedIn()) {
             if ($cmd == 'login') {
                 return array('\\lab\\command\\LoginCommand', 'indexAction');
             }
@@ -27,38 +30,49 @@ class CommandResolver
         }
 
         if (!is_null($cmd)) {
-            $this->setCommandFullName($cmd);
+            $this->setNames($cmd);
             if ($this->isCommandCorrect()) {
-                $permArray = Permission::getFinder()->findAll()->getArray('name');
-                $userPermArray = $session->getUser()->getPermissionsArray();
-                if (in_array($cmd, $permArray) && !isset($userPermArray[$cmd])) {
-                    return array($this->defaultCommand, 'permissionErrorAction');
+                if ($this->userHasAccess($cmd)) {
+                    return array($this->commandFullName, $this->actionFullName);
                 }
-                return array($this->command, $this->action);
+                return array($this->defaultCommand, 'permissionErrorAction');
             }
         }
 
         return array($this->defaultCommand, $this->errorAction);
     }
 
-    private function setCommandFullName($cmd)
+    private function userHasAccess($cmd)
     {
-        $command = '';
-        $action = '';
-        if(strpos($cmd, '-')) {
-            list($command, $action) = explode('-', $cmd);
-        } else {
-            $command = $cmd;
-            $action = 'index';
+        $permArray = Permission::getFinder()->findAll()->getArray('name');
+        $userPermArray = $this->session->getUser()->getPermissionsArray();
+        if (isset($userPermArray[$cmd]) || $this->command == 'login') {
+            return true;
         }
-        $this->command = '\\lab\\command\\'.ucfirst($command).'Command';
-        $this->action = $action.'Action';
+        if (!in_array($cmd, $permArray) && $userPermArray[$this->command]) {
+            return true;
+        }
+
+        return false;
+    }
+
+    private function setNames($cmd)
+    {
+        if(strpos($cmd, '-')) {
+            list($this->command, $this->action) = explode('-', $cmd);
+        } else {
+            $this->command = $cmd;
+            $this->action = 'index';
+        }
+        $this->commandFullName = '\\lab\\command\\'.
+            ucfirst($this->command).'Command';
+        $this->actionFullName = $this->action.'Action';
     }
 
     private function isCommandCorrect() {
-        if(class_exists($this->command) &&
-            is_subclass_of($this->command, '\\lab\\command\\Command') &&
-            method_exists($this->command, $this->action)) {
+        if(class_exists($this->commandFullName) &&
+            is_subclass_of($this->commandFullName, '\\lab\\command\\Command') &&
+            method_exists($this->commandFullName, $this->actionFullName)) {
             return true;
         }
         return false;
