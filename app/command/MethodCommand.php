@@ -25,32 +25,44 @@ class MethodCommand extends Command
         );
     }
 
-    public function formAction($request)
+    public function newAction($request)
     {
         $method = new Method();
-        if ($id = $request->getProperty('id')) {
-            $method = $method->find($id);
-            if (is_null($method)) {
-                new Redirect(
-                    '?cmd=method-index',
-                    new Error('Brak metody o podanym id.')
-                );
-            }
-        }
+        $success = 'Dodano metodę badawczą:';
+        $error = 'Błąd zapisu:';
+        return $this->form($request, $method, $success, $error);
+    }
 
+    public function editAction($request)
+    {
+        $method = Method::find($request->getProperty('id'));
+        if (is_null($method)) {
+            new Redirect(
+                '?cmd=method',
+                new Error('Brak metody o podanym id.')
+            );
+        }
+        $success = 'Zapisano dane dla metody:';
+        $error = 'Błąd edycji:';
+        return $this->form($request, $method, $success, $error);
+    }
+
+    private function form($request, $method, $successMessage, $errorMessage)
+    {
         $methodForm = new MethodForm($method);
         $validation = $methodForm->handleRequest($request);
 
         if ($validation->isValid()) {
             $method = $methodForm->getData();
-            $messageClass = new Success('Dane zostały zapisane');
+            $message = new Success($successMessage.' '.
+                $method->getAcronym().' -> '.$method->getName());
             try {
                 $method->save();
             } catch (\Exception $e) {
-                $messageClass = new Error('Dane nie zostały zapisane. '.
+                $message = new Error($erroMessage.' '.
                 $e->getMessage());
             }
-            new Redirect('?cmd=method', $messageClass);
+            new Redirect('?cmd=method', $message);
         }
         return $this->render(
             'app/view/method/form.php',

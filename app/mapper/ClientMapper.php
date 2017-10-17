@@ -15,7 +15,7 @@ class ClientMapper extends Mapper
         $this->selectStmt = self::$PDO->prepare(
             "SELECT * FROM client WHERE id = ?");
         $this->insertStmt = self::$PDO->prepare(
-            'INSERT INTO client (name, street, zipCode, city, nip)
+            'INSERT INTO client (name, street, zip_code, city, nip)
              VALUES (?, ?, ?, ?, ?)');
         $this->updateStmt = self::$PDO->prepare(
             'UPDATE client SET name = ?, street = ?, zip_code = ?,

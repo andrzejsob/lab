@@ -23,7 +23,7 @@ class LoginCommand extends Command
             if ($authUser) {
                 //zapisanie użytkownika do sesji
                 \lab\base\ApplicationHelper::getSession()->login($authUser);
-                new Redirect('?cmd=client', new Success('Logowanie sie powiodło'));
+                new Redirect('?cmd=client');
             }
             return $this->render(
                 'app/view/login/form.php',
@@ -40,6 +40,6 @@ class LoginCommand extends Command
     public function logoutAction()
     {
         \lab\base\ApplicationHelper::getSession()->logout();
-        new Redirect('?cmd=login', new Success('Wylogowanie się powiodło'));
+        new Redirect('?cmd=login');
     }
 }

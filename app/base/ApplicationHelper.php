@@ -13,7 +13,7 @@ class ApplicationHelper
 
     private function __construct() {}
 
-    static function instance()
+    public static function instance()
     {
         if(is_null(self::$instance)) {
             self::$instance = new self();

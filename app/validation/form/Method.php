@@ -2,12 +2,12 @@
 namespace lab\validation\form;
 
 use lab\validation\specification as specificator;
+use lab\controller\Request;
 
 class Method extends Entity
 {
 
     protected function setProperties($request) {
-        $this->entityObject->setId($request->getProperty('id'));
         $this->entityObject->setAcronym($request->getProperty('acronym'));
         $this->entityObject->setName($request->getProperty('name'));
     }
@@ -24,5 +24,9 @@ class Method extends Entity
             'name',
             'Opis jest wymagany'
         );
+    }
+
+    public function setVars(Request $request)
+    {
     }
 }

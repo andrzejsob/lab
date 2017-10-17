@@ -25,12 +25,28 @@ class ContactPersonMapper extends Mapper
             ) VALUES (?, ?, ?, ?, ?, ?)');
         $this->findByClientStmt = self::$PDO->prepare(
             'SELECT * FROM contact_person WHERE client_id = ?');
+        $this->findByUserStmt = self::$PDO->prepare(
+            'SELECT cp.* FROM contact_person AS cp
+            JOIN internal_order AS io ON cp.id = io.contact_person_id
+            JOIN internal_order_method AS iom ON io.id = iom.internal_order_id
+            JOIN user_method as um ON iom.method_id = um.method_id
+            WHERE um.user_id = ?');
+    }
+
+    public function findByUser($userId)
+    {
+        $this->findByUserStmt->execute(array($userId));
+        return $this->getCollection(
+            $this->findByUserStmt->fetchAll(\PDO::FETCH_ASSOC)
+        );
     }
 
     public function findByClient($id)
     {
         $this->findByClientStmt->execute(array($id));
-        return $this->getCollection($this->findByClientStmt->fetchAll(\PDO::FETCH_ASSOC));
+        return $this->getCollection(
+            $this->findByClientStmt->fetchAll(\PDO::FETCH_ASSOC)
+        );
     }
 
     public function getCollection(array $raw)
