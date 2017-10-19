@@ -26,7 +26,6 @@ abstract class Entity
     {
         if($request->getProperty('save')) {
             $this->setProperties($request);
-            //$this->entityObject->setProperties($request);
             $this->addValidators();
             $this->validation->validate($this->entityObject);
         }
@@ -36,28 +35,8 @@ abstract class Entity
 
     public function getData()
     {
-        //dane nie zostały sprawdzone
-        if (!$this->validation->hasValidated()) {
-            $this->vars['errors'] = array();
-            $this->vars['entity'] = $this->entityObject;
-            return $this->vars;
-            /*return array(
-                'errors' => [],
-                'entity' => $this->entityObject
-            );*/
-        }
-        //dane zostały sprawdzone i są niepoprawne
-        if (!$this->validation->isValid()) {
-            $this->vars['errors'] = $this->validation->getErrors();
-            $this->vars['entity'] = $this->validation->getClean();
-            return $this->vars;
-            /*return array(
-                'errors' => $this->validation->getErrors(),
-                'entity' => $this->validation->getClean()
-            );*/
-        }
-        //dane zostały sprawdzone i są poprawne
-        return $this->validation->getClean();
-        //return $this->validation->getClean();
+        $this->vars['errors'] = $this->validation->getErrors();
+        $this->vars['entity'] = $this->entityObject;
+        return $this->vars;
     }
 }

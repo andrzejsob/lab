@@ -32,6 +32,11 @@ class User extends Entity
             'Login jest wymagany'
         );
         $this->validation->addSingleFieldValidation(
+            new specificator\ValidEmail,
+            'email',
+            'Niepoprawny format adresu email'
+        );
+        $this->validation->addSingleFieldValidation(
             new specificator\NoEmptyValue,
             'email',
             'Email jest wymagany'

@@ -1,11 +1,7 @@
 <?php
 namespace lab\validation;
 
-use lab\controller\CleanRequest;
-use lab\validation\Coordinator;
-use lab\validation\validator\Basic;
 use lab\validation\specification\SingleField;
-
 use lab\validation\specification as specificator;
 
 class Facade
@@ -13,6 +9,7 @@ class Facade
     private $coordinator;
     private $validators = array();
     private $hasValidated = false;
+    private $errors = array();
 
     public function addSingleFieldValidation(
         $specificator,
@@ -20,43 +17,25 @@ class Facade
         $message = ''
     ) {
         return $this->addValidator(
-            new Basic(
-                new SingleField(
-                    $fieldname,
-                    new $specificator
-                ),
+            new SingleField(
+                new $specificator,
+                $fieldname,
                 $message
             )
         );
     }
-    /*public function addAlnumValidation($fieldname = '', $message = '')
-    {
-        return $this->addValidator(
-            new Basic(
-                new SingleField(
-                    $fieldname,
-                    new specificator\AlphanumericValue
-                ),
-                $message
-            )
-        );
-    }*/
 
     public function addValidator($validator)
     {
         return $this->validators[] = $validator;
     }
 
-    public function validate($rawObject)
+    public function validate($entity)
     {
-        //$cleanObject = get_class($rawObject);
-        $cleanObject = clone $rawObject;
-        $this->coordinator = $this->createCoordinator(
-            $rawObject,
-            $cleanObject
-        );
         foreach ($this->validators as $validator) {
-            $validator->validate($this->coordinator);
+            if(!$validator->validate($entity)) {
+                $this->errors[$validator->getField()] = $validator->getMessage();
+            }
         }
         $this->hasValidated = true;
         return $this->isValid();
@@ -70,23 +49,11 @@ class Facade
     {
         if (!$this->hasValidated) return false;
 
-        return count($this->coordinator->getErrors()) == 0;
-    }
-
-    public function createCoordinator($raw, $clean)
-    {
-        return new Coordinator($raw, $clean);
-    }
-
-    public function getClean()
-    {
-        if (!$this->hasValidated()) return false;
-        return $this->coordinator->getClean();
+        return count($this->errors) == 0;
     }
 
     public function getErrors()
     {
-        if ($this->isValid()) return array();
-        return $this->coordinator->getErrors();
+        return $this->errors;
     }
 }

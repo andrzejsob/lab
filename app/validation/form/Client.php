@@ -25,6 +25,14 @@ class Client extends Entity
         $this->validation->addSingleFieldValidation(new specificator\ZipCodeFormat)
             ->forField('zipCode')
             ->withMessage('Kod musi mieć format: 12-345');
+        $this->validation->addSingleFieldValidation(new specificator\NoEmptyValue)
+            ->forField('zipCode')
+            ->withMessage('Kod pocztowy nie może być pusty');
+        $this->validation->addSingleFieldValidation(
+            new specificator\NoEmptyValue,
+            'city',
+            'Miasto nie może być puste'
+        );
     }
 
     public function setVars(Request $request)

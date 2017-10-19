@@ -147,6 +147,9 @@
 .feature {
     cursor: pointer;
 }
+.input_error {
+    border: 2px solid red;
+}
 </style>
 </head>
 <body>

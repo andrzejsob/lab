@@ -3,29 +3,48 @@ namespace lab\validation\specification;
 
 class SingleField
 {
-    private $fieldname;
-    private $valueSpecification;
+    private $field;
+    private $specification;
+    private $message;
 
-    public function __construct($field, $specification)
+    public function __construct($specification, $field, $message)
     {
-        $this->fieldname = $field;
-        $this->valueSpecification = $specification;
+        $this->specification = $specification;
+        $this->field = $field;
+        $this->message = $message;
     }
 
-    public function getValidatedField()
+    public function getForValidation($entity)
     {
-        return $this->fieldname;
+        $getForValidation = 'get'.ucfirst($this->field);
+        return $entity->$getForValidation();
     }
 
-    public function isSatisfiedBy($candidate)
+    public function validate($entity)
     {
-        return $this->valueSpecification->isSatisfiedBy(
-            $candidate->get($this->fieldname)
+        return $this->specification->isSatisfiedBy(
+            $this->getForValidation($entity)
         );
     }
 
-    public function forField($fieldname)
+    public function forField($field)
     {
-        $this->fieldname = $fieldname;
+        $this->field = $field;
+        return $this;
+    }
+
+    public function withMessage($message)
+    {
+        $this->message = $message;
+        return $this;
+    }
+
+    public function getField()
+    {
+        return $this->field;
+    }
+    public function getMessage()
+    {
+        return $this->message;
     }
 }
