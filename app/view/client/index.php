@@ -23,12 +23,16 @@ document.getElementsByClassName("feature").onclick = "location.href='?cmd=test'"
         onclick = "location.href='?cmd=client-show&id=<?php echo $client->getId()?>'">
             <?php echo $client->getCity();?></td>
         <td>
+            <?php if (isset($buttons['client-delete'])) {?>
             <a class="delete" href="?cmd=client-delete&id=<?php echo $client->getId();?>">
                 Usuń
             </a>
-            <a class="edit" href="?cmd=client-form&id=<?php echo $client->getId();?>">
+            <?php } ?>
+            <?php if (isset($buttons['client-new'])) {?>
+            <a class="edit" href="?cmd=client-edit&id=<?php echo $client->getId();?>">
                 Edytuj
             </a>
+            <?php } ?>
         </td>
     </tr>
     <?php } ?>

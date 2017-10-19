@@ -9,36 +9,36 @@ class TemplateHelper
     {
         if(!is_null($template)) {
             $this->template = $template;
-            $this->setVars();
+            $this->setMessage();
+            $this->setUserMenuAndButtons();
         }
     }
 
-    public function setVars()
-    {
-        $this->setMessageVar();
-        $this->setUserVars();
-    }
-
-    public function setMessageVar()
+    public function setMessage()
     {
         $array = ApplicationHelper::getSessionMessage('message');
         $this->template->assignArray($array);
     }
 
-    public function setUserVars()
-    {
-        $menuItemsArray = [];
-        $permArray = [];
+    public function setUserMenuAndButtons()
+  {
+        $buttons = array();
+        $menu = array();
         $user = ApplicationHelper::getSession()->getUser();
         if ($user) {
             $permArray = $user->getPermissionsArray();
-            $menuItemsArray = array_filter($permArray, function($key) {
-                return !strpos($key, '-');
-            }, ARRAY_FILTER_USE_KEY);
+            foreach ($permArray as $name => $description) {
+                if (strpos($name, '-')) {
+                    $buttons[$name] = $description;
+                } else {
+                    $menu[$name] = $description;
+                }
+            }
         }
-        $this->template->assign('menuItems', $menuItemsArray);
-        $this->template->assign('permArray', $permArray);
-        $this->template->assign('userH', $user);
-        $this->template->assign('cmd', ApplicationHelper::getRequest()->getProperty('cmd'));
+        $this->template->assignArray(array(
+            'buttons' => $buttons,
+            'menu' => $menu
+        ));
+        $this->template->assign('userH', $user);;
     }
 }

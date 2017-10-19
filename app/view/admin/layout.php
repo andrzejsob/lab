@@ -147,21 +147,6 @@
 .feature {
     cursor: pointer;
 }
-<?php if(!isset($permArray[$cmd.'-delete'])) {?>
-    .delete {
-        display: none;
-    }
-<?php }?>
-<?php if(!isset($permArray[$cmd.'-edit'])) {?>
-    .edit {
-        display: none;
-    }
-<?php }
-    if(!isset($permArray[$cmd.'-new'])) {?>
-    .add {
-        display: none;
-    }
-<?php }?>
 </style>
 </head>
 <body>
@@ -177,7 +162,7 @@
 <div class="row">
 <div class="col-3 menu">
     <ul>
-        <?php foreach ($menuItems as $cmd => $text) {
+        <?php foreach ($menu as $cmd => $text) {
         echo '<li>';
         echo '<a href="?cmd='.$cmd.'">'.$text.'</a>';
         echo '</li>';
