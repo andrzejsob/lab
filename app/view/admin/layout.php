@@ -147,6 +147,10 @@
 .feature {
     cursor: pointer;
 }
+
+.input_error {
+    border: 2px solid red;
+}
 <?php if(!isset($permArray[$cmd.'-delete'])) {?>
     .delete {
         display: none;
