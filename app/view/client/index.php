@@ -8,7 +8,7 @@ document.getElementsByClassName("feature").onclick = "location.href='?cmd=test'"
 </div>
 <?php } ?>
 <h4>Lista klientów</h4>
-<a class="add" href="?cmd=client-form">Nowy klient</a>
+<a class="add" href="?cmd=client-new">Nowy klient</a>
 <table class="list_table">
     <tr>
         <th>Nazwa</th>
