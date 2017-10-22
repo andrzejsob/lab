@@ -2,7 +2,9 @@
 namespace lab\command;
 
 use lab\domain\Client as Client;
+use lab\domain\Order;
 use lab\controller\Request;
+use lab\base\ApplicationHelper;
 use lab\base\Redirect;
 use lab\base\Success;
 use lab\base\Error;
@@ -74,25 +76,18 @@ class ClientCommand extends Command
      */
     public function showAction(Request $request)
     {
-        $client = new Client();
-        $id = $request->getProperty('id');
-        $client = $client->find($id);
+        $client = Client::find($request->getProperty('id'));
         if (is_null($client)) {
-            new Redirect(
-                '?cmd=client',
-                new Error('Brak klienta')
-            );
+            new Redirect('?cmd=client', new Error('Brak klienta'));
         }
 
-        $contractsColl = Client::getFinder('InternalOrder')
-            ->selectByClientId($client->getId());
-        if(!$contractsColl->valid()) {
-            new Redirect(
-                '?cmd=client',
-                new Error('Brak zleceń klienta.')
-            );
-        }
-        $this->assign('contracts', $contractsColl);
+        $ordersColl = Order::getFinder()->findByClientAndUser(
+            $client->getId(),
+            ApplicationHelper::getSession()->getUser()->getId()
+        );
+
+        $this->assign('client', $client);
+        $this->assign('contracts', $ordersColl);
         $this->render('app/view/client/show.php');
     }
 }

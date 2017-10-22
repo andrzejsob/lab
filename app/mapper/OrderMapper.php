@@ -38,16 +38,13 @@ class OrderMapper extends Mapper
             'INSERT INTO internal_order_method (internal_order_id, method_id)
             VALUES (?, ?)'
         );
-        $this->selectByClientIdStmt = self::$PDO->prepare(
+        $this->selectByClientAndUserStmt = self::$PDO->prepare(
             'SELECT o.*
             FROM internal_order as o
-            JOIN contact_person AS cp ON cp.id = o.contactPersonId
-            JOIN client AS c ON c.id = cp.client_id
+            JOIN contact_person AS cp ON cp.id = o.contact_person_id
             JOIN internal_order_method AS om ON om.internal_order_id = o.id
-            JOIN method AS m ON m.id = om.method_id
-            JOIN user_method AS um ON um.method_id = m.id
-            JOIN user AS u ON u.id = um.user_id
-            WHERE c.id = ?
+            JOIN user_method AS um ON um.method_id = om.method_id
+            WHERE cp.client_id = ? AND um.user_id = ?
         ');
         $this->updateStmt = self::$PDO->prepare(
             'UPDATE internal_order SET
@@ -68,6 +65,13 @@ class OrderMapper extends Mapper
             JOIN user_method AS um ON um.method_id = om.method_id
             WHERE um.user_id = ? ORDER BY o.nr'
         );
+    }
+
+    public function findByClientAndUser($clientId, $userId)
+    {
+        $this->selectByClientAndUserStmt->execute(array($clientId, $userId));
+        $array = $this->selectByClientAndUserStmt->fetchAll(\PDO::FETCH_ASSOC);
+        return $this->getCollection($array);
     }
 
     public function findOrdersForUser($userId)
