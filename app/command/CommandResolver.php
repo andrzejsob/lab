@@ -20,29 +20,29 @@ class CommandResolver
         $cmd = $request->getProperty('cmd');
         $this->session = \lab\base\ApplicationHelper::getSession();
 
-        if (!$this->session->getLoggedIn()) {
-            if ($cmd == 'login') {
-                return array('\\lab\\command\\LoginCommand', 'indexAction');
+        if ($this->session->isUserLoggedIn()) {
+            if ($cmd == 'login' || $cmd == 'login-index') {
+                new Redirect('?cmd=client');
             }
+        } elseif ($cmd == 'login') {
+                return array('\\lab\\command\\LoginCommand', 'indexAction');
+        } else {
             new Redirect('?cmd=login');
-        } elseif ($cmd == 'login' || $cmd == 'login-index') {
-            new Redirect('?cmd=client');
         }
 
         if (!is_null($cmd)) {
-            $this->setNames($cmd);
+            $this->setCommandAndActionNames($cmd);
             if ($this->isCommandCorrect()) {
-                if ($this->userHasAccess($cmd)) {
+                if ($this->isUserAllowedToAccessUrl($cmd)) {
                     return array($this->commandFullName, $this->actionFullName);
                 }
                 return array($this->defaultCommand, 'permissionErrorAction');
             }
         }
-
         return array($this->defaultCommand, $this->errorAction);
     }
 
-    private function userHasAccess($cmd)
+    private function isUserAllowedToAccessUrl($cmd)
     {
         $permArray = Permission::getFinder()->findAll()->getArray('name');
         $userPermArray = $this->session->getUser()->getPermissionsArray();
@@ -56,7 +56,7 @@ class CommandResolver
         return false;
     }
 
-    private function setNames($cmd)
+    private function setCommandAndActionNames($cmd)
     {
         if(strpos($cmd, '-')) {
             list($this->command, $this->action) = explode('-', $cmd);

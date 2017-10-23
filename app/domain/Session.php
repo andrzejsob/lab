@@ -65,7 +65,7 @@ class Session extends DomainObject
         return $this->userAgent;
     }
 
-    public function getLoggedIn()
+    public function isUserLoggedIn()
     {
         return $this->loggedIn;
     }
