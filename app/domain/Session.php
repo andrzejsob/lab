@@ -87,7 +87,7 @@ class Session extends DomainObject
 
     public function logout()
     {
-        if ($this->getLoggedIn()) {
+        if ($this->isUserLoggedIn()) {
             $this->finder()->logout($this);
             session_unset();
             session_destroy();
