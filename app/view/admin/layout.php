@@ -1,6 +1,11 @@
 <html>
 <head>
  <meta charset="UTF-8">
+ <script>
+function removeClassAttribute(id) {
+    id.removeAttribute("class");
+}
+ </script>
 <style>
 * {
     box-sizing: border-box;
@@ -148,7 +153,7 @@
     cursor: pointer;
 }
 .input_error {
-    border: 2px solid red;
+    border: 1px solid red;
 }
 </style>
 </head>

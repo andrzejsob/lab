@@ -13,7 +13,6 @@ document.getElementsByClassName("feature").onclick = "location.href='?cmd=test'"
     <tr>
         <th>Imię i nazwisko</th>
         <th>Email</th>
-        <th>Email 2</th>
         <th>Telefon</th>
     </tr>
     <?php foreach ($contacts as $contact) {?>
@@ -28,22 +27,11 @@ document.getElementsByClassName("feature").onclick = "location.href='?cmd=test'"
         </td>
         <td class="feature"
           onclick = "location.href='?cmd=contactt-show&id=<?php echo $contact->getId()?>'">
-             <?php echo $contact->getEmail2();?>
-        </td>
-        <td class="feature"
-          onclick = "location.href='?cmd=contactt-show&id=<?php echo $contact->getId()?>'">
              <?php echo $contact->getPhone();?>
-        </td>
-        <td class="feature"
-        onclick = "location.href='?cmd=contact-show&id=<?php echo $contact->getId()?>'">
-            <?php echo $contact->getCity();?>
         </td>
         <td>
             <a class="edit" href="?cmd=contact-edit&id=<?php echo $contact->getId();?>">
                 Edytuj
-            </a>
-            <a class="delete" href="?cmd=contact-delete&id=<?php echo $contact->getId();?>">
-                Usuń
             </a>
         </td>
     </tr>

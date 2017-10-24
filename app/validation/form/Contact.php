@@ -40,7 +40,7 @@ class Contact extends Entity
         $this->validation->addSingleFieldValidation(
             new specificator\ValidEmail,
             'email',
-            'Email jest wymagany'
+            'Niepoprawny format adresu email'
         );
     }
 

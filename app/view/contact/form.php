@@ -3,7 +3,9 @@
 } ?>
 <h5>Kontakt dla klienta</h5>
 <form method="post">
-<select name="clientId">
+<select name="clientId"
+<input onclick="removeClassAttribute(this)"
+<?php if(isset($errors['Client'])) echo 'class="input_error"'?>>
     <option style="display:none" disabled selected value>
         -- Wybierz klienta --
     </option>
@@ -20,19 +22,24 @@
 <table>
     <tr>
         <td>Imię *</td>
-        <td><input type="text" name="firstName" <?php echo 'value="'.
+        <td><input onkeyup="removeClassAttribute(this)"
+            <?php if(isset($errors['firstName'])) echo 'class="input_error"'?>
+            type="text" name="firstName" <?php echo 'value="'.
         $entity->getFirstName().'"';?>>
         </td>
     </tr>
     <tr>
         <td>Nazwisko *</td>
-        <td><input type="text" name="lastName" <?php echo 'value="'.
+        <td><input onkeyup="removeClassAttribute(this)"
+            <?php if(isset($errors['lastName'])) echo 'class="input_error"'?>
+            type="text" name="lastName" <?php echo 'value="'.
         $entity->getLastName().'"';?>>
     </tr>
     <tr>
         <td>Email *</td>
-        <td <?php if(isset($errors['email'])) echo 'class="input_error"'?>>
-            <input type="text" name="email" <?php echo 'value="'.
+        <td ><input onkeyup="removeClassAttribute(this)"
+            <?php if(isset($errors['email'])) echo 'class="input_error"'?>
+            type="text" name="email" <?php echo 'value="'.
         $entity->getEmail().'"';?>>
         </td>
     </tr>
