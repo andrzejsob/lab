@@ -1,4 +1,4 @@
-<h3>Klient</h3>
+<h5>Klient</h5>
 <?php
 foreach ($errors as $key => $value) {
     echo '<p style="color: red">'.$value.'</p>';

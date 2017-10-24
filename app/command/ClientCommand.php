@@ -41,10 +41,7 @@ class ClientCommand extends Command
     {
         $client = Client::find($request->getProperty('id'));
         if (is_null($client)) {
-            new Redirect(
-                '?cmd=client',
-                new Error('Brak klienta o podanym id.')
-            );
+            new Redirect('?cmd=client', new Error('Brak klienta o podanym id.'));
         }
         $success = 'Zmieniono dane klienta: ';
         $error = 'Błąd zapisu.';

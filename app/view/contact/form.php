@@ -19,25 +19,22 @@
 <h5>Dane osoby do kontaktu</h5>
 <table>
     <tr>
-        <td>Imię</td>
+        <td>Imię *</td>
         <td><input type="text" name="firstName" <?php echo 'value="'.
         $entity->getFirstName().'"';?>>
         </td>
     </tr>
     <tr>
-        <td>Nazwisko</td>
+        <td>Nazwisko *</td>
         <td><input type="text" name="lastName" <?php echo 'value="'.
         $entity->getLastName().'"';?>>
     </tr>
     <tr>
-        <td>Email</td>
-        <td><input type="text" name="email" <?php echo 'value="'.
+        <td>Email *</td>
+        <td <?php if(isset($errors['email'])) echo 'class="input_error"'?>>
+            <input type="text" name="email" <?php echo 'value="'.
         $entity->getEmail().'"';?>>
-    </tr>
-    <tr>
-        <td>Email 2</td>
-        <td><input type="text" name="email2" <?php echo 'value="'.
-        $entity->getEmail2().'"';?>>
+        </td>
     </tr>
     <tr>
         <td>Phone</td>
@@ -45,6 +42,6 @@
         $entity->getPhone().'"';?>>
     </tr>
 </table>
-<br />
+<p><small>* pola wymagane</small></p>
 <input type="submit" name="save" value="Zapisz">
 </form>
