@@ -19,8 +19,7 @@ class ContactCommand extends Command
 
     public function indexAction()
     {
-        $userId = ApplicationHelper::getSession()->getUser()->getId();
-        $contactsColl = ContactPerson::getFinder()->findByUser($userId);
+        $contactsColl = ContactPerson::getFinder()->findAll();
         $this->template->assign('contacts', $contactsColl);
         return $this->render('app/view/contact/index.php');
     }
@@ -54,7 +53,7 @@ class ContactCommand extends Command
 
         $this->render('app/view/client/form.php', $clientForm->getData());
     }
-
+    */
 
     public function showAction(Request $request)
     {
@@ -79,7 +78,7 @@ class ContactCommand extends Command
         $this->assign('contracts', $contractsColl);
         $this->render('app/view/client/show.php');
     }
-    */
+
     public function newAction($request)
     {
         $contact = new ContactPerson();
@@ -104,5 +103,10 @@ class ContactCommand extends Command
         }
 
         return $this->render('app/view/contact/form.php', $contactForm->getData());
+    }
+
+    public function editAction($request)
+    {
+
     }
 }

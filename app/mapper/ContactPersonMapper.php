@@ -20,7 +20,6 @@ class ContactPersonMapper extends Mapper
                 first_name,
                 last_name,
                 email,
-                email2,
                 phone
             ) VALUES (?, ?, ?, ?, ?, ?)');
         $this->findByClientStmt = self::$PDO->prepare(
@@ -67,7 +66,6 @@ class ContactPersonMapper extends Mapper
             $array['first_name'],
             $array['last_name'],
             $array['email'],
-            $array['email2'],
             $array['phone']
         );
         $client = Client::find($array['client_id']);
@@ -86,7 +84,6 @@ class ContactPersonMapper extends Mapper
             $object->getFirstName(),
             $object->getLastName(),
             $object->getEmail(),
-            $object->getEmail2(),
             $object->getPhone()
         );
         $this->insertStmt->execute($values);
