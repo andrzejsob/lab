@@ -14,7 +14,6 @@ class Contact extends Entity
         $this->entityObject->setFirstName($request->getProperty('firstName'));
         $this->entityObject->setLastName($request->getProperty('lastName'));
         $this->entityObject->setEmail($request->getProperty('email'));
-        $this->entityObject->setPhone($request->getProperty('phone'));
         if ($phone = $request->getProperty('phone')) {
             $this->entityObject->setPhone($phone);
         }

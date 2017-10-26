@@ -18,15 +18,15 @@ document.getElementsByClassName("feature").onclick = "location.href='?cmd=test'"
     <?php foreach ($contacts as $contact) {?>
     <tr>
         <td class="feature"
-        onclick = "location.href='?cmd=contactt-show&id=<?php echo $contact->getId()?>'">
+        onclick = "location.href='?cmd=contact-show&id=<?php echo $contact->getId()?>'">
             <?php echo $contact->getFirstName().' '.$contact->getLastName();?>
         </td>
         <td class="feature"
-          onclick = "location.href='?cmd=contactt-show&id=<?php echo $contact->getId()?>'">
+          onclick = "location.href='?cmd=contact-show&id=<?php echo $contact->getId()?>'">
              <?php echo $contact->getEmail();?>
         </td>
         <td class="feature"
-          onclick = "location.href='?cmd=contactt-show&id=<?php echo $contact->getId()?>'">
+          onclick = "location.href='?cmd=contact-show&id=<?php echo $contact->getId()?>'">
              <?php echo $contact->getPhone();?>
         </td>
         <td>

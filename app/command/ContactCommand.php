@@ -24,37 +24,6 @@ class ContactCommand extends Command
         return $this->render('app/view/contact/index.php');
     }
 
-    /*
-    public function formAction(Request $request)
-    {
-        $client = new Client();
-
-        if ($id = $request->getProperty('id')) {
-            $client = $client->find($id);
-            if (is_null($client)) {
-                new Redirect(
-                    '?cmd=client',
-                    new Error('Brak klienta o podanym id.')
-                );
-            }
-        }
-
-        $clientForm = new ClientForm($client);
-        $validation = $clientForm->handleRequest($request);
-
-        if ($validation->isValid()) {
-            $client = $clientForm->getData();
-            $client->save();
-            new Redirect(
-                '?cmd=client',
-                new Success('Dane klienta zostały zapisane')
-            );
-        }
-
-        $this->render('app/view/client/form.php', $clientForm->getData());
-    }
-    */
-
     public function showAction(Request $request)
     {
         $client = new Client();
@@ -83,7 +52,28 @@ class ContactCommand extends Command
     {
         $contact = new ContactPerson();
         $contact->setClient(new Client());
+        $success = 'Dodano osobę do kontaktu: ';
+        $error = 'Dane nie zostały zapisane';
+        return $this->form($request, $contact, $success, $error);
 
+    }
+
+    public function editAction($request)
+    {
+        $contact = ContactPerson::find($request->getProperty('id'));
+        if (is_null($contact)) {
+            new Redirect(
+                '?cmd=contact',
+                new Error('Brak osoby do kontaktu')
+            );
+        }
+        $success = 'Zmieniono dane osoby do kontaktu: ';
+        $error = 'Dane nie zostały zapisane';
+        return $this->form($request, $contact, $success, $error);
+    }
+
+    private function form($request, $contact, $success, $error)
+    {
         $contactForm = new ContactForm($contact);
         $validation = $contactForm->handleRequest($request);
 
@@ -92,21 +82,19 @@ class ContactCommand extends Command
             try {
                 $contact->save();
                 $messageClass = new Success(
-                    'Dodano osobę do kontaktu: '.
+                    $success.
                     $contact->getFirstName().' '.$contact->getLastName()
                 );
             } catch (\Exception $e) {
-                $messageClass = new Error('Dane nie zostały zapisane. '.
+                $messageClass = new Error($error.
                 $e->getMessage());
             }
             new Redirect('?cmd=contact', $messageClass);
         }
 
-        return $this->render('app/view/contact/form.php', $contactForm->getData());
-    }
-
-    public function editAction($request)
-    {
-
+        return $this->render(
+            'app/view/contact/form.php',
+            $contactForm->getData()
+        );
     }
 }

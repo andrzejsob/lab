@@ -22,6 +22,9 @@ class ContactPersonMapper extends Mapper
                 email,
                 phone
             ) VALUES (?, ?, ?, ?, ?, ?)');
+        $this->updateStmt = self::$PDO->prepare(
+            'UPDATE contact_person set client_id = ?, first_name = ?,
+            last_name = ?, email = ?, phone = ? WHERE id = ?');
         $this->findByClientStmt = self::$PDO->prepare(
             'SELECT * FROM contact_person WHERE client_id = ?');
         $this->findByUserStmt = self::$PDO->prepare(
@@ -93,8 +96,14 @@ class ContactPersonMapper extends Mapper
 
     public function update(DomainObject $object)
     {
-        $values = array();
-        $this->updateStmt->execute($values);
+        $this->updateStmt->execute([
+            $object->getClient()->getId(),
+            $object->getFirstName(),
+            $object->getLastName(),
+            $object->getEmail(),
+            $object->getPhone(),
+            $object->getId()
+        ]);
     }
 
     public function selectStmt()
