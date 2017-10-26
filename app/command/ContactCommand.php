@@ -1,7 +1,8 @@
 <?php
 namespace lab\command;
 
-use lab\domain\Client as Client;
+use lab\domain\Client;
+use lab\domain\Order;
 use lab\controller\Request;
 use lab\base\Redirect;
 use lab\base\Success;
@@ -26,26 +27,22 @@ class ContactCommand extends Command
 
     public function showAction(Request $request)
     {
-        $client = new Client();
-        $id = $request->getProperty('id');
-        $client = $client->find($id);
-        if (is_null($client)) {
+        $contact = ContactPerson::find($request->getProperty('id'));
+        if (is_null($contact)) {
             new Redirect(
-                '?cmd=client',
-                new Error('Brak klienta o podanym id.')
+                '?cmd=contact',
+                new Error('Brak osoby do kontaktu')
             );
         }
 
-        $contractsColl = Client::getFinder('InternalOrder')
-            ->selectByClientId($client->getId());
-        if(!$contractsColl->valid()) {
-            new Redirect(
-                '?cmd=client',
-                new Error('Brak zleceń klienta.')
-            );
-        }
-        $this->assign('contracts', $contractsColl);
-        $this->render('app/view/client/show.php');
+        $ordersColl = Order::getFinder()->findByContactAndUser(
+            $contact->getId(),
+            ApplicationHelper::getSession()->getUser()->getId()
+        );
+
+        $this->assign('contact', $contact);
+        $this->assign('contracts', $ordersColl);
+        $this->render('app/view/contact/show.php');
     }
 
     public function newAction($request)
