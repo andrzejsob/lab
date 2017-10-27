@@ -44,8 +44,10 @@
         </td>
     </tr>
     <tr>
-        <td>Phone</td>
-        <td><input type="text" name="phone" <?php echo 'value="'.
+        <td>Phone *</td>
+        <td><input onkeyup="removeClassAttribute(this)"
+            <?php if(isset($errors['phone'])) echo 'class="input_error"'?>
+            type="text" name="phone" <?php echo 'value="'.
         $entity->getPhone().'"';?>>
     </tr>
 </table>

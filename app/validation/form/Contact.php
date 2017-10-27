@@ -14,9 +14,7 @@ class Contact extends Entity
         $this->entityObject->setFirstName($request->getProperty('firstName'));
         $this->entityObject->setLastName($request->getProperty('lastName'));
         $this->entityObject->setEmail($request->getProperty('email'));
-        if ($phone = $request->getProperty('phone')) {
-            $this->entityObject->setPhone($phone);
-        }
+        $this->entityObject->setPhone($request->getProperty('phone'));
     }
 
     public function addValidators()
@@ -40,6 +38,11 @@ class Contact extends Entity
             new specificator\ValidEmail,
             'email',
             'Niepoprawny format adresu email'
+        );
+        $this->validation->addSingleFieldValidation(
+            new specificator\NumericValue,
+            'phone',
+            'Nr telefonu może zawirać tylko cyfry'
         );
     }
 

@@ -8,17 +8,14 @@ class ContactPerson extends DomainObject
     private $firstName;
     private $lastName;
     private $email;
-    private $email2;
     private $phone;
     private $client = null;
 
     public function __construct(
         $id = null,
-        $client_id = null,
         $first_name = null,
         $last_name = null,
         $email = null,
-        $email2 = null,
         $phone = null
     )
     {
@@ -26,7 +23,6 @@ class ContactPerson extends DomainObject
         $this->firstName = $first_name;
         $this->lastName = $last_name;
         $this->email = $email;
-        $this->email2 = $email2;
         $this->phone = $phone;
     }
 
@@ -57,11 +53,6 @@ class ContactPerson extends DomainObject
         $this->email = $email;
     }
 
-    public function setEmail2($email2)
-    {
-        $this->email2 = $email2;
-    }
-
     public function setPhone($phone)
     {
         $this->phone = $phone;
@@ -80,11 +71,6 @@ class ContactPerson extends DomainObject
     public function getEmail()
     {
         return $this->email;
-    }
-
-    public function getEmail2()
-    {
-        return $this->email2;
     }
 
     public function getPhone()

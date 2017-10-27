@@ -65,7 +65,6 @@ class ContactPersonMapper extends Mapper
     {
         $obj = new \lab\domain\ContactPerson(
             $array['id'],
-            $array['client_id'],
             $array['first_name'],
             $array['last_name'],
             $array['email'],
