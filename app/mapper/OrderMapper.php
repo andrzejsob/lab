@@ -44,7 +44,7 @@ class OrderMapper extends Mapper
             JOIN contact_person AS cp ON cp.id = o.contact_person_id
             JOIN internal_order_method AS om ON om.internal_order_id = o.id
             JOIN user_method AS um ON um.method_id = om.method_id
-            WHERE cp.client_id = ? AND um.user_id = ?
+            WHERE cp.client_id = ? AND um.user_id = ? ORDER BY o.nr DESC
         ');
         $this->selectByContactAndUserStmt = self::$PDO->prepare(
             'SELECT DISTINCT o.*

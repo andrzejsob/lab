@@ -1,11 +1,11 @@
 <html>
 <head>
  <meta charset="UTF-8">
- <script>
+<script>
 function removeClassAttribute(id) {
     id.removeAttribute("class");
 }
- </script>
+</script>
 <style>
 * {
     box-sizing: border-box;
@@ -143,6 +143,7 @@ function removeClassAttribute(id) {
 }
 .list_table {
     border-collapse: collapse;
+    font-size: 13px;
 }
 .list_table th, .feature {
     margin: 0;

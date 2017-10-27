@@ -84,7 +84,7 @@ class ClientCommand extends Command
         );
 
         $this->assign('client', $client);
-        $this->assign('contracts', $ordersColl);
+        $this->assign('orders', $ordersColl);
         $this->render('app/view/client/show.php');
     }
 }
