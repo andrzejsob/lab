@@ -21,7 +21,7 @@ class ContactPersonMapper extends Mapper
                 last_name,
                 email,
                 phone
-            ) VALUES (?, ?, ?, ?, ?, ?)');
+            ) VALUES (?, ?, ?, ?, ?)');
         $this->updateStmt = self::$PDO->prepare(
             'UPDATE contact_person set client_id = ?, first_name = ?,
             last_name = ?, email = ?, phone = ? WHERE id = ?');
