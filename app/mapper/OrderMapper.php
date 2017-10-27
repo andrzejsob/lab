@@ -39,12 +39,19 @@ class OrderMapper extends Mapper
             VALUES (?, ?)'
         );
         $this->selectByClientAndUserStmt = self::$PDO->prepare(
-            'SELECT o.*
+            'SELECT DISTINCT o.*
             FROM internal_order as o
             JOIN contact_person AS cp ON cp.id = o.contact_person_id
             JOIN internal_order_method AS om ON om.internal_order_id = o.id
             JOIN user_method AS um ON um.method_id = om.method_id
             WHERE cp.client_id = ? AND um.user_id = ?
+        ');
+        $this->selectByContactAndUserStmt = self::$PDO->prepare(
+            'SELECT DISTINCT o.*
+            FROM internal_order as o
+            JOIN internal_order_method AS om ON om.internal_order_id = o.id
+            JOIN user_method AS um ON um.method_id = om.method_id
+            WHERE o.contact_person_id = ? AND um.user_id = ? ORDER BY o.nr DESC
         ');
         $this->updateStmt = self::$PDO->prepare(
             'UPDATE internal_order SET
@@ -71,6 +78,13 @@ class OrderMapper extends Mapper
     {
         $this->selectByClientAndUserStmt->execute(array($clientId, $userId));
         $array = $this->selectByClientAndUserStmt->fetchAll(\PDO::FETCH_ASSOC);
+        return $this->getCollection($array);
+    }
+
+    public function findByContactAndUser($contactId, $userId)
+    {
+        $this->selectByContactAndUserStmt->execute(array($contactId, $userId));
+        $array = $this->selectByContactAndUserStmt->fetchAll(\PDO::FETCH_ASSOC);
         return $this->getCollection($array);
     }
 
