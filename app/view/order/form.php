@@ -19,7 +19,7 @@ function load(value) {
 <?php foreach ($errors as $key => $value) {
     echo '<p style="color: red">'.$value.'</p>';
 } ?>
-<h4>Klient</h4>
+<h5>Klient</h5>
 <form method="post">
 <select name="clientId" onchange="load(this.value)">
     <option style="display:none" disabled selected value>
@@ -35,8 +35,11 @@ function load(value) {
     <?php } ?>
 </select>
 
-<h4>Osoba do kontaktu</h4>
-<select id="contactSelect" name="contactId">
+<h5>Osoba do kontaktu *</h5>
+<select id="contactSelect" name="contactId"
+onclick="removeClassAttribute(this)"
+<?php if(isset($errors['contactPerson'])) echo 'class="input_error"'?>
+>
     <?php if ($selectedContact->getId()) {
         foreach ($selectedClientContacts as $contact) {?>
           <option value="<?php echo $contact->getId();?>"
@@ -55,30 +58,40 @@ function load(value) {
 <h5>Dane zlecenia</h5>
 <table>
     <tr>
-        <td>Nr (wypełniany automatycznie)</td>
+        <td>Nr <small>(wypełniany automatycznie)</small></td>
         <td><input type="text" name="nr" <?php echo 'value="'.
         $entity->getNr().'"';?> readonly>
         </td>
     </tr>
     <tr>
-        <td>Data na zleceniu</td>
-        <td><input type="text" name="orderDate" <?php echo 'value="'.
+        <td>Data na zleceniu *</td>
+        <td><input class="datepicker
+          <?php if(isset($errors['orderDate'])) echo 'input_error'?>"
+          onclick="removeClassAttribute(this)"
+          type="text" name="orderDate" <?php echo 'value="'.
         $entity->getOrderDate().'"';?>>
         </td>
     </tr>
     <tr>
-        <td>Data wpływu zlecenia</td>
-        <td><input type="text" name="receiveDate" <?php echo 'value="'.
+        <td>Data wpływu zlecenia *</td>
+        <td><input class="datepicker
+          <?php if(isset($errors['receiveDate'])) echo 'input_error'?>"
+          onclick="removeClassAttribute(this)"
+          type="text" name="receiveDate" <?php echo 'value="'.
         $entity->getReceiveDate().'"';?>>
     </tr>
     <tr>
-        <td>Liczba analiz</td>
-        <td><input type="text" name="nrOfAnalyzes" <?php echo 'value="'.
+        <td>Liczba analiz *</td>
+        <td><input onkeyup="removeClassAttribute(this)"
+            <?php if(isset($errors['nrOfAnalyzes'])) echo 'class="input_error"'?>
+          type="text" name="nrOfAnalyzes" <?php echo 'value="'.
         $entity->getNrOfAnalyzes().'"';?>>
     </tr>
     <tr>
-        <td>Kwota</td>
-        <td><input type="text" name="sum" <?php echo 'value="'.
+        <td>Kwota *</td>
+        <td><input onkeyup="removeClassAttribute(this)"
+            <?php if(isset($errors['sum'])) echo 'class="input_error"'?>
+          type="text" name="sum" <?php echo 'value="'.
         $entity->getSum().'"';?>>
     </tr>
     <tr>
@@ -100,7 +113,10 @@ function load(value) {
         </td>
     </tr>
 </table>
-<h5>Metody badawcze</h5>
+<h5>Metody badawcze *</h5>
+<p style="width: 75px" onclick="removeClassAttribute(this)"
+<?php if(isset($errors['methods'])) echo 'class="input_error"'?>
+>
 <?php foreach ($methods as $method) {?>
 <input type="checkbox" name="methods[]"
     value="<?php echo $method->getId()?>"
@@ -109,6 +125,8 @@ function load(value) {
     <?php }?>
 >
 <?php echo $method->getAcronym().'<br>';
-}?><br>
+}?>
+</p>
+<p><small>* pola wymagane</small></p>
 <input type="submit" name="save" value="Zapisz">
 </form>

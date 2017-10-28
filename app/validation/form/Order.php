@@ -44,16 +44,25 @@ class Order extends Entity
             'contactPerson',
             'Nie wybrano osoby do kontaktu'
         );
-
         $this->validation->addSingleFieldValidation(
-            new specificator\NoEmptyValue,
+            new specificator\ValidDate,
             'orderDate',
-            'Data zamówienia nie może być pusta'
+            'Data zamówienia jest niepoprawna'
         );
-        $this->validation->addSingleFieldValidation(new specificator\NoEmptyValue)
+        $this->validation->addSingleFieldValidation(new specificator\ValidDate)
             ->forField('receiveDate')
             ->withMessage(
-                'Data wpłynięcia zlecenia do laboratorium nie może być pusta'
+                'Data wpłynięcia zlecenia do laboratorium jest niepoprawna'
+        );
+        $this->validation->addSingleFieldValidation(
+          new specificator\NaturalNumber,
+          'nrOfAnalyzes',
+          'Liczba analiz musi być liczbą naturalną'
+        );
+        $this->validation->addSingleFieldValidation(
+            new specificator\NumericValue,
+            'sum',
+            'Kwota zamówienia powinna być liczbą np. 10, 10.5'
         );
         $this->validation->addSingleFieldValidation(
             new specificator\ValidCollection,

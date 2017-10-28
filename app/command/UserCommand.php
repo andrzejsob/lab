@@ -59,8 +59,6 @@ class UserCommand extends Command
         $validation = $userForm->handleRequest($request);
 
         if ($validation->isValid()) {
-            //pobranie obiektu użytkownika
-            $user = $userForm->getData();
             $messageClass = new Success('Dane zostały zapisane');
             try {
                 //zapisanie danych użytkownika do bazy

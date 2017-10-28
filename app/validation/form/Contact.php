@@ -40,7 +40,7 @@ class Contact extends Entity
             'Niepoprawny format adresu email'
         );
         $this->validation->addSingleFieldValidation(
-            new specificator\NumericValue,
+            new specificator\IntValue,
             'phone',
             'Nr telefonu może zawirać tylko cyfry'
         );
