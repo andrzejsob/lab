@@ -48,7 +48,6 @@ class MethodCommand extends Command
         $validation = $methodForm->handleRequest($request);
 
         if ($validation->isValid()) {
-            $method = $methodForm->getData();
             $message = new Success($successMessage.' '.
                 $method->getAcronym().' -> '.$method->getName());
             try {
