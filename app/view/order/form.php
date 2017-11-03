@@ -12,7 +12,7 @@ function load(value) {
                document.getElementById("contactSelect").innerHTML = text;
            }
        };
-       xmlhttp.open("GET", "test.php?q=" + value, true);
+       xmlhttp.open("GET", "app/view/js/getContactsByClient.php?q=" + value, true);
        xmlhttp.send();
 }
 </script>

@@ -1,5 +1,5 @@
 <?php
-require "vendor/autoload.php";
+require "../../../vendor/autoload.php";
 $appHelper = \lab\base\ApplicationHelper::instance();
 $appHelper->init();
 $id = $appHelper->getRequest()->getProperty('q');

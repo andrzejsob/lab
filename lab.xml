@@ -1,5 +1,0 @@
-<PDO>
-    <dsn>mysql:dbname=lab;host=localhost</dsn>
-	<user>andrew</user>
-	<pass>gainward</pass>
-</PDO>
