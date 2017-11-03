@@ -14,11 +14,6 @@ use lab\validation\form\Order as OrderForm;
 
 class OrderCommand extends Command
 {
-    public function __construct() {
-        parent::__construct();
-        $this->template->setLayout('app/view/admin/layout.php');
-    }
-
     public function indexAction($request)
     {
         $userId = ApplicationHelper::getSession()->getUser()->getId();

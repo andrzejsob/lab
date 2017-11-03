@@ -13,11 +13,6 @@ use lab\validation\form\Contact as ContactForm;
 
 class ContactCommand extends Command
 {
-    public function __construct() {
-        parent::__construct();
-        $this->template->setLayout('app/view/admin/layout.php');
-    }
-
     public function indexAction()
     {
         $contactsColl = ContactPerson::getFinder()->findAll();

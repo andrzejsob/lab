@@ -13,11 +13,6 @@ use lab\base\Error;
 
 class RoleCommand extends Command
 {
-    public function __construct() {
-        parent::__construct();
-        $this->template->setLayout('app/view/admin/layout.php');
-    }
-
     public function indexAction($request)
     {
         $roles = Role::getFinder()->findAll();

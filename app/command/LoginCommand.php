@@ -8,11 +8,6 @@ use lab\base\Success;
 
 class LoginCommand extends Command
 {
-    public function __construct() {
-        parent::__construct();
-        $this->template->setLayout('app/view/admin/layout.php');
-    }
-
     public function indexAction($request)
     {
         $user = new User();

@@ -12,11 +12,6 @@ use lab\validation\form\Client as ClientForm;
 
 class ClientCommand extends Command
 {
-    public function __construct() {
-        parent::__construct();
-        $this->template->setLayout('app/view/admin/layout.php');
-    }
-
     public function indexAction()
     {
         $clients = Client::getFinder()->findAll();
