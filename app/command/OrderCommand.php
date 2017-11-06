@@ -22,7 +22,7 @@ class OrderCommand extends Command
         return $this->render('app/view/order/index.php');
     }
 
-    public function form($request, $order, $success, $error)
+    private function form($request, $order, $success, $error)
     {
         $orderForm = new OrderForm($order);
         $validation = $orderForm->handleRequest($request);

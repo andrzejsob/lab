@@ -23,7 +23,7 @@ class RoleCommand extends Command
         );
     }
 
-    public function formAction($request)
+    private function form($request, $role, $success, $error)
     {
         $role = new Role();
         $role->setPermissions(new PermissionCollection());
@@ -42,7 +42,7 @@ class RoleCommand extends Command
         $validation = $roleForm->handleRequest($request);
 
         if ($validation->isValid()) {
-            $messageClass = new Success('Dane zostały zapisane');
+            $messageClass = new Success($success);
             try {
                 $role->save();
                 //zapisanie metod użytkownika do bazy
@@ -51,13 +51,34 @@ class RoleCommand extends Command
                     $request->getProperty('permission')
                 );
             } catch (\Exception $e) {
-                $messageClass = new Error('Dane nie zostały zapisane. '.
-                $e->getMessage());
+                $messageClass = new Error($error.$e->getMessage());
             }
             new Redirect('?cmd=role', $messageClass);
         }
 
-        return $this->render('app/view/role/new.php', $roleForm->getData());
+        return $this->render('app/view/role/form.php', $roleForm->getData());
+    }
+
+    public function newAction($request)
+    {
+        $role = new Role();
+        $role->setPermissions(new PermissionCollection());
+        $success = 'Dodano nowe konto.';
+        $error = 'Błąd zapisu. ';
+
+        return $this->form($request, $role, $success, $error);
+    }
+
+    public function editAction($request)
+    {
+        $role = Role::getFinder()->find($request->getProperty('id'));
+        if (is_null($role)) {
+            new Redirect('?cmd=role', new Error('Brak konta o podanym id.'));
+        }
+        $success = 'Dane konta zostały zapisane.';
+        $error = 'Bład edycji. ';
+
+        return $this->form($request, $role, $success, $error);
     }
 
     public function deleteAction($request)

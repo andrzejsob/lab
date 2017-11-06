@@ -5,7 +5,7 @@
 </div>
 <?php } ?>
 <h4>Typy kont użytkowników</h4>
-<a class="add" href="?cmd=role-form">Nowy typ konta</a>
+<a class="add" href="?cmd=role-new">Nowy typ konta</a>
 <table class="list_table">
     <tr>
         <th>Nazwa</th>
@@ -24,7 +24,7 @@
             <a class="delete" href="?cmd=role-delete&id=<?php echo $role->getId();?>">
                 Usuń
             </a>
-            <a class="edit" href="?cmd=role-form&id=<?php echo $role->getId();?>">
+            <a class="edit" href="?cmd=role-edit&id=<?php echo $role->getId();?>">
                 Edytuj
             </a>
         </td>

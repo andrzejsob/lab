@@ -80,7 +80,9 @@ class RoleMapper extends Mapper
             $object->setId($id);
         } catch (\Exception $e) {
             if ($e->errorInfo[1] == 1062) {
-                throw new \Exception('Podana nazwa jest już zajęta!');
+                throw new \Exception(
+                    'Nazwa "'.$object->getName().'" jest już zajęta!'
+                );
             }
         }
     }
