@@ -30,9 +30,11 @@ document.getElementsByClassName("feature").onclick = "location.href='?cmd=test'"
              <?php echo $contact->getPhone();?>
         </td>
         <td>
-            <a class="edit" href="?cmd=contact-edit&id=<?php echo $contact->getId();?>">
+            <?php if (isset($buttons['contact-edit'])) {?>
+            <a class="edit" href="?cmd=contact-edit&id=<?php echo $client->getId();?>">
                 Edytuj
             </a>
+            <?php } ?>
         </td>
     </tr>
     <?php } ?>

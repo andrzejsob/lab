@@ -18,7 +18,7 @@ class PermissionMapper extends Mapper
         $this->insertStmt = self::$PDO->prepare(
             "INSERT INTO permission(name, description) VALUES (?, ?)");
         $this->insertRolePermissionStmt = self::$PDO->prepare(
-            "INSERT INTO role_perm(roleId, permId) VALUES (?, ?)");
+            "INSERT INTO role_perm(role_id, perm_id) VALUES (?, ?)");
         $this->findByRoleStmt = self::$PDO->prepare(
             "SELECT id, name, description FROM permission as p
             JOIN role_perm as rp
@@ -26,7 +26,7 @@ class PermissionMapper extends Mapper
             WHERE rp.role_id = ?"
         );
         $this->deleteRolePermissionsStmt = self::$PDO->prepare(
-            "DELETE FROM role_perm WHERE roleId = ?"
+            "DELETE FROM role_perm WHERE role_id = ?"
         );
     }
 
@@ -42,13 +42,11 @@ class PermissionMapper extends Mapper
     {
         self::$PDO->beginTransaction();
         $this->deleteRolePermissionsStmt->execute(array($roleId));
-        if ($permissionsIdArray) {
-            foreach($permissionsIdArray as $key => $permId) {
-                $stmt = $this->insertRolePermissionStmt->execute(array(
-                    $roleId,
-                    $permId
-                ));
-            }
+        foreach($permissionsIdArray as $key => $permId) {
+            $this->insertRolePermissionStmt->execute(array(
+                $roleId,
+                $permId
+            ));
         }
         self::$PDO->commit();
     }

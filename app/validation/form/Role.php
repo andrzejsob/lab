@@ -42,10 +42,10 @@ class Role extends Entity
     public function setVars(Request $request)
     {
         $permIds = array();
-        if (!is_null($request->getProperty('permissions'))) {
-            $permIds = $request->getProperty('permissions');
-        } else {
+        if (is_null($request->getProperty('permissions'))) {
             $permIds = $this->entityObject->getPermissions()->getArray('id');
+        } else {
+            $permIds = $request->getProperty('permissions');
         }
 
         $this->vars = array(
