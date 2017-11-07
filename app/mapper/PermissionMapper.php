@@ -17,16 +17,11 @@ class PermissionMapper extends Mapper
             "UPDATE permission SET name = ?, description = ? WHERE id = ?");
         $this->insertStmt = self::$PDO->prepare(
             "INSERT INTO permission(name, description) VALUES (?, ?)");
-        $this->insertRolePermissionStmt = self::$PDO->prepare(
-            "INSERT INTO role_perm(role_id, perm_id) VALUES (?, ?)");
         $this->findByRoleStmt = self::$PDO->prepare(
             "SELECT id, name, description FROM permission as p
             JOIN role_perm as rp
             ON p.id = rp.perm_id
             WHERE rp.role_id = ?"
-        );
-        $this->deleteRolePermissionsStmt = self::$PDO->prepare(
-            "DELETE FROM role_perm WHERE role_id = ?"
         );
     }
 
@@ -36,19 +31,6 @@ class PermissionMapper extends Mapper
         return $this->getCollection(
             $this->findByRoleStmt->fetchAll(\PDO::FETCH_ASSOC)
         );
-    }
-
-    public function updateRolePermissions($roleId, $permissionsIdArray)
-    {
-        self::$PDO->beginTransaction();
-        $this->deleteRolePermissionsStmt->execute(array($roleId));
-        foreach($permissionsIdArray as $key => $permId) {
-            $this->insertRolePermissionStmt->execute(array(
-                $roleId,
-                $permId
-            ));
-        }
-        self::$PDO->commit();
     }
 
     public function getCollection(array $raw)

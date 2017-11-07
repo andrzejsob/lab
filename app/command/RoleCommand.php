@@ -32,10 +32,6 @@ class RoleCommand extends Command
             $messageClass = new Success($success);
             try {
                 $role->save();
-                Permission::getFinder()->updateRolePermissions(
-                    $role->getId(),
-                    $request->getProperty('permissions')
-                );
             } catch (\Exception $e) {
                 $messageClass = new Error($error.$e->getMessage());
             }
@@ -61,6 +57,7 @@ class RoleCommand extends Command
     public function editAction($request)
     {
         $role = Role::getFinder()->find($request->getProperty('id'));
+
         if (is_null($role)) {
             new Redirect('?cmd=role', new Error('Brak konta o podanym id.'));
         }

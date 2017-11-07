@@ -10,15 +10,23 @@ class RoleMapper extends Mapper
     {
         parent::__construct();
         $this->selectAllStmt = self::$PDO->prepare(
-            'SELECT * FROM role');
+            'SELECT * FROM role'
+        );
         $this->selectStmt = self::$PDO->prepare(
-            "SELECT * FROM role WHERE id = ?");
+            "SELECT * FROM role WHERE id = ?"
+        );
         $this->updateStmt = self::$PDO->prepare(
-            "UPDATE role SET name = ? WHERE id = ?");
+            "UPDATE role SET name = ? WHERE id = ?"
+        );
         $this->insertStmt = self::$PDO->prepare(
-            "INSERT INTO role(name) VALUES (?)");
+            "INSERT INTO role(name) VALUES (?)"
+        );
         $this->insertUserRoleStmt = self::$PDO->prepare(
-            "INSERT INTO user_role(user_id, role_id) VALUES (?, ?)");
+            "INSERT INTO user_role(user_id, role_id) VALUES (?, ?)"
+        );
+        $this->insertRolePermissionsStmt = self::$PDO->prepare(
+            "INSERT INTO role_perm(role_id, perm_id) VALUES (?, ?)"
+        );
         $this->findByUserStmt = self::$PDO->prepare(
             "SELECT id, name FROM role as r
             JOIN user_role as ur
@@ -27,6 +35,9 @@ class RoleMapper extends Mapper
         );
         $this->deleteUserRolesStmt = self::$PDO->prepare(
             "DELETE FROM user_role WHERE user_id = ?"
+        );
+        $this->deleteRolePermissionsStmt = self::$PDO->prepare(
+            "DELETE FROM role_perm WHERE role_id = ?"
         );
         $this->deleteStmt = self::$PDO->prepare(
             "DELETE FROM role WHERE id = ?"
@@ -75,10 +86,14 @@ class RoleMapper extends Mapper
     protected function doInsert(DomainObject $object)
     {
         try {
+            self::$PDO->beginTransaction();
             $this->insertStmt->execute(array($object->getName()));
             $id = self::$PDO->lastInsertId();
             $object->setId($id);
+            $this->insertRolePermissions($object);
+            self::$PDO->commit();
         } catch (\Exception $e) {
+            self::$PDO->rollBack();
             if ($e->errorInfo[1] == 1062) {
                 throw new \Exception(
                     'Nazwa "'.$object->getName().'" jest już zajęta!'
@@ -94,11 +109,28 @@ class RoleMapper extends Mapper
             $object->getId()
         );
         try {
-            $result = $this->updateStmt->execute($values);
+            self::$PDO->beginTransaction();
+            $this->updateStmt->execute($values);
+            $this->deleteRolePermissionsStmt->execute(array($object->getId()));
+            $this->insertRolePermissions($object);
+            self::$PDO->commit();
         } catch (\Exception $e) {
+            self::$PDO->rollBack();
             if ($e->errorInfo[1] == 1062) {
                 throw new \Exception('Podana nazwa jest już zajęta!');
             }
+        }
+    }
+
+    private function insertRolePermissions($role)
+    {
+        $roleId = $role->getId();
+        $permissions = $role->getPermissions();
+        foreach($permissions as $perm) {
+            $this->insertRolePermissionsStmt->execute(array(
+                $roleId,
+                $perm->getId()
+            ));
         }
     }
 

@@ -177,9 +177,13 @@ class OrderMapper extends Mapper
 
     private function insertOrderMethods($order)
     {
-        foreach($order->getMethods() as $method) {
-            $array = array($order->getId(), $method->getId());
-            $this->insertOrderMethodStmt->execute($array);
+        $orderId = $order->getId();
+        $methods = $order->getMethods();
+        foreach($methods as $method) {
+            $this->insertOrderMethodStmt->execute(array(
+                $orderId,
+                $method->getId()
+            ));
         }
     }
 
