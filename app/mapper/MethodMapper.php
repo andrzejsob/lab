@@ -10,9 +10,11 @@ class MethodMapper extends Mapper
     {
         parent::__construct();
         $this->selectAllStmt = self::$PDO->prepare(
-            'SELECT * FROM method');
+            'SELECT * FROM method ORDER BY acronym'
+        );
         $this->selectStmt = self::$PDO->prepare(
-            "SELECT * FROM method WHERE id = ?");
+            "SELECT * FROM method WHERE id = ?"
+        );
         $this->updateStmt = self::$PDO->prepare(
             "UPDATE method SET acronym = ?, name = ? WHERE id = ?");
         $this->insertStmt = self::$PDO->prepare(
@@ -26,7 +28,7 @@ class MethodMapper extends Mapper
             WHERE um.user_id = ?"
         );
         $this->findByInternalOrderStmt = self::$PDO->prepare(
-            "SELECT id, acronym, name FROM method as m
+            "SELECT m.* FROM method as m
             JOIN internal_order_method as iom
             ON m.id = iom.method_id
             WHERE iom.internal_order_id = ?"

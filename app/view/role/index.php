@@ -21,12 +21,16 @@
             </ul>
         </td>
         <td>
+            <?php if (isset($buttons['role-edit'])) {?>
+                <a class="edit" href="?cmd=role-edit&id=<?php echo $role->getId();?>">
+                    Edytuj
+                </a>
+            <?php }?>
+            <?php if (isset($buttons['role-delete'])) {?>
             <a class="delete" href="?cmd=role-delete&id=<?php echo $role->getId();?>">
                 Usuń
             </a>
-            <a class="edit" href="?cmd=role-edit&id=<?php echo $role->getId();?>">
-                Edytuj
-            </a>
+            <?php } ?>
         </td>
     </tr>
     <?php } ?>

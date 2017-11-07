@@ -16,12 +16,16 @@
         <td class="feature"><?php echo $method->getAcronym();?></td>
         <td class="feature"><?php echo $method->getName();?></td>
         <td>
-            <a class="delete" href="?cmd=method-delete&id=<?php echo $method->getId();?>">
-                Usuń
-            </a>
+            <?php if (isset($buttons['method-edit'])) {?>
             <a class="edit" href="?cmd=method-edit&id=<?php echo $method->getId();?>">
                 Edytuj
             </a>
+            <?php } ?>
+            <?php if (isset($buttons['method-delete'])) {?>
+            <a class="delete" href="?cmd=method-delete&id=<?php echo $method->getId();?>">
+                Usuń
+            </a>
+            <?php }?>
         </td>
     </tr>
     <?php } ?>

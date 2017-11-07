@@ -44,7 +44,7 @@ class ContactCommand extends Command
     {
         $contact = new ContactPerson();
         $contact->setClient(new Client());
-        $success = 'Dodano osobę do kontaktu: ';
+        $success = 'Dodano kontakt: ';
         $error = 'Dane nie zostały zapisane';
         return $this->form($request, $contact, $success, $error);
 
@@ -59,7 +59,7 @@ class ContactCommand extends Command
                 new Error('Brak osoby do kontaktu')
             );
         }
-        $success = 'Zmieniono dane osoby do kontaktu: ';
+        $success = 'Zmieniono dane dla: ';
         $error = 'Dane nie zostały zapisane';
         return $this->form($request, $contact, $success, $error);
     }

@@ -72,4 +72,16 @@ class UserCommand extends Command
             'Błąd edycji. '
         );
     }
+
+    public function deleteAction($request)
+    {
+        $id = $request->getProperty('id');
+        $user = User::find($id);
+        User::getFinder()->delete($id);
+        new Redirect('?cmd=user', new Success(
+            'Usunięto użytkownika. '.
+            $user->getFirstName().' '.
+            $user->getLastName()
+        ));
+    }
 }

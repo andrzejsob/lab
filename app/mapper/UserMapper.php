@@ -10,17 +10,18 @@ class UserMapper extends Mapper
     {
         parent::__construct();
         $this->selectAllStmt = self::$PDO->prepare(
-            'SELECT * FROM user');
+            'SELECT * FROM user'
+        );
         $this->selectStmt = self::$PDO->prepare(
-            "SELECT * FROM user WHERE id = ?");
-        //$this->updateStmt = self::$PDO->prepare(
-        //    "UPDATE me SET acronym = ?, name = ? WHERE id = ?");
+            "SELECT * FROM user WHERE id = ?"
+        );
         $this->authenticateStmt = self::$PDO->prepare(
             "SELECT * FROM user WHERE username = ? AND passwordMd5 = ?"
         );
         $this->insertStmt = self::$PDO->prepare(
             "INSERT INTO user(username, firstName, lastName, email)
-             VALUES (?, ?, ?, ?)");
+             VALUES (?, ?, ?, ?)"
+        );
         $this->updateStmt = self::$PDO->prepare(
             "UPDATE user SET username = ?, firstName = ?, lastName = ?, email = ?
             WHERE id = ?"
@@ -36,6 +37,9 @@ class UserMapper extends Mapper
         );
         $this->deleteUserRolesStmt = self::$PDO->prepare(
             "DELETE FROM user_role WHERE user_id = ?"
+        );
+        $this->deleteStmt = self::$PDO->prepare(
+            "DELETE FROM user WHERE id = ?"
         );
     }
 
@@ -139,6 +143,11 @@ class UserMapper extends Mapper
             self::$PDO->rollBack();
             throw new \Exception($e);
         }
+    }
+
+    public function delete($id)
+    {
+        $this->deleteStmt->execute(array($id));
     }
 
     public function selectStmt()

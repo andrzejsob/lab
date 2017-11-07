@@ -40,9 +40,9 @@ class Contact extends Entity
             'Niepoprawny format adresu email'
         );
         $this->validation->addSingleFieldValidation(
-            new specificator\IntValue,
+            new specificator\PhoneNumber,
             'phone',
-            'Nr telefonu może zawirać tylko cyfry'
+            'Nr telefonu może zawierać tylko cyfry. Maksymalnie 9'
         );
     }
 

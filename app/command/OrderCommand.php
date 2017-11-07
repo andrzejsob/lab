@@ -28,10 +28,9 @@ class OrderCommand extends Command
         $validation = $orderForm->handleRequest($request);
 
         if($validation->isValid()) {
-            $messageClass;
+            $messageClass = new Success($success.$order->getCode());
             try {
                 $order->save();
-                $messageClass = new Success($success.$order->getCode());
             } catch (\Exception $e) {
                 $messageClass = new Error($error.$e->getMessage());
             }
