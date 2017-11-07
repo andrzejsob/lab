@@ -31,9 +31,6 @@ class MethodMapper extends Mapper
             ON m.id = iom.method_id
             WHERE iom.internal_order_id = ?"
         );
-        $this->deleteUserMethodsStmt = self::$PDO->prepare(
-            "DELETE FROM user_method WHERE user_id = ?"
-        );
     }
 
     public function findByUser($userId)
@@ -51,24 +48,6 @@ class MethodMapper extends Mapper
             $this->findByInternalOrderStmt->fetchAll(\PDO::FETCH_ASSOC),
             $this
         );
-    }
-
-    public function updateUserMethods($userId, $methodsIdArray)
-    {
-        self::$PDO->beginTransaction();
-        $this->deleteUserMethodsStmt->execute(array($userId));
-        if ($methodsIdArray) {
-            foreach($methodsIdArray as $key => $methodId) {
-                $stmt = $this->insertUserMethodStmt->execute(array(
-                    $userId,
-                    $methodId
-                ));
-            }
-        }
-        self::$PDO->commit();
-        /*
-        $userObject->setMethods($this->findByUser($userId));
-        */
     }
 
     public function getCollection(array $raw)
