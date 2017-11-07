@@ -10,7 +10,7 @@
 <table>
     <tr>
         <td>Login</td>
-        <td><input type="text" name="nick" value="<?php echo $entity->getNick();?>"></td>
+        <td><input type="text" name="username" value="<?php echo $entity->getUsername();?>"></td>
     </tr>
     <tr>
         <td>Hasło</td>

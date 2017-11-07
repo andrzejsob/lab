@@ -33,9 +33,6 @@ class RoleMapper extends Mapper
             ON r.id = ur.role_id
             WHERE ur.user_id = ?"
         );
-        $this->deleteUserRolesStmt = self::$PDO->prepare(
-            "DELETE FROM user_role WHERE user_id = ?"
-        );
         $this->deleteRolePermissionsStmt = self::$PDO->prepare(
             "DELETE FROM role_perm WHERE role_id = ?"
         );

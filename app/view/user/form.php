@@ -10,7 +10,7 @@
 <table>
     <tr>
         <td>Login</td>
-        <td><input type="text" name="nick" value="<?php echo $entity->getNick();?>"></td>
+        <td><input type="text" name="username" value="<?php echo $entity->getUsername();?>"></td>
     </tr>
     <tr>
         <td>Imię</td>
@@ -28,15 +28,21 @@
 
 <h4>Typ konta</h4>
 <?php foreach ($roles as $role) { ?>
-<input type="checkbox" name="role[]" value="<?php echo $role->getId()?>"
-<?php if (in_array($role->getName(), $userRoles)) echo 'checked="checked"'?>>
+<input type="checkbox" name="roles[]" value="<?php echo $role->getId()?>"
+    <?php if (in_array($role->getId(), $checkedRoleIdsArray)) {?>
+    checked
+    <?php }?>    
+>
 <?php echo $role->getName()?><br>
 <?php } ?>
 <h4>Metody badawcze</h4>
 <?php foreach ($methods as $method) { ?>
-<input type="checkbox" name="method[]" value="<?php echo $method->getId()?>"
-<?php if (in_array($method->getAcronym(), $userMethods)) echo 'checked="checked"'?>>
+<input type="checkbox" name="methods[]" value="<?php echo $method->getId()?>"
+    <?php if (in_array($method->getId(), $checkedMethodIdsArray)) {?>
+    checked
+    <?php }?>
+>
 <?php echo $method->getAcronym()?><br>
-<?php } ?>
+<?php }?>
 <input type="submit" name="save" value="Zapisz">
 </form>

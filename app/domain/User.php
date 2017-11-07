@@ -3,7 +3,7 @@ namespace lab\domain;
 
 class User extends DomainObject
 {
-    private $nick;
+    private $username;
     private $firstName;
     private $lastName;
     private $passwordMd5;
@@ -14,7 +14,7 @@ class User extends DomainObject
 
     public function __construct(
         $id = null,
-        $nick = null,
+        $username = null,
         $passwordMd5 = null,
         $firstName = null,
         $lastName = null,
@@ -22,7 +22,7 @@ class User extends DomainObject
     )
     {
         parent::__construct($id);
-        $this->nick = $nick;
+        $this->username = $username;
         $this->passwordMd5 = $passwordMd5;
         $this->firstName = $firstName;
         $this->lastName = $lastName;
@@ -35,7 +35,7 @@ class User extends DomainObject
     {
         //zwraca obkiekt User lub null w przypadku niepowodzenia
         $object = $this->finder()->authenticate(
-            $this->nick,
+            $this->username,
             $this->password
         );
         return $object;
@@ -72,9 +72,9 @@ class User extends DomainObject
         return $array;
     }
 
-    public function setNick($nick)
+    public function setUsername($username)
     {
-        $this->nick = $nick;
+        $this->username = $username;
 //        $this->markDirty();
     }
 
@@ -120,9 +120,9 @@ class User extends DomainObject
         $this->roles = $roleColl;
     }
 
-    public function getNick()
+    public function getUsername()
     {
-        return $this->nick;
+        return $this->username;
     }
 
     public function getFirstName()

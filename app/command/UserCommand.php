@@ -1,10 +1,9 @@
 <?php
 namespace lab\command;
 
-use lab\mapper\MethodMapper;
-use lab\mapper\UserMapper;
-use lab\mapper\RoleMapper;
 use lab\domain\User;
+use lab\mapper\RoleCollection;
+use lab\mapper\MethodCollection;
 use lab\validation\form\Client as ClientForm;
 use lab\validation\form\User as UserForm;
 use lab\base\Redirect;
@@ -15,69 +14,62 @@ class UserCommand extends Command
 {
     public function indexAction()
     {
-        $uMapper = new UserMapper();
-        //getting list of users from database
-        $users = $uMapper->findAll();
-
         $this->render(
             'app/view/user/index.php',
-            ['users' => $users]
+            ['users' => User::getFinder()->findAll()]
         );
     }
 
-    public function formAction($request)
+    private function form($request, $user, $success, $error)
     {
-        $user = new User();
-        $mm = new MethodMapper();
-        $rm = new RoleMapper();
-        //getting all methods
-        $allMethods = $mm->findAll();
-        $allRoles = $rm->findAll();
-        //creation of user methods array
-        $userMethodsArray = [];
-        $userRolesArray = [];
-        if($id = $request->getProperty('id')) {
-            $user = User::find($id);
-            if (is_null($user)) {
-                new Redirect(
-                    '?cmd=user-index',
-                    new Error('Brak użytkownika o podanym id.')
-                );
-            }
-            //pobranie metod użytkownika do macierzy
-            $userMethodsArray = $user->getMethods()->getArray('acronym');
-            //pobrane metod użytkownika do macirzy
-            $userRolesArray = $user->getRoles()->getArray('name');
-        }
-
         $userForm = new UserForm($user);
         $validation = $userForm->handleRequest($request);
 
         if ($validation->isValid()) {
-            $messageClass = new Success('Dane zostały zapisane');
+            $messageClass = new Success(
+                $success.
+                $user->getFirstName().' '.
+                $user->getLastName()
+            );
             try {
-                //zapisanie danych użytkownika do bazy
                 $user->save();
-                //zapisanie metod użytkownika do bazy
-                $mm->updateUserMethods(
-                    $user->getId(),
-                    $request->getProperty('method')
-                );
-                $rm->updateUserRoles(
-                    $user->getId(),
-                    $request->getProperty('role')
-                );
             } catch (\Exception $e) {
-                $messageClass = new Error('Dane nie zostały zapisane. '.
-                $e->getMessage());
+                $messageClass = new Error($error.$e->getMessage());
             }
             new Redirect('?cmd=user', $messageClass);
         }
-
-        $this->assign('methods', $allMethods);
-        $this->assign('userMethods', $userMethodsArray);
-        $this->assign('roles', $allRoles);
-        $this->assign('userRoles', $userRolesArray);
         $this->render('app/view/user/form.php', $userForm->getData());
+    }
+
+    public function newAction($request)
+    {
+        $user = new User();
+        $user->setMethods(new MethodCollection());
+        $user->setRoles(new RoleCollection());
+
+        return $this->form(
+            $request,
+            $user,
+            'Dodano uźytkownika: ',
+            'Błąd zapisu. '
+        );
+    }
+
+    public function editAction($request)
+    {
+        $user = User::find($request->getProperty('id'));
+        if (is_null($user)) {
+            new Redirect(
+                '?cmd=user',
+                new Error('Brak użytkownika.')
+            );
+        }
+
+        return $this->form(
+            $request,
+            $user,
+            'Zapisano dane uźytkownika: ',
+            'Błąd edycji. '
+        );
     }
 }

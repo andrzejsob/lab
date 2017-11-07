@@ -7,7 +7,7 @@ use lab\controller\Request;
 class Login extends Entity
 {
     protected function setProperties($request) {
-        $this->entityObject->setNick($request->getProperty('nick'));
+        $this->entityObject->setUsername($request->getProperty('username'));
         $this->entityObject->setPassword($request->getProperty('password'));
     }
 
@@ -15,7 +15,7 @@ class Login extends Entity
     {
         $this->validation->addSingleFieldValidation(
             new specificator\NoEmptyValue,
-            'nick',
+            'username',
             'Brak loginu'
         );
         $this->validation->addSingleFieldValidation(new specificator\NoEmptyValue)

@@ -16,14 +16,27 @@ class UserMapper extends Mapper
         //$this->updateStmt = self::$PDO->prepare(
         //    "UPDATE me SET acronym = ?, name = ? WHERE id = ?");
         $this->authenticateStmt = self::$PDO->prepare(
-            "SELECT * FROM user WHERE nick = ? AND passwordMd5 = ?"
+            "SELECT * FROM user WHERE username = ? AND passwordMd5 = ?"
         );
         $this->insertStmt = self::$PDO->prepare(
-            "INSERT INTO user(nick, firstName, lastName, email)
+            "INSERT INTO user(username, firstName, lastName, email)
              VALUES (?, ?, ?, ?)");
         $this->updateStmt = self::$PDO->prepare(
-            "UPDATE user SET nick = ?, firstName = ?, lastName = ?, email = ?
-             WHERE id = ?");
+            "UPDATE user SET username = ?, firstName = ?, lastName = ?, email = ?
+            WHERE id = ?"
+        );
+        $this->insertUserMethodStmt = self::$PDO->prepare(
+            "INSERT INTO user_method(user_id, method_id) VALUES (?, ?)"
+        );
+        $this->insertUserRoleStmt = self::$PDO->prepare(
+            "INSERT INTO user_role(user_id, role_id) VALUES (?, ?)"
+        );
+        $this->deleteUserMethodsStmt = self::$PDO->prepare(
+            "DELETE FROM user_method WHERE user_id = ?"
+        );
+        $this->deleteUserRolesStmt = self::$PDO->prepare(
+            "DELETE FROM user_role WHERE user_id = ?"
+        );
     }
 
     public function getCollection(array $raw)
@@ -50,7 +63,7 @@ class UserMapper extends Mapper
     {
         $obj = new User(
             $user['id'],
-            $user['nick'],
+            $user['username'],
             $user['passwordMd5'],
             $user['firstName'],
             $user['lastName'],
@@ -59,29 +72,73 @@ class UserMapper extends Mapper
         return $obj;
     }
 
+    private function insertUserMethods($user)
+    {
+        $userId = $user->getId();
+        $methods = $user->getMethods();
+        foreach ($methods as $method) {
+            $this->insertUserMethodStmt->execute(array(
+                $userId,
+                $method->getId()
+            ));
+        }
+    }
+
+    private function insertUserRoles($user)
+    {
+        $userId = $user->getId();
+        $roles = $user->getRoles();
+        foreach ($roles as $role) {
+            $this->insertUserRoleStmt->execute(array(
+                $userId,
+                $role->getId()
+            ));
+        }
+    }
+
     protected function doInsert(DomainObject $object)
     {
         $values = array(
-            $object->getNick(),
+            $object->getUsername(),
             $object->getFirstName(),
             $object->getLastName(),
             $object->getEmail()
         );
-        $this->insertStmt->execute($values);
-        $id = self::$PDO->lastInsertId();
-        $object->setId($id);
+        try {
+            self::$PDO->beginTransaction();
+            $this->insertStmt->execute($values);
+            $id = self::$PDO->lastInsertId();
+            $object->setId($id);
+            $this->insertUserMethods($object);
+            $this->insertUserRoles($object);
+            self::$PDO->commit();
+        } catch (\Exception $e) {
+            self::$PDO->rollBack();
+            throw new \Exception($e->errorInfo[1]);
+        }
     }
 
     public function update(DomainObject $object)
     {
         $values = array(
-            $object->getNick(),
+            $object->getUsername(),
             $object->getFirstName(),
             $object->getLastName(),
             $object->getEmail(),
             $object->getId()
         );
-        $this->updateStmt->execute($values);
+        try {
+            self::$PDO->beginTransaction();
+            $this->updateStmt->execute($values);
+            $this->deleteUserRolesStmt->execute(array($object->getId()));
+            $this->deleteUserMethodsStmt->execute(array($object->getId()));
+            $this->insertUserMethods($object);
+            $this->insertUserRoles($object);
+            self::$PDO->commit();
+        } catch (\Exception $e) {
+            self::$PDO->rollBack();
+            throw new \Exception($e);
+        }
     }
 
     public function selectStmt()

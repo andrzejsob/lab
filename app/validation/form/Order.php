@@ -76,10 +76,10 @@ class Order extends Entity
         $selectedClient = $this->entityObject->getContactPerson()->getClient();
 
         $methodIds = array();
-        if (!is_null($request->getProperty('methods'))) {
-            $methodIds = $request->getProperty('methods');
-        } else {
+        if (is_null($request->getProperty('methods'))) {
             $methodIds = $this->entityObject->getMethods()->getArray('id');
+        } else {
+            $methodIds = $request->getProperty('methods');
         }
 
         $this->vars = array(
