@@ -3,6 +3,7 @@ namespace lab\command;
 
 use lab\domain\User;
 use lab\base\Redirect;
+use lab\validation\form\ForgotPassword as ForgotPasswordForm;
 use lab\validation\form\Login as LoginForm;
 use lab\base\Success;
 
@@ -36,5 +37,31 @@ class LoginCommand extends Command
     {
         \lab\base\ApplicationHelper::getSession()->logout();
         new Redirect('?cmd=login');
+    }
+
+    public function forgotPasswordAction($request)
+    {
+        $rawUser = new User();
+        $forgotPasswordForm = new ForgotPasswordForm($rawUser);
+        $validation = $forgotPasswordForm->handleRequest($request);
+        if ($validation->isValid()) {
+            $realUser = User::getFinder()->findByEmail($rawUser->getEmail());
+            if ($realUser) {
+                //zapisanie losowego hasła dla użuźytkownika
+                //
+                //
+                new Redirect('?cmd=login');
+            }
+            return $this->render(
+                'app/view/login/forgot_password.php',
+                array('errors' => array('Błędny e-mail'),
+                      'entity' => new User())
+            );
+        }
+
+        return $this->render(
+            'app/view/login/forgot_password.php'.
+            $forgotPasswordForm->getData()
+        );
     }
 }
