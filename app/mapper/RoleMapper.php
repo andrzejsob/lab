@@ -21,9 +21,6 @@ class RoleMapper extends Mapper
         $this->insertStmt = self::$PDO->prepare(
             "INSERT INTO role(name) VALUES (?)"
         );
-        $this->insertUserRoleStmt = self::$PDO->prepare(
-            "INSERT INTO user_role(user_id, role_id) VALUES (?, ?)"
-        );
         $this->insertRolePermissionsStmt = self::$PDO->prepare(
             "INSERT INTO role_perm(role_id, perm_id) VALUES (?, ?)"
         );
@@ -47,21 +44,6 @@ class RoleMapper extends Mapper
         return $this->getCollection(
             $this->findByUserStmt->fetchAll(\PDO::FETCH_ASSOC)
         );
-    }
-
-    public function updateUserRoles($userId, $rolesIdArray)
-    {
-        self::$PDO->beginTransaction();
-        $this->deleteUserRolesStmt->execute(array($userId));
-        if ($rolesIdArray) {
-            foreach($rolesIdArray as $key => $roleId) {
-                $stmt = $this->insertUserRoleStmt->execute(array(
-                    $userId,
-                    $roleId
-                ));
-            }
-        }
-        self::$PDO->commit();
     }
 
     public function getCollection(array $raw)

@@ -23,7 +23,7 @@ class LoginCommand extends Command
             }
             return $this->render(
                 'app/view/login/form.php',
-                array('errors' => array('Błedny login lub hasło'),
+                array('errors' => array('Błędny login lub hasło'),
                       'entity' => new User())
             );
         }

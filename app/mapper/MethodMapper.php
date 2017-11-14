@@ -10,9 +10,11 @@ class MethodMapper extends Mapper
     {
         parent::__construct();
         $this->selectAllStmt = self::$PDO->prepare(
-            'SELECT * FROM method');
+            'SELECT * FROM method ORDER BY acronym'
+        );
         $this->selectStmt = self::$PDO->prepare(
-            "SELECT * FROM method WHERE id = ?");
+            "SELECT * FROM method WHERE id = ?"
+        );
         $this->updateStmt = self::$PDO->prepare(
             "UPDATE method SET acronym = ?, name = ? WHERE id = ?");
         $this->insertStmt = self::$PDO->prepare(
@@ -26,13 +28,10 @@ class MethodMapper extends Mapper
             WHERE um.user_id = ?"
         );
         $this->findByInternalOrderStmt = self::$PDO->prepare(
-            "SELECT id, acronym, name FROM method as m
+            "SELECT m.* FROM method as m
             JOIN internal_order_method as iom
             ON m.id = iom.method_id
             WHERE iom.internal_order_id = ?"
-        );
-        $this->deleteUserMethodsStmt = self::$PDO->prepare(
-            "DELETE FROM user_method WHERE user_id = ?"
         );
     }
 
@@ -51,24 +50,6 @@ class MethodMapper extends Mapper
             $this->findByInternalOrderStmt->fetchAll(\PDO::FETCH_ASSOC),
             $this
         );
-    }
-
-    public function updateUserMethods($userId, $methodsIdArray)
-    {
-        self::$PDO->beginTransaction();
-        $this->deleteUserMethodsStmt->execute(array($userId));
-        if ($methodsIdArray) {
-            foreach($methodsIdArray as $key => $methodId) {
-                $stmt = $this->insertUserMethodStmt->execute(array(
-                    $userId,
-                    $methodId
-                ));
-            }
-        }
-        self::$PDO->commit();
-        /*
-        $userObject->setMethods($this->findByUser($userId));
-        */
     }
 
     public function getCollection(array $raw)

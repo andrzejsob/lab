@@ -1,7 +1,7 @@
-<?php echo $client->getName();?><br />
-NIP: <?php echo $client->getNip();?><br />
+<?php echo $client->getName();?><br /><br />
 <?php echo $client->getStreet();?><br />
 <?php echo $client->getZipCode().' '.$client->getCity();?><br />
+NIP: <?php echo $client->getNip();?>
 <h5>Zlecenia</h5>
 <?php if ($orders->valid()) {?>
     <table class="list_table">
@@ -34,12 +34,12 @@ NIP: <?php echo $client->getNip();?><br />
                 $order->getContactPerson()->getLastName()?>
             </td>
             <td>
-                <a class="delete" href="?cmd=order-delete&id=<?php echo $order->getId();?>">
-                    Usuń
-                </a>
+                <?php if (isset($buttons['order-edit'])) {?>
                 <a class="edit" href="?cmd=order-edit&id=<?php echo $order->getId();?>">
                     Edytuj
                 </a>
+                <?php }?>
+            </td>
             </td>
         </tr>
         <?php } ?>

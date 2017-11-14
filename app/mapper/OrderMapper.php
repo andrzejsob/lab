@@ -30,7 +30,8 @@ class OrderMapper extends Mapper
                 sum,
                 found_source,
                 load_nr )
-              SELECT ?, MAX(nr)+1, ?, ?, ?, ?, ?, ?, ?, ? FROM internal_order');
+              SELECT ?, MAX(nr)+1, ?, ?, ?, ?, ?, ?, ?, ? FROM internal_order'
+        );
         $this->deleteOrderMethodStmt = self::$PDO->prepare(
             'DELETE FROM internal_order_method WHERE internal_order_id = ?'
         );
@@ -70,7 +71,7 @@ class OrderMapper extends Mapper
             FROM internal_order as o
             JOIN internal_order_method AS om ON om.internal_order_id = o.id
             JOIN user_method AS um ON um.method_id = om.method_id
-            WHERE um.user_id = ? ORDER BY o.nr'
+            WHERE um.user_id = ? ORDER BY o.nr DESC'
         );
     }
 
@@ -144,14 +145,19 @@ class OrderMapper extends Mapper
             $order->getFoundSource(),
             $order->getLoadNr()
         );
-        self::$PDO->beginTransaction();
-        $this->insertStmt->execute($values);
-        $order->setId(self::$PDO->lastInsertId());
-        $stmt = $this->selectNrStmt->execute(array());
-        $nr = $this->selectNrStmt->fetch(\PDO::FETCH_NUM);
-        $order->setNr($nr[0]);
-        $this->insertOrderMethods($order);
-        self::$PDO->commit();
+        try {
+            self::$PDO->beginTransaction();
+            $this->insertStmt->execute($values);
+            $order->setId(self::$PDO->lastInsertId());
+            $stmt = $this->selectNrStmt->execute(array());
+            $nr = $this->selectNrStmt->fetch(\PDO::FETCH_NUM);
+            $order->setNr($nr[0]);
+            $this->insertOrderMethods($order);
+            self::$PDO->commit();
+        } catch (\Exception $e) {
+            self::$PDO->rollBack();
+            throw new \Exception($e);
+        }
     }
 
     public function update(DomainObject $order)
@@ -196,41 +202,6 @@ class OrderMapper extends Mapper
     {
         $this->selectByClientIdStmt->execute(array($id));
         $array = $this->selectByClientIdStmt->fetchAll(\PDO::FETCH_ASSOC);
-        return $this->getCollection($array);
-    }
-
-    public function selectByMethodsStmt($qm)
-    {
-        $selectStmt = self::$PDO->prepare("SELECT
-            id,
-            contact_person_id,
-            nr,
-            year,
-            akr,
-            order_date,
-            receive_date,
-            nr_of_analyzes,
-            sum,
-            found_source,
-            load_nr
-            FROM internal_order as io
-            JOIN internal_order_method as iom
-            ON io.id = iom.internal_order_id
-            WHERE iom.method_id IN (".$qm.")");
-        return $selectStmt;
-    }
-
-    public function selectByMethods(MethodCollection $methods)
-    {
-        foreach ($methods as $method) {
-            $id_array[] = $method->getId();
-            $marks[] = '?';
-        }
-        $qm = implode(', ', $marks);
-        $sth = $this->selectByMethodsStmt($qm);
-        $sth->execute($id_array);
-        $array = $sth->fetchAll(\PDO::FETCH_ASSOC);
-        if (is_null($array)) {return null;}
         return $this->getCollection($array);
     }
 }
