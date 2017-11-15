@@ -45,22 +45,24 @@ class LoginCommand extends Command
         $forgotPasswordForm = new ForgotPasswordForm($rawUser);
         $validation = $forgotPasswordForm->handleRequest($request);
         if ($validation->isValid()) {
-            $realUser = User::getFinder()->findByEmail($rawUser->getEmail());
-            if ($realUser) {
-                //zapisanie losowego hasła dla użuźytkownika
+            $user = User::getFinder()->findByEmail($rawUser->getEmail());
+            if ($user) {
+                //generowanie i wysłanie nowego hasła
+                
+                new Success('Na podany e-mail wysłano nowe hasło.');
                 //
                 //
                 new Redirect('?cmd=login');
             }
             return $this->render(
-                'app/view/login/forgot_password.php',
+                'app/view/login/forgotPassword.php',
                 array('errors' => array('Błędny e-mail'),
                       'entity' => new User())
             );
         }
 
         return $this->render(
-            'app/view/login/forgot_password.php'.
+            'app/view/login/forgotPassword.php',
             $forgotPasswordForm->getData()
         );
     }
