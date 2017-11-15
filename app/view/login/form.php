@@ -1,3 +1,9 @@
+<?php if (isset($messageType)) { ?>
+<div class="alert <?php echo $messageType?>">
+  <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+  <?php echo $message;?>
+</div>
+<?php } ?>
 <h4>Logowanie</h4>
 <?php
 //if (isset($errors)) {
@@ -17,5 +23,12 @@
         <td><input type="password" name="password"></td>
     </tr>
 </table>
+<p>
+    <small>
+        <a style="text-decoration: none" href="?cmd=login-forgotPassword">
+            Przypomnij hasło.
+        </a>
+    </small>
+</p>
 <input type="submit" name="save" value="Zaloguj">
 </form>
