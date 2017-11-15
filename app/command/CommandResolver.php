@@ -19,25 +19,23 @@ class CommandResolver
     {
         $cmd = $request->getProperty('cmd');
         $this->session = \lab\base\ApplicationHelper::getSession();
+        $this->setCommandAndActionNames($cmd);
 
         if ($this->session->isUserLoggedIn()) {
-            if ($cmd == 'login' || $cmd == 'login-index') {
+            if ($this->command == 'login') {
                 new Redirect('?cmd=client');
             }
-        } elseif ($cmd == 'login') {
-                return array('\\lab\\command\\LoginCommand', 'indexAction');
+        } elseif ($this->command == 'login') {
+                return array($this->commandFullName, $this->actionFullName);
         } else {
             new Redirect('?cmd=login');
         }
 
-        if (!is_null($cmd)) {
-            $this->setCommandAndActionNames($cmd);
-            if ($this->isCommandCorrect()) {
-                if ($this->isUserAllowedToAccessUrl($cmd)) {
-                    return array($this->commandFullName, $this->actionFullName);
-                }
-                return array($this->defaultCommand, 'permissionErrorAction');
+        if ($this->isCmdCorrect()) {
+            if ($this->isUserAllowedToAccessUrl($cmd)) {
+                return array($this->commandFullName, $this->actionFullName);
             }
+            return array($this->defaultCommand, 'permissionErrorAction');
         }
         return array($this->defaultCommand, $this->errorAction);
     }
@@ -46,10 +44,16 @@ class CommandResolver
     {
         $permArray = Permission::getFinder()->findAll()->getArray('name');
         $userPermArray = $this->session->getUser()->getPermissionsArray();
-        if (isset($userPermArray[$cmd]) || $this->command == 'login') {
+
+        if (isset($userPermArray[$cmd])) {
             return true;
         }
-        if (!in_array($cmd, $permArray) && $userPermArray[$this->command]) {
+
+        if (!in_array($cmd, $permArray) && isset($userPermArray[$this->command])) {
+            return true;
+        }
+
+        if (!in_array($this->command, $permArray)) {
             return true;
         }
 
@@ -69,7 +73,7 @@ class CommandResolver
         $this->actionFullName = $this->action.'Action';
     }
 
-    private function isCommandCorrect() {
+    private function isCmdCorrect() {
         if(class_exists($this->commandFullName) &&
             is_subclass_of($this->commandFullName, '\\lab\\command\\Command') &&
             method_exists($this->commandFullName, $this->actionFullName)) {
