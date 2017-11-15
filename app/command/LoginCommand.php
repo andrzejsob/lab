@@ -48,11 +48,11 @@ class LoginCommand extends Command
             $user = User::getFinder()->findByEmail($rawUser->getEmail());
             if ($user) {
                 //generowanie i wysłanie nowego hasła
-                
-                new Success('Na podany e-mail wysłano nowe hasło.');
-                //
-                //
-                new Redirect('?cmd=login');
+                         //
+                new Redirect(
+                    '?cmd=login',
+                    new Success('Na podany e-mail wysłano nowe hasło.')
+                );
             }
             return $this->render(
                 'app/view/login/forgotPassword.php',
