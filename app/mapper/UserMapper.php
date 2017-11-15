@@ -15,6 +15,9 @@ class UserMapper extends Mapper
         $this->selectStmt = self::$PDO->prepare(
             "SELECT * FROM user WHERE id = ?"
         );
+        $this->selectByEmail = self::$PDO->prepare(
+            "SELECT * FROM user WHERE email = ?"
+        );
         $this->authenticateStmt = self::$PDO->prepare(
             "SELECT * FROM user WHERE username = ? AND passwordMd5 = ?"
         );
@@ -74,6 +77,17 @@ class UserMapper extends Mapper
             $user['email']
         );
         return $obj;
+    }
+
+    public function findByEmail($email)
+    {
+        $this->selectByEmail->execute(array($email));
+        $array = $this->selectByEmail->fetch(\PDO::FETCH_ASSOC);
+        if (!is_array($array)) {
+            return null;
+        }
+        $object = $this->createObject($array);
+        return $object;
     }
 
     private function insertUserMethods($user)
