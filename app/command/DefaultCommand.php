@@ -12,4 +12,9 @@ class DefaultCommand extends Command
     {
         $this->render('app/view/error404.php');
     }
+
+    public function permissionErrorAction()
+    {
+        $this->render('app/view/permissionError.php');
+    }
 }
