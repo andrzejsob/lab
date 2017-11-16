@@ -6,6 +6,7 @@ use lab\base\Redirect;
 use lab\validation\form\ForgotPassword as ForgotPasswordForm;
 use lab\validation\form\Login as LoginForm;
 use lab\base\Success;
+use lab\domain\UserAccount;
 
 class LoginCommand extends Command
 {
@@ -47,11 +48,12 @@ class LoginCommand extends Command
         if ($validation->isValid()) {
             $user = User::getFinder()->findByEmail($rawUser->getEmail());
             if ($user) {
-                //generowanie i wysłanie nowego hasła
-                         //
+                $account = new UserAccount();
+                $password = $account->generateRandomPassword();
                 new Redirect(
                     '?cmd=login',
-                    new Success('Na podany e-mail wysłano nowe hasło.')
+                    new Success('Hasło zostało wysłane na podany adres e-mail.
+                                <br />Zaloguj się podając nowe hasło.')
                 );
             }
             return $this->render(
