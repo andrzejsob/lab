@@ -25,10 +25,14 @@ class Order extends Entity
             }
         }
 
+        if (is_null($request->getProperty('akr'))) {
+            $request->setProperty('akr', 0);
+        }
+
         $this->entityObject->setContactPerson($contactPerson);
         $this->entityObject->setMethods($methodColl);
         $this->entityObject->setNr($request->getProperty('nr'));
-        $this->entityObject->setAKR($request->getProperty('akr'));
+        $this->entityObject->setAkr($request->getProperty('akr'));
         $this->entityObject->setOrderDate($request->getProperty('orderDate'));
         $this->entityObject->setReceiveDate($request->getProperty('receiveDate'));
         $this->entityObject->setNrOfAnalyzes($request->getProperty('nrOfAnalyzes'));
