@@ -7,6 +7,7 @@ use lab\validation\form\ForgotPassword as ForgotPasswordForm;
 use lab\validation\form\Login as LoginForm;
 use lab\base\Success;
 use lab\domain\UserAccount;
+use lab\base\ApplicationHelper;
 
 class LoginCommand extends Command
 {
@@ -50,6 +51,27 @@ class LoginCommand extends Command
             if ($user) {
                 $account = new UserAccount();
                 $password = $account->generateRandomPassword();
+                $user->setPasswordMd5($password);
+                User::getFinder()->updatePassword($user);
+                // Create the Transport
+                $mail = ApplicationHelper::getMail();
+                $transport = (new \Swift_SmtpTransport(
+                    $mail['host'],
+                    $mail['port'],
+                    'ssl'
+                    ))
+                    ->setUsername($mail['username'])
+                    ->setPassword($mail['password']);
+                // Create the Mailer using your created Transport
+                $mailer = new \Swift_Mailer($transport);
+                // Create a message
+                $message = (new \Swift_Message('Hasło do Lab'))
+                    ->setFrom(['andreeww2@gmail.com' => 'Administrator'])
+                    ->setTo([$user->getEmail()])
+                    ->setBody('Hasło do konta: '. $password);
+                // Send the message
+                $result = $mailer->send($message);
+
                 new Redirect(
                     '?cmd=login',
                     new Success('Hasło zostało wysłane na podany adres e-mail.

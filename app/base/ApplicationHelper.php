@@ -47,6 +47,11 @@ class ApplicationHelper
         return self::instance()->values['database'];
     }
 
+    static public function getMail()
+    {
+        return self::instance()->values['mail'];
+    }
+
     static function setDSN($dsn)
     {
         return self::instance()->set('dsn', $dsn);

@@ -29,6 +29,9 @@ class UserMapper extends Mapper
             "UPDATE user SET username = ?, firstName = ?, lastName = ?, email = ?
             WHERE id = ?"
         );
+        $this->updatePasswordStmt = self::$PDO->prepare(
+            "UPDATE user SET passwordMd5 = ? where id = ?"
+        );
         $this->insertUserMethodStmt = self::$PDO->prepare(
             "INSERT INTO user_method(user_id, method_id) VALUES (?, ?)"
         );
@@ -134,6 +137,14 @@ class UserMapper extends Mapper
             self::$PDO->rollBack();
             throw new \Exception($e->errorInfo[1]);
         }
+    }
+
+    public function updatePassword($user)
+    {
+        $this->updatePasswordStmt->execute(array(
+            $user->getPasswordMD5(),
+            $user->getId()
+        ));
     }
 
     public function update(DomainObject $object)

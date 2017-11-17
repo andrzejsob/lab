@@ -173,12 +173,16 @@ class OrderMapper extends Mapper
             $order->getLoadNr(),
             $order->getId()
         );
-
-        self::$PDO->beginTransaction();
-        $this->updateStmt->execute($values);
-        $this->deleteOrderMethodStmt->execute(array($order->getId()));
-        $this->insertOrderMethods($order);
-        self::$PDO->commit();
+        try {
+            self::$PDO->beginTransaction();
+            $this->updateStmt->execute($values);
+            $this->deleteOrderMethodStmt->execute(array($order->getId()));
+            $this->insertOrderMethods($order);
+            self::$PDO->commit();
+        } catch (\Exception $e) {
+            self::$PDO->rollback();
+            throw new \Exception($e);
+        }
     }
 
     private function insertOrderMethods($order)

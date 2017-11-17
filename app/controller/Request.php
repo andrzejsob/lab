@@ -36,7 +36,7 @@ class Request
 
     public function setProperty($key, $val)
     {
-        $this->property[$key] = $val;
+        $this->properties[$key] = $val;
     }
 
     public function addFeedback($msg)
